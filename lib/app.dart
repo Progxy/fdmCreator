@@ -1,3 +1,6 @@
+import 'package:fdmCreator/screens/access.dart';
+import 'package:fdmCreator/screens/accessoIscritti.dart';
+import 'package:fdmCreator/screens/badConnection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,10 +28,12 @@ class MyApp extends StatelessWidget {
           primaryColor: Color.fromARGB(255, 24, 37, 102),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        // home: Access(),
-        // routes: {
-        //   Access.routeName: (context) => Access(),
-        // },
+        home: Access(),
+        routes: {
+          Access.routeName: (context) => Access(),
+          AccessoIscritti.routeName: (context) => AccessoIscritti(),
+          BadConnection.routeName: (context) => BadConnection(),
+        },
       ),
     );
   }
