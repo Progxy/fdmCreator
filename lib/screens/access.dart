@@ -174,7 +174,7 @@ class _AccessState extends State<Access> {
               child: ButtonTheme(
                 minWidth: 150.0,
                 height: 50.0,
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
                       await context.read<AuthenticationService>().signIn(
@@ -261,7 +261,7 @@ class _AccessState extends State<Access> {
                               ),
                             ),
                             actions: [
-                              FlatButton(
+                              TextButton(
                                 child: Text(
                                   "OK",
                                   style: TextStyle(
@@ -287,10 +287,12 @@ class _AccessState extends State<Access> {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(7.0),
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(7.0),
+                    ),
+                    primary: Color.fromARGB(255, 24, 37, 102),
                   ),
-                  color: Color.fromARGB(255, 24, 37, 102),
                 ),
               ),
             ),
@@ -301,7 +303,7 @@ class _AccessState extends State<Access> {
               child: ButtonTheme(
                 minWidth: 150.0,
                 height: 50.0,
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                         context,
@@ -316,10 +318,12 @@ class _AccessState extends State<Access> {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(7.0),
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(7.0),
+                    ),
+                    primary: Color.fromARGB(255, 24, 37, 102),
                   ),
-                  color: Color.fromARGB(255, 24, 37, 102),
                 ),
               ),
             ),

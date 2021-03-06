@@ -91,7 +91,7 @@ class _FeedBackState extends State<FeedBack> {
                 ),
               ),
               actions: [
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Navigator.push(
                         context,
@@ -160,7 +160,7 @@ class _FeedBackState extends State<FeedBack> {
                 ),
               ),
               actions: [
-                FlatButton(
+                TextButton(
                   child: Text(
                     "OK",
                     style: TextStyle(
@@ -282,14 +282,13 @@ class _FeedBackState extends State<FeedBack> {
                 child: Center(
                   child: ButtonTheme(
                     height: 43.0,
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        side: BorderSide(
-                          color: Color.fromARGB(255, 24, 37, 102),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(7.0),
                         ),
+                        primary: Color.fromARGB(255, 24, 37, 102),
                       ),
-                      color: Color.fromARGB(255, 24, 37, 102),
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
                           sendFeedBack(feedBack, ratingValue);
@@ -345,7 +344,7 @@ class _FeedBackState extends State<FeedBack> {
                                   ),
                                 ),
                                 actions: [
-                                  FlatButton(
+                                  TextButton(
                                     child: Text(
                                       "OK",
                                       style: TextStyle(
