@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'FdmCreator',
         theme: ThemeData(
-          // fontFamily: "PlayfairDisplay", change font family
+          fontFamily: "Avenir",
           primaryColor: Color.fromARGB(255, 24, 37, 102),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
