@@ -1,9 +1,7 @@
 import 'dart:collection';
 
-import 'package:connectivity/connectivity.dart';
 import 'package:fdmCreator/screens/accessIscritti.dart';
 import 'package:fdmCreator/screens/home.dart';
-import 'package:fdmCreator/screens/utilizzo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,9 +12,7 @@ import 'package:firebase_database/firebase_database.dart';
 
 import '../accountInfo.dart';
 import '../authentication_service.dart';
-import 'badConnection.dart';
 import 'errorpage.dart';
-import 'feedback.dart';
 
 class Access extends StatefulWidget {
   static const String routeName = "/access";
