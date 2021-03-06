@@ -1,4 +1,4 @@
-import 'package:fdmCreator/screens/accessoIscritti.dart';
+import 'package:fdmCreator/screens/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -58,10 +58,8 @@ class _FeedBackState extends State<FeedBack> {
               actions: [
                 CupertinoDialogAction(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AccessoIscritti()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Home()));
                   },
                   child: Text(
                     "Vai alla HomePage",
@@ -93,10 +91,8 @@ class _FeedBackState extends State<FeedBack> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AccessoIscritti()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Home()));
                   },
                   child: Text(
                     "Vai alla HomePage",

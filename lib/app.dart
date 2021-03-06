@@ -1,7 +1,8 @@
 import 'package:fdmCreator/screens/access.dart';
-import 'package:fdmCreator/screens/accessoIscritti.dart';
+import 'package:fdmCreator/screens/accessIscritti.dart';
 import 'package:fdmCreator/screens/badConnection.dart';
 import 'package:fdmCreator/screens/feedback.dart';
+import 'package:fdmCreator/screens/home.dart';
 import 'package:fdmCreator/screens/utilizzo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -33,10 +34,11 @@ class MyApp extends StatelessWidget {
         home: Access(),
         routes: {
           Access.routeName: (context) => Access(),
-          AccessoIscritti.routeName: (context) => AccessoIscritti(),
+          AccessIscritti.routeName: (context) => AccessIscritti(),
           BadConnection.routeName: (context) => BadConnection(),
           Utilizzo.routeName: (context) => Utilizzo(),
           FeedBack.routeName: (context) => FeedBack(),
+          Home.routeName: (context) => Home(),
         },
       ),
     );

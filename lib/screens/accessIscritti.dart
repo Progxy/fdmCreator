@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:connectivity/connectivity.dart';
-import 'package:fdmCreator/screens/accessIscritti.dart';
+import 'package:fdmCreator/screens/access.dart';
 import 'package:fdmCreator/screens/home.dart';
 import 'package:fdmCreator/screens/utilizzo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,16 +18,16 @@ import 'badConnection.dart';
 import 'errorpage.dart';
 import 'feedback.dart';
 
-class Access extends StatefulWidget {
-  static const String routeName = "/access";
-  Access({this.app});
+class AccessIscritti extends StatefulWidget {
+  static const String routeName = "/accessIscritti";
+  AccessIscritti({this.app});
   final FirebaseApp app;
 
   @override
-  _AccessState createState() => _AccessState();
+  _AccessIscrittiState createState() => _AccessIscrittiState();
 }
 
-class _AccessState extends State<Access> {
+class _AccessIscrittiState extends State<AccessIscritti> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -265,13 +265,11 @@ class _AccessState extends State<Access> {
                 height: 50.0,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AccessIscritti()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Access()));
                   },
                   child: Text(
-                    "Accesso Volontari",
+                    "Accesso Amministratori",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 30.0,

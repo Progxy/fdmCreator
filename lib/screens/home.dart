@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import '../accountInfo.dart';
 import '../authentication_service.dart';
 
-class AccessoIscritti extends StatelessWidget {
-  static const String routeName = "/accessoIscritti";
+class Home extends StatelessWidget {
+  static const String routeName = "/home";
   final String name = AccountInfo.name;
   @override
   Widget build(BuildContext context) {
