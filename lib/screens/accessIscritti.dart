@@ -235,12 +235,20 @@ class _AccessIscrittiState extends State<AccessIscritti> {
                       }
                     }
                   },
-                  child: Text(
-                    "Accedi",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.w700,
+                  child: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: Container(
+                      height: 45,
+                      child: Center(
+                        child: Text(
+                          "Accedi",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -256,20 +264,29 @@ class _AccessIscrittiState extends State<AccessIscritti> {
               height: 35,
             ),
             Center(
-              child: ButtonTheme(
-                minWidth: 150.0,
-                height: 50.0,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 10,
+                  right: 10,
+                ),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Access()));
+                    Navigator.pushReplacementNamed(context, Access.routeName);
                   },
-                  child: Text(
-                    "Accesso Amministratori",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.w700,
+                  child: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: Container(
+                      height: 50,
+                      child: Center(
+                        child: Text(
+                          "Accesso Amministratori",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   style: ElevatedButton.styleFrom(

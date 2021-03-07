@@ -235,12 +235,20 @@ class _AccessState extends State<Access> {
                       }
                     }
                   },
-                  child: Text(
-                    "Accedi",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.w700,
+                  child: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: Container(
+                      height: 45,
+                      child: Center(
+                        child: Text(
+                          "Accedi",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -261,17 +269,23 @@ class _AccessState extends State<Access> {
                 height: 50.0,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AccessIscritti()));
+                    Navigator.pushReplacementNamed(
+                        context, AccessIscritti.routeName);
                   },
-                  child: Text(
-                    "Accesso Volontari",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.w700,
+                  child: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: Container(
+                      height: 50,
+                      child: Center(
+                        child: Text(
+                          "Accesso Volontari",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
