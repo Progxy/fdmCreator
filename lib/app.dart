@@ -1,6 +1,7 @@
 import 'package:fdmCreator/screens/access.dart';
 import 'package:fdmCreator/screens/accessIscritti.dart';
 import 'package:fdmCreator/screens/badConnection.dart';
+import 'package:fdmCreator/screens/errorpage.dart';
 import 'package:fdmCreator/screens/feedback.dart';
 import 'package:fdmCreator/screens/home.dart';
 import 'package:fdmCreator/screens/utilizzo.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
           Utilizzo.routeName: (context) => Utilizzo(),
           FeedBack.routeName: (context) => FeedBack(),
           Home.routeName: (context) => Home(),
+          ErrorPage.routeName: (context) => ErrorPage(),
         },
       ),
     );

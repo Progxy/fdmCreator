@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:fdmCreator/firebaseProjectsManager.dart';
 import 'package:fdmCreator/screens/access.dart';
 import 'package:fdmCreator/screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,8 +17,7 @@ import 'errorpage.dart';
 
 class AccessIscritti extends StatefulWidget {
   static const String routeName = "/accessIscritti";
-  AccessIscritti({this.app});
-  final FirebaseApp app;
+  final FirebaseApp app = FirebaseProjectsManager().secondaryApp;
 
   @override
   _AccessIscrittiState createState() => _AccessIscrittiState();
@@ -160,10 +160,8 @@ class _AccessIscrittiState extends State<AccessIscritti> {
                               MaterialPageRoute(builder: (context) => Home()));
                         });
                       } else {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ErrorPage()));
+                        Navigator.pushReplacementNamed(
+                            context, ErrorPage.routeName);
                       }
                     } else {
                       if (isIOS) {

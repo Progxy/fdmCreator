@@ -9,6 +9,7 @@ import 'badConnection.dart';
 import 'feedback.dart';
 
 class ErrorPage extends StatefulWidget {
+  static const String routeName = "/errorPage";
   @override
   _ErrorPageState createState() => _ErrorPageState();
 }
@@ -102,8 +103,7 @@ class _ErrorPageState extends State<ErrorPage> {
               child: FloatingActionButton(
                 onPressed: () {
                   context.read<AuthenticationService>().signOut();
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Access()));
+                  Navigator.pushReplacementNamed(context, Access.routeName);
                 },
                 child: Icon(
                   Icons.arrow_back_rounded,

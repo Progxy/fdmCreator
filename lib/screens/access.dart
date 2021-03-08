@@ -160,10 +160,8 @@ class _AccessState extends State<Access> {
                               MaterialPageRoute(builder: (context) => Home()));
                         });
                       } else {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ErrorPage()));
+                        Navigator.pushReplacementNamed(
+                            context, ErrorPage.routeName);
                       }
                     } else {
                       if (isIOS) {
