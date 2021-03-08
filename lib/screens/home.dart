@@ -27,8 +27,7 @@ class Home extends StatelessWidget {
             onPressed: () {
               context.read<AuthenticationService>().signOut();
               AccountInfo().resetCredentials();
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Access()));
+              Navigator.pushReplacementNamed(context, Access.routeName);
             },
             icon: Icon(
               Icons.logout,
