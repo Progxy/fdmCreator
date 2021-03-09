@@ -36,6 +36,12 @@ class _CreateContentState extends State<CreateContent> {
     }
   }
 
+  double _width = 0;
+  double _height = 0;
+  bool show = false;
+  double _left = 0;
+  int _duration = 1000;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,16 +82,14 @@ class _CreateContentState extends State<CreateContent> {
       ),
       drawer: MainDrawer(),
       body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            //colonna a scomparsa con elementi dragable, usa la card come dragableArea
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Container(
+        child: Container(
+          height: MediaQuery.of(context).size.height - 100,
+          width: MediaQuery.of(context).size.width,
+          child: Stack(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 15, top: 15),
+                child: Container(
                   height: MediaQuery.of(context).size.height - 100,
                   width: (MediaQuery.of(context).size.width * 75) / 100,
                   decoration: BoxDecoration(
@@ -102,22 +106,67 @@ class _CreateContentState extends State<CreateContent> {
                   ),
                   child: SingleChildScrollView(),
                 ),
-                FloatingActionButton(
+              ),
+              AnimatedPositioned(
+                top: (MediaQuery.of(context).size.height * 35) / 100,
+                left: _left,
+                duration: Duration(milliseconds: _duration),
+                child: FloatingActionButton(
                   onPressed: () {
-                    print("hy");
+                    setState(() {
+                      if (!show) {
+                        _duration = 1000;
+                        _height = MediaQuery.of(context).size.height - 75;
+                        _width = (MediaQuery.of(context).size.width * 45) / 100;
+                        show = true;
+                        _left =
+                            (MediaQuery.of(context).size.width - 65) - _width;
+                      } else {
+                        _duration = 1500;
+                        _height = 0;
+                        _width = 0;
+                        show = false;
+                        _left = MediaQuery.of(context).size.width - 65;
+                      }
+                    });
                   },
                   child: Icon(
-                    Icons.arrow_back,
+                    show ? Icons.arrow_forward : Icons.arrow_back,
                     size: 35,
                     color: Colors.white,
                   ),
+                  backgroundColor: Color.fromARGB(255, 24, 37, 102),
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-          ],
+              ),
+              Positioned(
+                right: 0,
+                top: 0,
+                child: AnimatedContainer(
+                  width: _width,
+                  height: _height,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.7),
+                        spreadRadius: 10,
+                        blurRadius: 10,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  duration: Duration(milliseconds: 1700),
+                  curve: Curves.fastOutSlowIn,
+                  child: SingleChildScrollView(
+                    child: Card(
+                      elevation: 50.0,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
