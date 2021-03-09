@@ -17,7 +17,7 @@ import 'errorpage.dart';
 
 class AccessIscritti extends StatefulWidget {
   static const String routeName = "/accessIscritti";
-  final FirebaseApp app = FirebaseProjectsManager().secondaryApp;
+  final FirebaseApp app = FirebaseProjectsManager().getSecondary();
 
   @override
   _AccessIscrittiState createState() => _AccessIscrittiState();
@@ -34,10 +34,11 @@ class _AccessIscrittiState extends State<AccessIscritti> {
   Widget build(BuildContext context) {
     final bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
     final FirebaseDatabase database = FirebaseDatabase(app: widget.app);
-    final firebaseUser = context.watch<User>();
-    if (firebaseUser != null) {
-      return Home();
-    }
+    final FirebaseAuth _auth = FirebaseAuth.instanceFor(app: widget.app);
+    // final firebaseUser = context.watch<User>();
+    // if (firebaseUser != null) {
+    //   return Home();
+    // }
 
     return Scaffold(
       appBar: AppBar(
@@ -135,12 +136,19 @@ class _AccessIscrittiState extends State<AccessIscritti> {
                 child: ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
-                      await context.read<AuthenticationService>().signIn(
-                            email: _emailController.text.trim(),
-                            password: _passwordController.text.trim(),
-                          );
+                      var result =
+                          await context.read<AuthenticationService>().signIn(
+                                email: _emailController.text.trim(),
+                                password: _passwordController.text.trim(),
+                              );
+                      print("\n-\nresult : $result\n-\n");
+                      var results = await AuthenticationService(_auth).signIn(
+                        email: _emailController.text.trim(),
+                        password: _passwordController.text.trim(),
+                      );
+                      print("\n-\nresult : $results\n-\n");
                       final firebaseAuthCheck =
-                          FirebaseAuth.instance.currentUser;
+                          FirebaseAuth.instanceFor(app: widget.app).currentUser;
                       if (firebaseAuthCheck != null) {
                         await database
                             .reference()
@@ -155,9 +163,9 @@ class _AccessIscrittiState extends State<AccessIscritti> {
                           Map<String, String> map = values.map(
                               (a, b) => MapEntry(a as String, b as String));
                           map.forEach((k, value) => {username = k});
-                          AccountInfo().setter(username, email);
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Home()));
+                          AccountInfo().setter(username, email, false);
+                          Navigator.pushReplacementNamed(
+                              context, Home.routeName);
                         });
                       } else {
                         Navigator.pushReplacementNamed(

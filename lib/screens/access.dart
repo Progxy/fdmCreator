@@ -155,7 +155,7 @@ class _AccessState extends State<Access> {
                           Map<String, String> map = values.map(
                               (a, b) => MapEntry(a as String, b as String));
                           map.forEach((k, value) => {username = k});
-                          AccountInfo().setter(username, email);
+                          AccountInfo().setter(username, email, true);
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) => Home()));
                         });

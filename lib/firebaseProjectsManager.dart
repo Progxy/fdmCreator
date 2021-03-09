@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 
 class FirebaseProjectsManager {
-  FirebaseApp secondaryApp;
+  static FirebaseApp secondaryApp;
 
   connectFirebaseSecondary() async {
-    final FirebaseApp app = await Firebase.initializeApp(
+    secondaryApp = await Firebase.initializeApp(
       name: 'fdmApp',
       options: const FirebaseOptions(
         apiKey: 'AIzaSyCmiAVLF7dIR9U90riDHxbLalq80dBUlfk',
@@ -13,8 +13,10 @@ class FirebaseProjectsManager {
         projectId: 'fdmapp-2dad1',
       ),
     );
-    secondaryApp = app;
-    print(secondaryApp);
-    return app;
+    return;
+  }
+
+  getSecondary() {
+    return secondaryApp;
   }
 }
