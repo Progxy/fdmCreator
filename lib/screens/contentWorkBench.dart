@@ -78,31 +78,41 @@ class _CreateContentState extends State<CreateContent> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            SizedBox(
-              height: 15,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 10,
-                right: 10,
-              ),
-              child: Text(
-                "Selezionare gli elementi presenti nella colonna a scomparsa di destra e trascinarli a piacimento nella pagina.",
-                style: TextStyle(
-                  fontSize: 25,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
             //colonna a scomparsa con elementi dragable, usa la card come dragableArea
             SizedBox(
-              height: 15,
+              height: 10,
             ),
-            Card(
-              //aggiungi sfumatura per dare contrasto e renderla visibile
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Container(
+                  height: MediaQuery.of(context).size.height - 100,
+                  width: (MediaQuery.of(context).size.width * 75) / 100,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.7),
+                        spreadRadius: 10,
+                        blurRadius: 10,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: SingleChildScrollView(),
+                ),
+                FloatingActionButton(
+                  onPressed: () {
+                    print("hy");
+                  },
+                  child: Icon(
+                    Icons.arrow_back,
+                    size: 35,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
             SizedBox(
               height: 20,

@@ -276,94 +276,97 @@ class _FeedBackState extends State<FeedBack> {
                   top: 25,
                 ),
                 child: Center(
-                  child: ButtonTheme(
-                    height: 43.0,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(7.0),
-                        ),
-                        primary: Color.fromARGB(255, 24, 37, 102),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(7.0),
                       ),
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
-                          sendFeedBack(feedBack, ratingValue);
+                      primary: Color.fromARGB(255, 24, 37, 102),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        sendFeedBack(feedBack, ratingValue);
+                      } else {
+                        if (isIOS) {
+                          showCupertinoDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                CupertinoAlertDialog(
+                              title: Text(
+                                "Errore",
+                                style: TextStyle(
+                                  fontSize: 28,
+                                ),
+                              ),
+                              content: Text(
+                                "Dati Mancanti!",
+                                style: TextStyle(
+                                  fontSize: 27,
+                                ),
+                              ),
+                              actions: [
+                                CupertinoDialogAction(
+                                  child: Text(
+                                    "OK",
+                                    style: TextStyle(
+                                      fontSize: 28,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop('dialog');
+                                  },
+                                )
+                              ],
+                            ),
+                          );
                         } else {
-                          if (isIOS) {
-                            showCupertinoDialog(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  CupertinoAlertDialog(
-                                title: Text(
-                                  "Errore",
-                                  style: TextStyle(
-                                    fontSize: 28,
-                                  ),
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              title: Text(
+                                "Errore",
+                                style: TextStyle(
+                                  fontSize: 28,
                                 ),
-                                content: Text(
-                                  "Dati Mancanti!",
-                                  style: TextStyle(
-                                    fontSize: 27,
-                                  ),
-                                ),
-                                actions: [
-                                  CupertinoDialogAction(
-                                    child: Text(
-                                      "OK",
-                                      style: TextStyle(
-                                        fontSize: 28,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pop('dialog');
-                                    },
-                                  )
-                                ],
                               ),
-                            );
-                          } else {
-                            showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                title: Text(
-                                  "Errore",
-                                  style: TextStyle(
-                                    fontSize: 28,
-                                  ),
+                              content: Text(
+                                "Dati Mancanti!",
+                                style: TextStyle(
+                                  fontSize: 27,
                                 ),
-                                content: Text(
-                                  "Dati Mancanti!",
-                                  style: TextStyle(
-                                    fontSize: 27,
-                                  ),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    child: Text(
-                                      "OK",
-                                      style: TextStyle(
-                                        fontSize: 28,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pop('dialog');
-                                    },
-                                  )
-                                ],
                               ),
-                            );
-                          }
+                              actions: [
+                                TextButton(
+                                  child: Text(
+                                    "OK",
+                                    style: TextStyle(
+                                      fontSize: 28,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop('dialog');
+                                  },
+                                )
+                              ],
+                            ),
+                          );
                         }
-                      },
-                      child: Text(
-                        "Invia Feedback",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 27,
-                          fontWeight: FontWeight.w600,
+                      }
+                    },
+                    child: SizedBox(
+                      height: 50,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Text(
+                          "Invia Feedback",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 27,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
