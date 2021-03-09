@@ -37,10 +37,10 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   double _width = 0;
-  double _height = 0;
   bool show = false;
   double _left = 0;
   int _duration = 1000;
+  final ScrollController _scroolController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -116,14 +116,12 @@ class _CreateContentState extends State<CreateContent> {
                     setState(() {
                       if (!show) {
                         _duration = 1000;
-                        _height = MediaQuery.of(context).size.height - 75;
                         _width = (MediaQuery.of(context).size.width * 45) / 100;
                         show = true;
                         _left =
                             (MediaQuery.of(context).size.width - 65) - _width;
                       } else {
                         _duration = 1500;
-                        _height = 0;
                         _width = 0;
                         show = false;
                         _left = MediaQuery.of(context).size.width - 65;
@@ -143,7 +141,7 @@ class _CreateContentState extends State<CreateContent> {
                 top: 0,
                 child: AnimatedContainer(
                   width: _width,
-                  height: _height,
+                  height: MediaQuery.of(context).size.height - 100,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -158,11 +156,15 @@ class _CreateContentState extends State<CreateContent> {
                   ),
                   duration: Duration(milliseconds: 1700),
                   curve: Curves.fastOutSlowIn,
-                  child: SingleChildScrollView(
-                    child: Card(
-                      elevation: 50.0,
-                    ),
-                  ),
+                  child: Scrollbar(
+                      child: ListView.builder(
+                          controller: _scroolController,
+                          itemCount: 100,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text("Item n. $index"),
+                            );
+                          })),
                 ),
               ),
             ],
