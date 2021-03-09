@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../accountInfo.dart';
 import '../authentication_service.dart';
 import '../firebaseProjectsManager.dart';
+import 'mainDrawer.dart';
 
 class Home extends StatelessWidget {
   static const String routeName = "/home";
@@ -45,15 +46,21 @@ class Home extends StatelessWidget {
         backgroundColor: Color.fromARGB(255, 24, 37, 102),
         centerTitle: true,
       ),
-      // drawer: MainDrawer(),
+      drawer: MainDrawer(),
       body: Center(
-        child: Text(
-          "Benvenuto $name nella tua area personale!",
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.w800,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            right: 15.0,
+            left: 15.0,
           ),
-          textAlign: TextAlign.center,
+          child: Text(
+            "Benvenuto $name nella tua area di Creator, qui potrai creare articoli e altri contenuti per le risorse digitali della Fondazione Don Milani!",
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.w800,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );
