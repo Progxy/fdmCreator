@@ -51,16 +51,18 @@ class _CreateContentState extends State<CreateContent> {
     "Text": "Fast_text.png",
     "Image": "image.png",
     "Video": "video.png",
-    "Link": "link.jpg",
-    "Spaziatura": "spaziatura.png"
+    "Link": "linker.png",
+    "Spaziatura": "spacer.png"
   };
   String article = "";
 
   setElements() {
-    _duration = 600;
-    _width = 0;
-    show = false;
-    _left = MediaQuery.of(context).size.width - 65;
+    setState(() {
+      _duration = 600;
+      _width = 0;
+      show = false;
+      _left = MediaQuery.of(context).size.width - 65;
+    });
   }
 
   @override
