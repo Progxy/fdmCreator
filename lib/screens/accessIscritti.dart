@@ -35,10 +35,10 @@ class _AccessIscrittiState extends State<AccessIscritti> {
     final bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
     final FirebaseDatabase database = FirebaseDatabase(app: widget.app);
     final FirebaseAuth _auth = FirebaseAuth.instanceFor(app: widget.app);
-    // final firebaseUser = context.watch<User>();
-    // if (firebaseUser != null) {
-    //   return Home();
-    // }
+    final firebaseUser = FirebaseAuth.instanceFor(app: widget.app).currentUser;
+    if (firebaseUser != null) {
+      return Home();
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -136,17 +136,10 @@ class _AccessIscrittiState extends State<AccessIscritti> {
                 child: ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
-                      var result =
-                          await context.read<AuthenticationService>().signIn(
-                                email: _emailController.text.trim(),
-                                password: _passwordController.text.trim(),
-                              );
-                      print("\n-\nresult : $result\n-\n");
-                      var results = await AuthenticationService(_auth).signIn(
+                      await AuthenticationService(_auth).signIn(
                         email: _emailController.text.trim(),
                         password: _passwordController.text.trim(),
                       );
-                      print("\n-\nresult : $results\n-\n");
                       final firebaseAuthCheck =
                           FirebaseAuth.instanceFor(app: widget.app).currentUser;
                       if (firebaseAuthCheck != null) {

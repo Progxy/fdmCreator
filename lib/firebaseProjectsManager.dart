@@ -2,8 +2,12 @@ import 'package:firebase_core/firebase_core.dart';
 
 class FirebaseProjectsManager {
   static FirebaseApp secondaryApp;
+  static bool isAlreadyInitialized = false;
 
   connectFirebaseSecondary() async {
+    if (isAlreadyInitialized) {
+      return;
+    }
     secondaryApp = await Firebase.initializeApp(
       name: 'fdmApp',
       options: const FirebaseOptions(
@@ -13,6 +17,7 @@ class FirebaseProjectsManager {
         projectId: 'fdmapp-2dad1',
       ),
     );
+    isAlreadyInitialized = true;
     return;
   }
 

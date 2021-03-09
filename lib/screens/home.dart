@@ -1,15 +1,22 @@
 import 'package:fdmCreator/screens/access.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../accountInfo.dart';
 import '../authentication_service.dart';
+import '../firebaseProjectsManager.dart';
 
 class Home extends StatelessWidget {
   static const String routeName = "/home";
   final String name = AccountInfo.name;
+  final bool isManager = AccountInfo.isManager;
+  final FirebaseApp app = FirebaseProjectsManager().getSecondary();
+
   @override
   Widget build(BuildContext context) {
+    final FirebaseAuth _auth = FirebaseAuth.instanceFor(app: app);
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -25,8 +32,9 @@ class Home extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              context.read<AuthenticationService>().signOut();
-              AccountInfo().resetCredentials();
+              isManager
+                  ? context.read<AuthenticationService>().signOut()
+                  : AuthenticationService(_auth).signOut();
               Navigator.pushReplacementNamed(context, Access.routeName);
             },
             icon: Icon(
