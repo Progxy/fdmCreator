@@ -11,7 +11,6 @@ import '../firebaseProjectsManager.dart';
 class Home extends StatelessWidget {
   static const String routeName = "/home";
   final String name = AccountInfo.name;
-  final bool isManager = AccountInfo.isManager;
   final FirebaseApp app = FirebaseProjectsManager().getSecondary();
 
   @override
@@ -32,9 +31,8 @@ class Home extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              isManager
-                  ? context.read<AuthenticationService>().signOut()
-                  : AuthenticationService(_auth).signOut();
+              context.read<AuthenticationService>().signOut();
+              AuthenticationService(_auth).signOut();
               Navigator.pushReplacementNamed(context, Access.routeName);
             },
             icon: Icon(
