@@ -28,7 +28,6 @@ class _MainDrawerState extends State<MainDrawer> {
     setState(() {
       heightArea = height - (y + 115);
     });
-    print("-\nheightArea : $heightArea\n-");
   }
 
   @override
