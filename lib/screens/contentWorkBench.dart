@@ -40,7 +40,6 @@ class _CreateContentState extends State<CreateContent> {
   bool show = false;
   double _left = 0;
   int _duration = 1000;
-  final ScrollController _scroolController = ScrollController();
   final List<String> draggableElements = [
     "Text",
     "Image",
@@ -48,7 +47,27 @@ class _CreateContentState extends State<CreateContent> {
     "Link",
     "Spaziatura"
   ];
+  final Map images = {
+    "Text": "Fast_text.png",
+    "Image": "image.png",
+    "Video": "video.png",
+    "Link": "link.jpg",
+    "Spaziatura": "spaziatura.png"
+  };
   String article = "";
+
+  setElements() {
+    _duration = 600;
+    _width = 0;
+    show = false;
+    _left = MediaQuery.of(context).size.width - 65;
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => setElements());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,15 +183,57 @@ class _CreateContentState extends State<CreateContent> {
                   ),
                   duration: Duration(milliseconds: 1700),
                   curve: Curves.fastLinearToSlowEaseIn,
-                  child: Scrollbar(
-                      child: ListView.builder(
-                          controller: _scroolController,
-                          itemCount: 100,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text("Item n. $index"),
-                            );
-                          })),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: draggableElements
+                          .map((val) => Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20.0, right: 20.0),
+                                child: Draggable(
+                                  child: Image(
+                                      image: AssetImage(
+                                          "assets/images/" + images[val]),
+                                      fit: BoxFit.fitWidth,
+                                      alignment: Alignment.topCenter),
+                                  feedback: Image(
+                                      image: AssetImage(
+                                          "assets/images/" + images[val]),
+                                      fit: BoxFit.fitWidth,
+                                      alignment: Alignment.topCenter),
+                                  childWhenDragging: Image(
+                                      image: AssetImage(
+                                          "assets/images/" + images[val]),
+                                      fit: BoxFit.fitWidth,
+                                      alignment: Alignment.topCenter),
+                                  onDragStarted: () {
+                                    setState(() {
+                                      _duration = 600;
+                                      _width = 0;
+                                      show = false;
+                                      _left =
+                                          MediaQuery.of(context).size.width -
+                                              65;
+                                    });
+                                  },
+                                  onDragEnd: (_) {
+                                    setState(() {
+                                      _duration = 300;
+                                      _width =
+                                          (MediaQuery.of(context).size.width *
+                                                  45) /
+                                              100;
+                                      show = true;
+                                      _left =
+                                          (MediaQuery.of(context).size.width -
+                                                  65) -
+                                              _width;
+                                    });
+                                  },
+                                ),
+                              ))
+                          .toList(),
+                    ),
+                  ),
                 ),
               ),
             ],
