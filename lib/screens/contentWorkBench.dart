@@ -43,11 +43,14 @@ class _CreateContentState extends State<CreateContent> {
         iconTheme: IconThemeData(
           color: Color.fromARGB(255, 192, 192, 192),
         ),
-        title: Text(
-          "Area Creazione Contenuti",
-          style: TextStyle(
-            color: Color.fromARGB(255, 192, 192, 192),
-            fontWeight: FontWeight.w700,
+        title: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Text(
+            "Area Creazione Contenuti",
+            style: TextStyle(
+              color: Color.fromARGB(255, 192, 192, 192),
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
         actions: [
