@@ -41,15 +41,15 @@ class _CreateContentState extends State<CreateContent> {
   double _left = 0;
   int _duration = 1000;
   final List<String> draggableElements = [
-    "Text",
-    "Image",
+    "Testo",
+    "Immagine",
     "Video",
     "Link",
     "Spaziatura"
   ];
   final Map images = {
-    "Text": "Fast_text.png",
-    "Image": "image.png",
+    "Testo": "Fast_text.png",
+    "Immagine": "image.png",
     "Video": "video.png",
     "Link": "linker.png",
     "Spaziatura": "spacer.png"
@@ -197,11 +197,27 @@ class _CreateContentState extends State<CreateContent> {
                                           "assets/images/" + images[val]),
                                       fit: BoxFit.fitWidth,
                                       alignment: Alignment.topCenter),
-                                  feedback: Image(
-                                      image: AssetImage(
-                                          "assets/images/" + images[val]),
-                                      fit: BoxFit.fitWidth,
-                                      alignment: Alignment.topCenter),
+                                  feedback: Column(
+                                    children: [
+                                      Image(
+                                          image: AssetImage(
+                                              "assets/images/" + images[val]),
+                                          fit: BoxFit.fitWidth,
+                                          alignment: Alignment.topCenter),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        val,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          decoration: TextDecoration.none,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                   childWhenDragging: Image(
                                       image: AssetImage(
                                           "assets/images/" + images[val]),
