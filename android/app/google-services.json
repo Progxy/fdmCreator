@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "1096652698814",
+    "firebase_url": "https://fdmcreator-default-rtdb.firebaseio.com",
     "project_id": "fdmcreator",
     "storage_bucket": "fdmcreator.appspot.com"
   },
