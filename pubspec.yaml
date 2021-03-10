@@ -32,7 +32,6 @@ dependencies:
   flutter_rating_bar: ^3.2.0+1
   mailer2: ^1.2.5
   datetime_picker_formfield: ^1.0.0
-  youtube_player_flutter: ^7.0.0+7
   firebase_core: ^0.7.0
   firebase_auth: ^0.20.1
   provider: ^5.0.0
