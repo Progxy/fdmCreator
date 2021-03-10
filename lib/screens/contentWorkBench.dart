@@ -117,12 +117,17 @@ class _CreateContentState extends State<CreateContent> {
                   ),
                   CupertinoDialogAction(
                     onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pop('dialog');
                       setState(() {
+                        Navigator.of(context, rootNavigator: true)
+                            .pop('dialog');
                         widgetInfo.clear();
                         widgetsInfos.removeAt(ind);
                         container.removeAt(ind);
                         articleContainer.removeAt(ind);
+                        keysValue.remove(key);
+                        keysValue.forEach((key, value) => {
+                              if (value > ind) {keysValue[key] = value - 1}
+                            });
                         index--;
                       });
                     },
@@ -170,8 +175,9 @@ class _CreateContentState extends State<CreateContent> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pop('dialog');
                       setState(() {
+                        Navigator.of(context, rootNavigator: true)
+                            .pop('dialog');
                         widgetInfo.clear();
                         widgetsInfos.removeAt(ind);
                         container.removeAt(ind);
@@ -197,6 +203,8 @@ class _CreateContentState extends State<CreateContent> {
         },
       );
     }
+    refreshWorkBench();
+    return;
   }
 
   addText() {
@@ -271,7 +279,7 @@ class _CreateContentState extends State<CreateContent> {
                             if (value.isEmpty) {
                               return "Dati Mancanti";
                             }
-                            widgetInfo.addAll({"Left": value});
+                            widgetInfo.addAll({"Size": value});
                             return null;
                           },
                         ),
@@ -440,27 +448,50 @@ class _CreateContentState extends State<CreateContent> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
+                        Navigator.of(context, rootNavigator: true)
+                            .pop('dialog');
                         setState(() {
                           widgetInfo.addAll({"FontWeight": fontWeight});
                           Key chiavetta =
                               Key(random.nextInt(100000000).toString());
+                          keysValue.addAll({chiavetta: index});
                           container.add(
-                            InkWell(
+                            GestureDetector(
                               key: chiavetta,
-                              onDoubleTap: selectedWidget(widget.key),
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  top: double.parse(widgetInfo["Top"]),
-                                  bottom: double.parse(widgetInfo["Bottom"]),
-                                  left: double.parse(widgetInfo["Left"]),
-                                  right: double.parse(widgetInfo["Right"]),
-                                ),
-                                child: Text(
-                                  widgetInfo["Text"],
-                                  style: TextStyle(
-                                    fontSize: widgetInfo["Size"],
-                                    fontWeight: widgetInfo["FontWeight"],
+                              onLongPress: () => selectedWidget(chiavetta),
+                              child: Container(
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    top: double.parse(widgetInfo["Top"]),
+                                    bottom: double.parse(widgetInfo["Bottom"]),
+                                    left: double.parse(widgetInfo["Left"]),
+                                    right: double.parse(widgetInfo["Right"]),
                                   ),
+                                  child: Text(
+                                    widgetInfo["Text"],
+                                    style: TextStyle(
+                                      fontSize:
+                                          double.parse(widgetInfo["Size"]),
+                                      fontWeight: widgetInfo["FontWeight"],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                          articleContainer.add(
+                            Padding(
+                              padding: EdgeInsets.only(
+                                top: double.parse(widgetInfo["Top"]),
+                                bottom: double.parse(widgetInfo["Bottom"]),
+                                left: double.parse(widgetInfo["Left"]),
+                                right: double.parse(widgetInfo["Right"]),
+                              ),
+                              child: Text(
+                                widgetInfo["Text"],
+                                style: TextStyle(
+                                  fontSize: double.parse(widgetInfo["Size"]),
+                                  fontWeight: widgetInfo["FontWeight"],
                                 ),
                               ),
                             ),
@@ -477,8 +508,6 @@ class _CreateContentState extends State<CreateContent> {
                           _topController.clear();
                           _sizeController.clear();
                         });
-                        Navigator.of(context, rootNavigator: true)
-                            .pop('dialog');
                       }
                     },
                   ),
@@ -581,7 +610,7 @@ class _CreateContentState extends State<CreateContent> {
                             if (value.isEmpty) {
                               return "Dati Mancanti";
                             }
-                            widgetInfo.addAll({"Left": value});
+                            widgetInfo.addAll({"Size": value});
                             return null;
                           },
                         ),
@@ -772,7 +801,8 @@ class _CreateContentState extends State<CreateContent> {
                                   child: Text(
                                     widgetInfo["Text"],
                                     style: TextStyle(
-                                      fontSize: widgetInfo["Size"],
+                                      fontSize:
+                                          double.parse(widgetInfo["Size"]),
                                       fontWeight: widgetInfo["FontWeight"],
                                     ),
                                   ),
@@ -791,7 +821,7 @@ class _CreateContentState extends State<CreateContent> {
                               child: Text(
                                 widgetInfo["Text"],
                                 style: TextStyle(
-                                  fontSize: widgetInfo["Size"],
+                                  fontSize: double.parse(widgetInfo["Size"]),
                                   fontWeight: widgetInfo["FontWeight"],
                                 ),
                               ),
@@ -841,6 +871,7 @@ class _CreateContentState extends State<CreateContent> {
         },
       );
     }
+    refreshWorkBench();
     return;
   }
 
@@ -861,7 +892,16 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   refreshWorkBench() {
-    container.clear();
+    setState(() {
+      print("Refresh");
+    });
+  }
+
+  cleanWorkBench() {
+    setState(() {
+      container.clear();
+      articleContainer.clear();
+    });
   }
 
   void saveWorkBench() {
