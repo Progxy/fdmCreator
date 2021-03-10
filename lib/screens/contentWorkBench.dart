@@ -181,6 +181,7 @@ class _CreateContentState extends State<CreateContent> {
                       setState(() {
                         Navigator.of(context, rootNavigator: true)
                             .pop('dialog');
+                        _audioController.play("sounds/deleteEffect.mp4");
                         widgetInfo.clear();
                         widgetsInfos.removeAt(ind);
                         container.removeAt(ind);
@@ -191,7 +192,6 @@ class _CreateContentState extends State<CreateContent> {
                             });
                         index--;
                       });
-                      _audioController.play("assets/sounds/deleteEffect.mp4");
                     },
                     child: Text(
                       "ELIMINA",
@@ -786,6 +786,7 @@ class _CreateContentState extends State<CreateContent> {
                       if (_formKey.currentState.validate()) {
                         Navigator.of(context, rootNavigator: true)
                             .pop('dialog');
+                        _audioController.play("sounds/addedElement.mp4");
                         setState(() {
                           widgetInfo.addAll({"FontWeight": fontWeight});
                           Key chiavetta =
@@ -844,7 +845,6 @@ class _CreateContentState extends State<CreateContent> {
                           _topController.clear();
                           _sizeController.clear();
                         });
-                        _audioController.play("assets/sounds/addedElement.mp4");
                       }
                     },
                   ),
