@@ -64,7 +64,7 @@ class _CreateContentState extends State<CreateContent> {
   final Map images = {
     "Testo": "Fast_text.png",
     "Immagine": "image.png",
-    "Video": "ytVideos.jpeg",
+    "Video": "ytVideos.jpg",
     "Link": "linker.png",
     "Spaziatura": "spacer.png"
   };
