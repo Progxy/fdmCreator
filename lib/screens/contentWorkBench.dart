@@ -179,8 +179,6 @@ class _CreateContentState extends State<CreateContent> {
                   TextButton(
                     onPressed: () {
                       setState(() {
-                        Navigator.of(context, rootNavigator: true)
-                            .pop('dialog');
                         _audioController.play("sounds/deleteEffect.mp4");
                         widgetInfo.clear();
                         widgetsInfos.removeAt(ind);
@@ -191,6 +189,11 @@ class _CreateContentState extends State<CreateContent> {
                               if (value > ind) {keysValue[key] = value - 1}
                             });
                         index--;
+                      });
+                      refreshWorkBench();
+                      setState(() {
+                        Navigator.of(context, rootNavigator: true)
+                            .pop('dialog');
                       });
                     },
                     child: Text(
@@ -784,10 +787,8 @@ class _CreateContentState extends State<CreateContent> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        Navigator.of(context, rootNavigator: true)
-                            .pop('dialog');
-                        _audioController.play("sounds/addedElement.mp4");
                         setState(() {
+                          _audioController.play("sounds/addedElement.mp4");
                           widgetInfo.addAll({"FontWeight": fontWeight});
                           Key chiavetta =
                               Key(random.nextInt(100000000).toString());
@@ -844,6 +845,11 @@ class _CreateContentState extends State<CreateContent> {
                           _bottomController.clear();
                           _topController.clear();
                           _sizeController.clear();
+                        });
+                        refreshWorkBench();
+                        setState(() {
+                          Navigator.of(context, rootNavigator: true)
+                              .pop('dialog');
                         });
                       }
                     },
