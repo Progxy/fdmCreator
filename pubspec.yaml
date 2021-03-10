@@ -26,29 +26,26 @@ dependencies:
 
 
   cupertino_icons: ^1.0.0
-  # carousel_slider: ^2.3.1
   # bordered_text: ^1.0.1
-  # intl_phone_field: ^1.4.4
-  # firebase_storage: ^8.0.0
-  url_launcher: ^5.7.10
+  # firebase_storage: ^7.0.0
+  url_launcher: ^6.0.2
   flutter_rating_bar: ^3.2.0+1
-  # marquee: ^1.6.1
   mailer2: ^1.2.5
   datetime_picker_formfield: ^1.0.0
-  # youtube_player_flutter: ^7.0.0+7
-  firebase_core: "0.7.0"
-  firebase_auth: "^0.20.0"
-  provider: ^4.3.2+4
+  youtube_player_flutter: ^7.0.0+7
+  firebase_core: ^0.7.0
+  firebase_auth: ^0.20.1
+  provider: ^5.0.0
   firebase_database: ^6.0.0
-  cloud_firestore: ^0.16.0
   dotted_line: ^2.0.2
   connectivity: ^2.0.2
   progress_dialog: ^1.2.4
   flutter_launcher_icons: ^0.8.1
   http: ^0.12.2
-  flutter_local_notifications: ^4.0.1+1
   shared_preferences: ^0.5.12+4
   audioplayers: ^0.17.4
+  image_picker: ^0.6.7+22
+
 
 dev_dependencies:
   flutter_test:
