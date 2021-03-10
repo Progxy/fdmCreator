@@ -81,11 +81,11 @@ class _CreateContentState extends State<CreateContent> {
   String dropdownValue = 1.toString();
   var fontWeight = FontWeight.w300;
   int index = 0;
-  Map keys = {};
   Random random = new Random();
+  Map keysValue = {};
 
-  selectedWidget(inds) {
-    int ind = keys[inds];
+  selectedWidget(key) {
+    int ind = keysValue[key];
     if (Platform.isIOS) {
       showCupertinoDialog(
         context: context,
@@ -176,6 +176,10 @@ class _CreateContentState extends State<CreateContent> {
                         widgetsInfos.removeAt(ind);
                         container.removeAt(ind);
                         articleContainer.removeAt(ind);
+                        keysValue.remove(key);
+                        keysValue.forEach((key, value) => {
+                              if (value > ind) {keysValue[key] = value - 1}
+                            });
                         index--;
                       });
                     },
@@ -437,11 +441,13 @@ class _CreateContentState extends State<CreateContent> {
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
                         setState(() {
-                          int id = random.nextInt(100000000);
                           widgetInfo.addAll({"FontWeight": fontWeight});
+                          Key chiavetta =
+                              Key(random.nextInt(100000000).toString());
                           container.add(
                             InkWell(
-                              onDoubleTap: selectedWidget(index),
+                              key: chiavetta,
+                              onDoubleTap: selectedWidget(widget.key),
                               child: Padding(
                                 padding: EdgeInsets.only(
                                   top: double.parse(widgetInfo["Top"]),
@@ -748,9 +754,13 @@ class _CreateContentState extends State<CreateContent> {
                             .pop('dialog');
                         setState(() {
                           widgetInfo.addAll({"FontWeight": fontWeight});
+                          Key chiavetta =
+                              Key(random.nextInt(100000000).toString());
+                          keysValue.addAll({chiavetta: index});
                           container.add(
                             GestureDetector(
-                              onTap: () => selectedWidget(index),
+                              key: chiavetta,
+                              onLongPress: () => selectedWidget(chiavetta),
                               child: Container(
                                 child: Padding(
                                   padding: EdgeInsets.only(
