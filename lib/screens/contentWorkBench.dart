@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:audioplayers/audio_cache.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:fdmCreator/screens/mainDrawer.dart';
 import 'package:fdmCreator/screens/utilizzo.dart';
@@ -39,6 +40,7 @@ class _CreateContentState extends State<CreateContent> {
     }
   }
 
+  AudioCache _audioController = AudioCache();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _textController = TextEditingController();
   final _leftController = TextEditingController();
@@ -62,7 +64,7 @@ class _CreateContentState extends State<CreateContent> {
   final Map images = {
     "Testo": "Fast_text.png",
     "Immagine": "image.png",
-    "Video": "video.png",
+    "Video": "ytVideos.jpeg",
     "Link": "linker.png",
     "Spaziatura": "spacer.png"
   };
@@ -130,6 +132,7 @@ class _CreateContentState extends State<CreateContent> {
                             });
                         index--;
                       });
+                      _audioController.play("assets/sounds/deleteEffect.mp4");
                     },
                     child: Text(
                       "ELIMINA",
@@ -188,6 +191,7 @@ class _CreateContentState extends State<CreateContent> {
                             });
                         index--;
                       });
+                      _audioController.play("assets/sounds/deleteEffect.mp4");
                     },
                     child: Text(
                       "ELIMINA",
@@ -508,6 +512,7 @@ class _CreateContentState extends State<CreateContent> {
                           _topController.clear();
                           _sizeController.clear();
                         });
+                        _audioController.play("assets/sounds/addedElement.mp4");
                       }
                     },
                   ),
@@ -839,6 +844,7 @@ class _CreateContentState extends State<CreateContent> {
                           _topController.clear();
                           _sizeController.clear();
                         });
+                        _audioController.play("assets/sounds/addedElement.mp4");
                       }
                     },
                   ),
