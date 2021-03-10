@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:fdmCreator/screens/mainDrawer.dart';
@@ -80,9 +81,11 @@ class _CreateContentState extends State<CreateContent> {
   String dropdownValue = 1.toString();
   var fontWeight = FontWeight.w300;
   int index = 0;
+  Map keys = {};
+  Random random = new Random();
 
-  selectedWidget(ind) {
-    print("-\nHey bRo\n-");
+  selectedWidget(inds) {
+    int ind = keys[inds];
     if (Platform.isIOS) {
       showCupertinoDialog(
         context: context,
@@ -434,6 +437,7 @@ class _CreateContentState extends State<CreateContent> {
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
                         setState(() {
+                          int id = random.nextInt(100000000);
                           widgetInfo.addAll({"FontWeight": fontWeight});
                           container.add(
                             InkWell(
@@ -735,7 +739,7 @@ class _CreateContentState extends State<CreateContent> {
                     child: Text(
                       "CONFERMA",
                       style: TextStyle(
-                        fontSize: 21,
+                        fontSize: 20,
                       ),
                     ),
                     onPressed: () {
@@ -802,7 +806,7 @@ class _CreateContentState extends State<CreateContent> {
                     child: Text(
                       "ANNULLA",
                       style: TextStyle(
-                        fontSize: 21,
+                        fontSize: 20,
                       ),
                     ),
                     onPressed: () {

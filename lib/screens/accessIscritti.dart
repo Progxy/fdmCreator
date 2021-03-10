@@ -275,7 +275,7 @@ class _AccessIscrittiState extends State<AccessIscritti> {
                   child: FittedBox(
                     fit: BoxFit.fitWidth,
                     child: Container(
-                      height: 50,
+                      height: 65,
                       child: Center(
                         child: Text(
                           "Accesso Amministratori",

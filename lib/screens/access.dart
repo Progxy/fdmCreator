@@ -279,7 +279,7 @@ class _AccessState extends State<Access> {
                           "Accesso Iscritti",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 30.0,
+                            fontSize: 28.0,
                             fontWeight: FontWeight.w700,
                           ),
                         ),

@@ -74,7 +74,6 @@ class _HomeState extends State<Home> {
       body: FutureBuilder(
           future: getAccount(),
           builder: (context, AsyncSnapshot<dynamic> snapshot) {
-            print(snapshot.data);
             return Center(
               child: Padding(
                 padding: const EdgeInsets.only(
