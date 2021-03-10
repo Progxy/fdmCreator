@@ -36,6 +36,7 @@ class _AccessIscrittiState extends State<AccessIscritti> {
     final FirebaseAuth _auth = FirebaseAuth.instanceFor(app: widget.app);
     final firebaseUser = FirebaseAuth.instanceFor(app: widget.app).currentUser;
     if (firebaseUser != null) {
+      AccountInfo().setUser(firebaseUser.uid, false);
       return Home();
     }
 
