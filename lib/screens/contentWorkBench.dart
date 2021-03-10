@@ -64,7 +64,7 @@ class _CreateContentState extends State<CreateContent> {
   final Map images = {
     "Testo": "Fast_text.png",
     "Immagine": "image.png",
-    "Video": "ytVideos.jpg",
+    "Video": "youtubeVideo.png",
     "Link": "linker.png",
     "Spaziatura": "spacer.png"
   };
@@ -1086,10 +1086,10 @@ class _CreateContentState extends State<CreateContent> {
               ),
               Positioned(
                 right: 0,
-                top: 0,
+                top: 15,
                 child: AnimatedContainer(
                   width: _width,
-                  height: MediaQuery.of(context).size.height - 100,
+                  height: MediaQuery.of(context).size.height - 115,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(15)),
