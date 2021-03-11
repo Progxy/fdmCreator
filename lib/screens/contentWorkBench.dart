@@ -7,7 +7,6 @@ import 'package:fdmCreator/screens/mainDrawer.dart';
 import 'package:fdmCreator/screens/utilizzo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'badConnection.dart';
 import 'feedback.dart';
@@ -88,20 +87,20 @@ class _CreateContentState extends State<CreateContent> {
   Random random = new Random();
   Map keysValue = {};
   String _image;
-  final picker = ImagePicker();
+  // final picker = ImagePicker();
 
-  Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+  // Future getImage() async {
+  //   final pickedFile = await picker.getImage(source: ImageSource.camera);
 
-    setState(() {
-      if (pickedFile != null) {
-        _image = pickedFile.path;
-        widgetInfo["ImagePath"] = _image;
-      } else {
-        widgetInfo["ImagePath"] = null;
-      }
-    });
-  }
+  //   setState(() {
+  //     if (pickedFile != null) {
+  //       _image = pickedFile.path;
+  //       widgetInfo["ImagePath"] = _image;
+  //     } else {
+  //       widgetInfo["ImagePath"] = null;
+  //     }
+  //   });
+  // }
 
   selectedWidget(key) {
     int ind = keysValue[key];
@@ -916,655 +915,656 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   addImage() {
-    if (Platform.isIOS) {
-      showCupertinoDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(
-            builder: (context, setState) {
-              widgetInfo.addAll({"ImageLink": ""});
-              widgetInfo.addAll({"ImagePath": ""});
-              return CupertinoAlertDialog(
-                title: Text(
-                  "Aggiungi Immagine",
-                  style: TextStyle(
-                    fontSize: 28,
-                  ),
-                ),
-                content: SingleChildScrollView(
-                  child: Form(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _linkController,
-                          maxLines: 20,
-                          decoration: const InputDecoration(
-                            hintText: "Inserire il link",
-                            hintStyle: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                            border: OutlineInputBorder(),
-                            labelText: "Link",
-                            labelStyle: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty && (_image == null)) {
-                              return "Dati Mancanti";
-                            } else if (value.isNotEmpty && (_image == null)) {
-                              widgetInfo["ImageLink"] = value;
-                            } else {
-                              widgetInfo["ImageLink"] = "";
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(
-                          height: 20,
-                          child: Text(
-                            "Oppure",
-                            style: TextStyle(
-                              fontSize: 25,
-                            ),
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: getImage,
-                          child: Container(
-                            height: 50,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 10.0),
-                              child: Text(
-                                "Scegli Foto",
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          controller: _topController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            hintText: "Inserire la spaziatura Superiore",
-                            hintStyle: TextStyle(
-                              fontSize: 21.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                            border: OutlineInputBorder(),
-                            labelText: "Spaziatura Superiore",
-                            labelStyle: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Dati Mancanti";
-                            }
-                            widgetInfo.addAll({"Top": value});
-                            return null;
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          controller: _bottomController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            hintText: "Inserire la spaziatura inferiore",
-                            hintStyle: TextStyle(
-                              fontSize: 21.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                            border: OutlineInputBorder(),
-                            labelText: "Spaziatura Inferiore",
-                            labelStyle: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Dati Mancanti";
-                            }
-                            widgetInfo.addAll({"Bottom": value});
-                            return null;
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          controller: _rightController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            hintText: "Inserire la spaziatura destra",
-                            hintStyle: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                            border: OutlineInputBorder(),
-                            labelText: "Spaziatura Destra",
-                            labelStyle: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Dati Mancanti";
-                            }
-                            widgetInfo.addAll({"Right": value});
-                            return null;
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          controller: _leftController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            hintText: "Inserire la spaziatura sinistra",
-                            hintStyle: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                            border: OutlineInputBorder(),
-                            labelText: "Spaziatura Sinistra",
-                            labelStyle: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Dati Mancanti";
-                            }
-                            widgetInfo.addAll({"Left": value});
-                            return null;
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                actions: [
-                  CupertinoDialogAction(
-                    child: Text(
-                      "CONFERMA",
-                      style: TextStyle(
-                        fontSize: 21,
-                      ),
-                    ),
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        setState(() {
-                          _audioController.play("sounds/addedElement.mp4");
-                          Key chiavetta =
-                              Key(random.nextInt(100000000).toString());
-                          keysValue.addAll({chiavetta: index});
-                          container.add(
-                            GestureDetector(
-                              key: chiavetta,
-                              onLongPress: () => selectedWidget(chiavetta),
-                              child: Container(
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                    top: double.parse(widgetInfo["Top"]),
-                                    bottom: double.parse(widgetInfo["Bottom"]),
-                                    left: double.parse(widgetInfo["Left"]),
-                                    right: double.parse(widgetInfo["Right"]),
-                                  ),
-                                  child: widgetInfo["ImagePath"] == null
-                                      ? Image.network(
-                                          widgetInfo["ImageLink"],
-                                          fit: BoxFit.fitWidth,
-                                          alignment: Alignment.topCenter,
-                                          errorBuilder: (BuildContext context,
-                                              Object exception,
-                                              StackTrace stackTrace) {
-                                            return Image.asset(
-                                              "assets/images/error_image.png",
-                                              fit: BoxFit.fitWidth,
-                                              alignment: Alignment.topCenter,
-                                            );
-                                          },
-                                        )
-                                      : Image.asset(
-                                          widgetInfo["ImagePath"],
-                                          fit: BoxFit.fitWidth,
-                                          alignment: Alignment.topCenter,
-                                        ),
-                                ),
-                              ),
-                            ),
-                          );
-                          articleContainer.add(
-                            Padding(
-                              padding: EdgeInsets.only(
-                                top: double.parse(widgetInfo["Top"]),
-                                bottom: double.parse(widgetInfo["Bottom"]),
-                                left: double.parse(widgetInfo["Left"]),
-                                right: double.parse(widgetInfo["Right"]),
-                              ),
-                              child: widgetInfo["ImagePath"] == null
-                                  ? Image.network(
-                                      widgetInfo["ImageLink"],
-                                      fit: BoxFit.fitWidth,
-                                      alignment: Alignment.topCenter,
-                                      errorBuilder: (BuildContext context,
-                                          Object exception,
-                                          StackTrace stackTrace) {
-                                        return Image.asset(
-                                          "assets/images/error_image.png",
-                                          fit: BoxFit.fitWidth,
-                                          alignment: Alignment.topCenter,
-                                        );
-                                      },
-                                    )
-                                  : Image.asset(
-                                      widgetInfo["ImagePath"],
-                                      fit: BoxFit.fitWidth,
-                                      alignment: Alignment.topCenter,
-                                    ),
-                            ),
-                          );
-                          widgetsInfos.add(widgetInfo);
-                          index++;
-                          widgetInfo.clear();
-                          dropdownValue = 1.toString();
-                          fontWeight = FontWeight.w300;
-                          _textController.clear();
-                          _leftController.clear();
-                          _rightController.clear();
-                          _bottomController.clear();
-                          _topController.clear();
-                          _sizeController.clear();
-                        });
-                        refreshWorkBench();
-                        setState(() {
-                          Navigator.of(context, rootNavigator: true)
-                              .pop('dialog');
-                        });
-                      }
-                    },
-                  ),
-                  CupertinoDialogAction(
-                    child: Text(
-                      "ANNULLA",
-                      style: TextStyle(
-                        fontSize: 21,
-                      ),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        widgetInfo.clear();
-                        _leftController.clear();
-                        _rightController.clear();
-                        _bottomController.clear();
-                        _topController.clear();
-                        _linkController.clear();
-                        _image = null;
-                      });
-                      refreshWorkBench();
-                      setState(() {
-                        Navigator.of(context, rootNavigator: true)
-                            .pop('dialog');
-                      });
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      );
-    } else {
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(
-            builder: (context, setState) {
-              widgetInfo.addAll({"ImageLink": ""});
-              widgetInfo.addAll({"ImagePath": ""});
-              return AlertDialog(
-                title: Text(
-                  "Aggiungi Immagine",
-                  style: TextStyle(
-                    fontSize: 28,
-                  ),
-                ),
-                content: SingleChildScrollView(
-                  child: Form(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _linkController,
-                          maxLines: 20,
-                          decoration: const InputDecoration(
-                            hintText: "Inserire il link",
-                            hintStyle: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                            border: OutlineInputBorder(),
-                            labelText: "Link",
-                            labelStyle: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty && (_image == null)) {
-                              return "Dati Mancanti";
-                            } else if (value.isNotEmpty && (_image == null)) {
-                              widgetInfo["ImageLink"] = value;
-                            } else {
-                              widgetInfo["ImageLink"] = "";
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(
-                          height: 20,
-                          child: Text(
-                            "Oppure",
-                            style: TextStyle(
-                              fontSize: 25,
-                            ),
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: getImage,
-                          child: Container(
-                            height: 50,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 10.0),
-                              child: Text(
-                                "Scegli Foto",
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          controller: _topController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            hintText: "Inserire la spaziatura Superiore",
-                            hintStyle: TextStyle(
-                              fontSize: 21.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                            border: OutlineInputBorder(),
-                            labelText: "Spaziatura Superiore",
-                            labelStyle: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Dati Mancanti";
-                            }
-                            widgetInfo.addAll({"Top": value});
-                            return null;
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          controller: _bottomController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            hintText: "Inserire la spaziatura inferiore",
-                            hintStyle: TextStyle(
-                              fontSize: 21.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                            border: OutlineInputBorder(),
-                            labelText: "Spaziatura Inferiore",
-                            labelStyle: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Dati Mancanti";
-                            }
-                            widgetInfo.addAll({"Bottom": value});
-                            return null;
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          controller: _rightController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            hintText: "Inserire la spaziatura destra",
-                            hintStyle: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                            border: OutlineInputBorder(),
-                            labelText: "Spaziatura Destra",
-                            labelStyle: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Dati Mancanti";
-                            }
-                            widgetInfo.addAll({"Right": value});
-                            return null;
-                          },
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          controller: _leftController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            hintText: "Inserire la spaziatura sinistra",
-                            hintStyle: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                            border: OutlineInputBorder(),
-                            labelText: "Spaziatura Sinistra",
-                            labelStyle: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Dati Mancanti";
-                            }
-                            widgetInfo.addAll({"Left": value});
-                            return null;
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    child: Text(
-                      "CONFERMA",
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                    ),
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        setState(() {
-                          _audioController.play("sounds/addedElement.mp4");
-                          Key chiavetta =
-                              Key(random.nextInt(100000000).toString());
-                          keysValue.addAll({chiavetta: index});
-                          container.add(
-                            GestureDetector(
-                              key: chiavetta,
-                              onLongPress: () => selectedWidget(chiavetta),
-                              child: Container(
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                    top: double.parse(widgetInfo["Top"]),
-                                    bottom: double.parse(widgetInfo["Bottom"]),
-                                    left: double.parse(widgetInfo["Left"]),
-                                    right: double.parse(widgetInfo["Right"]),
-                                  ),
-                                  child: widgetInfo["ImagePath"] == null
-                                      ? Image.network(
-                                          widgetInfo["ImageLink"],
-                                          fit: BoxFit.fitWidth,
-                                          alignment: Alignment.topCenter,
-                                          errorBuilder: (BuildContext context,
-                                              Object exception,
-                                              StackTrace stackTrace) {
-                                            return Image.asset(
-                                              "assets/images/error_image.png",
-                                              fit: BoxFit.fitWidth,
-                                              alignment: Alignment.topCenter,
-                                            );
-                                          },
-                                        )
-                                      : Image.asset(
-                                          widgetInfo["ImagePath"],
-                                          fit: BoxFit.fitWidth,
-                                          alignment: Alignment.topCenter,
-                                        ),
-                                ),
-                              ),
-                            ),
-                          );
-                          articleContainer.add(
-                            Padding(
-                              padding: EdgeInsets.only(
-                                top: double.parse(widgetInfo["Top"]),
-                                bottom: double.parse(widgetInfo["Bottom"]),
-                                left: double.parse(widgetInfo["Left"]),
-                                right: double.parse(widgetInfo["Right"]),
-                              ),
-                              child: widgetInfo["ImagePath"] == null
-                                  ? Image.network(
-                                      widgetInfo["ImageLink"],
-                                      fit: BoxFit.fitWidth,
-                                      alignment: Alignment.topCenter,
-                                      errorBuilder: (BuildContext context,
-                                          Object exception,
-                                          StackTrace stackTrace) {
-                                        return Image.asset(
-                                          "assets/images/error_image.png",
-                                          fit: BoxFit.fitWidth,
-                                          alignment: Alignment.topCenter,
-                                        );
-                                      },
-                                    )
-                                  : Image.asset(
-                                      widgetInfo["ImagePath"],
-                                      fit: BoxFit.fitWidth,
-                                      alignment: Alignment.topCenter,
-                                    ),
-                            ),
-                          );
-                          widgetsInfos.add(widgetInfo);
-                          index++;
-                          widgetInfo.clear();
-                          dropdownValue = 1.toString();
-                          fontWeight = FontWeight.w300;
-                          _textController.clear();
-                          _leftController.clear();
-                          _rightController.clear();
-                          _bottomController.clear();
-                          _topController.clear();
-                          _sizeController.clear();
-                        });
-                        refreshWorkBench();
-                        setState(() {
-                          Navigator.of(context, rootNavigator: true)
-                              .pop('dialog');
-                        });
-                      }
-                    },
-                  ),
-                  TextButton(
-                    child: Text(
-                      "ANNULLA",
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        widgetInfo.clear();
-                        _leftController.clear();
-                        _rightController.clear();
-                        _bottomController.clear();
-                        _topController.clear();
-                        _linkController.clear();
-                        _image = null;
-                      });
-                      refreshWorkBench();
-                      setState(() {
-                        Navigator.of(context, rootNavigator: true)
-                            .pop('dialog');
-                      });
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      );
-    }
+    print("I was the god pork there!");
+    // if (Platform.isIOS) {
+    //   showCupertinoDialog(
+    //     barrierDismissible: false,
+    //     context: context,
+    //     builder: (context) {
+    //       return StatefulBuilder(
+    //         builder: (context, setState) {
+    //           widgetInfo.addAll({"ImageLink": ""});
+    //           widgetInfo.addAll({"ImagePath": ""});
+    //           return CupertinoAlertDialog(
+    //             title: Text(
+    //               "Aggiungi Immagine",
+    //               style: TextStyle(
+    //                 fontSize: 28,
+    //               ),
+    //             ),
+    //             content: SingleChildScrollView(
+    //               child: Form(
+    //                 autovalidateMode: AutovalidateMode.onUserInteraction,
+    //                 key: _formKey,
+    //                 child: Column(
+    //                   children: [
+    //                     TextFormField(
+    //                       controller: _linkController,
+    //                       maxLines: 20,
+    //                       decoration: const InputDecoration(
+    //                         hintText: "Inserire il link",
+    //                         hintStyle: TextStyle(
+    //                           fontSize: 23.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                         border: OutlineInputBorder(),
+    //                         labelText: "Link",
+    //                         labelStyle: TextStyle(
+    //                           fontSize: 23.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                       ),
+    //                       validator: (value) {
+    //                         if (value.isEmpty && (_image == null)) {
+    //                           return "Dati Mancanti";
+    //                         } else if (value.isNotEmpty && (_image == null)) {
+    //                           widgetInfo["ImageLink"] = value;
+    //                         } else {
+    //                           widgetInfo["ImageLink"] = "";
+    //                         }
+    //                         return null;
+    //                       },
+    //                     ),
+    //                     SizedBox(
+    //                       height: 20,
+    //                       child: Text(
+    //                         "Oppure",
+    //                         style: TextStyle(
+    //                           fontSize: 25,
+    //                         ),
+    //                       ),
+    //                     ),
+    //                     ElevatedButton(
+    //                       onPressed: getImage,
+    //                       child: Container(
+    //                         height: 50,
+    //                         child: Padding(
+    //                           padding: const EdgeInsets.only(top: 10.0),
+    //                           child: Text(
+    //                             "Scegli Foto",
+    //                             style: TextStyle(fontSize: 20),
+    //                           ),
+    //                         ),
+    //                       ),
+    //                     ),
+    //                     SizedBox(
+    //                       height: 10,
+    //                     ),
+    //                     TextFormField(
+    //                       controller: _topController,
+    //                       keyboardType: TextInputType.number,
+    //                       decoration: const InputDecoration(
+    //                         hintText: "Inserire la spaziatura Superiore",
+    //                         hintStyle: TextStyle(
+    //                           fontSize: 21.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                         border: OutlineInputBorder(),
+    //                         labelText: "Spaziatura Superiore",
+    //                         labelStyle: TextStyle(
+    //                           fontSize: 20.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                       ),
+    //                       validator: (value) {
+    //                         if (value.isEmpty) {
+    //                           return "Dati Mancanti";
+    //                         }
+    //                         widgetInfo.addAll({"Top": value});
+    //                         return null;
+    //                       },
+    //                     ),
+    //                     SizedBox(
+    //                       height: 10,
+    //                     ),
+    //                     TextFormField(
+    //                       controller: _bottomController,
+    //                       keyboardType: TextInputType.number,
+    //                       decoration: const InputDecoration(
+    //                         hintText: "Inserire la spaziatura inferiore",
+    //                         hintStyle: TextStyle(
+    //                           fontSize: 21.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                         border: OutlineInputBorder(),
+    //                         labelText: "Spaziatura Inferiore",
+    //                         labelStyle: TextStyle(
+    //                           fontSize: 20.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                       ),
+    //                       validator: (value) {
+    //                         if (value.isEmpty) {
+    //                           return "Dati Mancanti";
+    //                         }
+    //                         widgetInfo.addAll({"Bottom": value});
+    //                         return null;
+    //                       },
+    //                     ),
+    //                     SizedBox(
+    //                       height: 10,
+    //                     ),
+    //                     TextFormField(
+    //                       controller: _rightController,
+    //                       keyboardType: TextInputType.number,
+    //                       decoration: const InputDecoration(
+    //                         hintText: "Inserire la spaziatura destra",
+    //                         hintStyle: TextStyle(
+    //                           fontSize: 23.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                         border: OutlineInputBorder(),
+    //                         labelText: "Spaziatura Destra",
+    //                         labelStyle: TextStyle(
+    //                           fontSize: 23.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                       ),
+    //                       validator: (value) {
+    //                         if (value.isEmpty) {
+    //                           return "Dati Mancanti";
+    //                         }
+    //                         widgetInfo.addAll({"Right": value});
+    //                         return null;
+    //                       },
+    //                     ),
+    //                     SizedBox(
+    //                       height: 10,
+    //                     ),
+    //                     TextFormField(
+    //                       controller: _leftController,
+    //                       keyboardType: TextInputType.number,
+    //                       decoration: const InputDecoration(
+    //                         hintText: "Inserire la spaziatura sinistra",
+    //                         hintStyle: TextStyle(
+    //                           fontSize: 23.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                         border: OutlineInputBorder(),
+    //                         labelText: "Spaziatura Sinistra",
+    //                         labelStyle: TextStyle(
+    //                           fontSize: 23.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                       ),
+    //                       validator: (value) {
+    //                         if (value.isEmpty) {
+    //                           return "Dati Mancanti";
+    //                         }
+    //                         widgetInfo.addAll({"Left": value});
+    //                         return null;
+    //                       },
+    //                     ),
+    //                   ],
+    //                 ),
+    //               ),
+    //             ),
+    //             actions: [
+    //               CupertinoDialogAction(
+    //                 child: Text(
+    //                   "CONFERMA",
+    //                   style: TextStyle(
+    //                     fontSize: 21,
+    //                   ),
+    //                 ),
+    //                 onPressed: () {
+    //                   if (_formKey.currentState.validate()) {
+    //                     setState(() {
+    //                       _audioController.play("sounds/addedElement.mp4");
+    //                       Key chiavetta =
+    //                           Key(random.nextInt(100000000).toString());
+    //                       keysValue.addAll({chiavetta: index});
+    //                       container.add(
+    //                         GestureDetector(
+    //                           key: chiavetta,
+    //                           onLongPress: () => selectedWidget(chiavetta),
+    //                           child: Container(
+    //                             child: Padding(
+    //                               padding: EdgeInsets.only(
+    //                                 top: double.parse(widgetInfo["Top"]),
+    //                                 bottom: double.parse(widgetInfo["Bottom"]),
+    //                                 left: double.parse(widgetInfo["Left"]),
+    //                                 right: double.parse(widgetInfo["Right"]),
+    //                               ),
+    //                               child: widgetInfo["ImagePath"] == null
+    //                                   ? Image.network(
+    //                                       widgetInfo["ImageLink"],
+    //                                       fit: BoxFit.fitWidth,
+    //                                       alignment: Alignment.topCenter,
+    //                                       errorBuilder: (BuildContext context,
+    //                                           Object exception,
+    //                                           StackTrace stackTrace) {
+    //                                         return Image.asset(
+    //                                           "assets/images/error_image.png",
+    //                                           fit: BoxFit.fitWidth,
+    //                                           alignment: Alignment.topCenter,
+    //                                         );
+    //                                       },
+    //                                     )
+    //                                   : Image.asset(
+    //                                       widgetInfo["ImagePath"],
+    //                                       fit: BoxFit.fitWidth,
+    //                                       alignment: Alignment.topCenter,
+    //                                     ),
+    //                             ),
+    //                           ),
+    //                         ),
+    //                       );
+    //                       articleContainer.add(
+    //                         Padding(
+    //                           padding: EdgeInsets.only(
+    //                             top: double.parse(widgetInfo["Top"]),
+    //                             bottom: double.parse(widgetInfo["Bottom"]),
+    //                             left: double.parse(widgetInfo["Left"]),
+    //                             right: double.parse(widgetInfo["Right"]),
+    //                           ),
+    //                           child: widgetInfo["ImagePath"] == null
+    //                               ? Image.network(
+    //                                   widgetInfo["ImageLink"],
+    //                                   fit: BoxFit.fitWidth,
+    //                                   alignment: Alignment.topCenter,
+    //                                   errorBuilder: (BuildContext context,
+    //                                       Object exception,
+    //                                       StackTrace stackTrace) {
+    //                                     return Image.asset(
+    //                                       "assets/images/error_image.png",
+    //                                       fit: BoxFit.fitWidth,
+    //                                       alignment: Alignment.topCenter,
+    //                                     );
+    //                                   },
+    //                                 )
+    //                               : Image.asset(
+    //                                   widgetInfo["ImagePath"],
+    //                                   fit: BoxFit.fitWidth,
+    //                                   alignment: Alignment.topCenter,
+    //                                 ),
+    //                         ),
+    //                       );
+    //                       widgetsInfos.add(widgetInfo);
+    //                       index++;
+    //                       widgetInfo.clear();
+    //                       dropdownValue = 1.toString();
+    //                       fontWeight = FontWeight.w300;
+    //                       _textController.clear();
+    //                       _leftController.clear();
+    //                       _rightController.clear();
+    //                       _bottomController.clear();
+    //                       _topController.clear();
+    //                       _sizeController.clear();
+    //                     });
+    //                     refreshWorkBench();
+    //                     setState(() {
+    //                       Navigator.of(context, rootNavigator: true)
+    //                           .pop('dialog');
+    //                     });
+    //                   }
+    //                 },
+    //               ),
+    //               CupertinoDialogAction(
+    //                 child: Text(
+    //                   "ANNULLA",
+    //                   style: TextStyle(
+    //                     fontSize: 21,
+    //                   ),
+    //                 ),
+    //                 onPressed: () {
+    //                   setState(() {
+    //                     widgetInfo.clear();
+    //                     _leftController.clear();
+    //                     _rightController.clear();
+    //                     _bottomController.clear();
+    //                     _topController.clear();
+    //                     _linkController.clear();
+    //                     _image = null;
+    //                   });
+    //                   refreshWorkBench();
+    //                   setState(() {
+    //                     Navigator.of(context, rootNavigator: true)
+    //                         .pop('dialog');
+    //                   });
+    //                 },
+    //               ),
+    //             ],
+    //           );
+    //         },
+    //       );
+    //     },
+    //   );
+    // } else {
+    //   showDialog(
+    //     barrierDismissible: false,
+    //     context: context,
+    //     builder: (context) {
+    //       return StatefulBuilder(
+    //         builder: (context, setState) {
+    //           widgetInfo.addAll({"ImageLink": ""});
+    //           widgetInfo.addAll({"ImagePath": ""});
+    //           return AlertDialog(
+    //             title: Text(
+    //               "Aggiungi Immagine",
+    //               style: TextStyle(
+    //                 fontSize: 28,
+    //               ),
+    //             ),
+    //             content: SingleChildScrollView(
+    //               child: Form(
+    //                 autovalidateMode: AutovalidateMode.onUserInteraction,
+    //                 key: _formKey,
+    //                 child: Column(
+    //                   children: [
+    //                     TextFormField(
+    //                       controller: _linkController,
+    //                       maxLines: 20,
+    //                       decoration: const InputDecoration(
+    //                         hintText: "Inserire il link",
+    //                         hintStyle: TextStyle(
+    //                           fontSize: 23.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                         border: OutlineInputBorder(),
+    //                         labelText: "Link",
+    //                         labelStyle: TextStyle(
+    //                           fontSize: 23.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                       ),
+    //                       validator: (value) {
+    //                         if (value.isEmpty && (_image == null)) {
+    //                           return "Dati Mancanti";
+    //                         } else if (value.isNotEmpty && (_image == null)) {
+    //                           widgetInfo["ImageLink"] = value;
+    //                         } else {
+    //                           widgetInfo["ImageLink"] = "";
+    //                         }
+    //                         return null;
+    //                       },
+    //                     ),
+    //                     SizedBox(
+    //                       height: 20,
+    //                       child: Text(
+    //                         "Oppure",
+    //                         style: TextStyle(
+    //                           fontSize: 25,
+    //                         ),
+    //                       ),
+    //                     ),
+    //                     ElevatedButton(
+    //                       onPressed: getImage,
+    //                       child: Container(
+    //                         height: 50,
+    //                         child: Padding(
+    //                           padding: const EdgeInsets.only(top: 10.0),
+    //                           child: Text(
+    //                             "Scegli Foto",
+    //                             style: TextStyle(fontSize: 20),
+    //                           ),
+    //                         ),
+    //                       ),
+    //                     ),
+    //                     SizedBox(
+    //                       height: 10,
+    //                     ),
+    //                     TextFormField(
+    //                       controller: _topController,
+    //                       keyboardType: TextInputType.number,
+    //                       decoration: const InputDecoration(
+    //                         hintText: "Inserire la spaziatura Superiore",
+    //                         hintStyle: TextStyle(
+    //                           fontSize: 21.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                         border: OutlineInputBorder(),
+    //                         labelText: "Spaziatura Superiore",
+    //                         labelStyle: TextStyle(
+    //                           fontSize: 20.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                       ),
+    //                       validator: (value) {
+    //                         if (value.isEmpty) {
+    //                           return "Dati Mancanti";
+    //                         }
+    //                         widgetInfo.addAll({"Top": value});
+    //                         return null;
+    //                       },
+    //                     ),
+    //                     SizedBox(
+    //                       height: 10,
+    //                     ),
+    //                     TextFormField(
+    //                       controller: _bottomController,
+    //                       keyboardType: TextInputType.number,
+    //                       decoration: const InputDecoration(
+    //                         hintText: "Inserire la spaziatura inferiore",
+    //                         hintStyle: TextStyle(
+    //                           fontSize: 21.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                         border: OutlineInputBorder(),
+    //                         labelText: "Spaziatura Inferiore",
+    //                         labelStyle: TextStyle(
+    //                           fontSize: 20.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                       ),
+    //                       validator: (value) {
+    //                         if (value.isEmpty) {
+    //                           return "Dati Mancanti";
+    //                         }
+    //                         widgetInfo.addAll({"Bottom": value});
+    //                         return null;
+    //                       },
+    //                     ),
+    //                     SizedBox(
+    //                       height: 10,
+    //                     ),
+    //                     TextFormField(
+    //                       controller: _rightController,
+    //                       keyboardType: TextInputType.number,
+    //                       decoration: const InputDecoration(
+    //                         hintText: "Inserire la spaziatura destra",
+    //                         hintStyle: TextStyle(
+    //                           fontSize: 23.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                         border: OutlineInputBorder(),
+    //                         labelText: "Spaziatura Destra",
+    //                         labelStyle: TextStyle(
+    //                           fontSize: 23.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                       ),
+    //                       validator: (value) {
+    //                         if (value.isEmpty) {
+    //                           return "Dati Mancanti";
+    //                         }
+    //                         widgetInfo.addAll({"Right": value});
+    //                         return null;
+    //                       },
+    //                     ),
+    //                     SizedBox(
+    //                       height: 10,
+    //                     ),
+    //                     TextFormField(
+    //                       controller: _leftController,
+    //                       keyboardType: TextInputType.number,
+    //                       decoration: const InputDecoration(
+    //                         hintText: "Inserire la spaziatura sinistra",
+    //                         hintStyle: TextStyle(
+    //                           fontSize: 23.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                         border: OutlineInputBorder(),
+    //                         labelText: "Spaziatura Sinistra",
+    //                         labelStyle: TextStyle(
+    //                           fontSize: 23.0,
+    //                           fontWeight: FontWeight.w600,
+    //                           color: Colors.black87,
+    //                         ),
+    //                       ),
+    //                       validator: (value) {
+    //                         if (value.isEmpty) {
+    //                           return "Dati Mancanti";
+    //                         }
+    //                         widgetInfo.addAll({"Left": value});
+    //                         return null;
+    //                       },
+    //                     ),
+    //                   ],
+    //                 ),
+    //               ),
+    //             ),
+    //             actions: [
+    //               TextButton(
+    //                 child: Text(
+    //                   "CONFERMA",
+    //                   style: TextStyle(
+    //                     fontSize: 20,
+    //                   ),
+    //                 ),
+    //                 onPressed: () {
+    //                   if (_formKey.currentState.validate()) {
+    //                     setState(() {
+    //                       _audioController.play("sounds/addedElement.mp4");
+    //                       Key chiavetta =
+    //                           Key(random.nextInt(100000000).toString());
+    //                       keysValue.addAll({chiavetta: index});
+    //                       container.add(
+    //                         GestureDetector(
+    //                           key: chiavetta,
+    //                           onLongPress: () => selectedWidget(chiavetta),
+    //                           child: Container(
+    //                             child: Padding(
+    //                               padding: EdgeInsets.only(
+    //                                 top: double.parse(widgetInfo["Top"]),
+    //                                 bottom: double.parse(widgetInfo["Bottom"]),
+    //                                 left: double.parse(widgetInfo["Left"]),
+    //                                 right: double.parse(widgetInfo["Right"]),
+    //                               ),
+    //                               child: widgetInfo["ImagePath"] == null
+    //                                   ? Image.network(
+    //                                       widgetInfo["ImageLink"],
+    //                                       fit: BoxFit.fitWidth,
+    //                                       alignment: Alignment.topCenter,
+    //                                       errorBuilder: (BuildContext context,
+    //                                           Object exception,
+    //                                           StackTrace stackTrace) {
+    //                                         return Image.asset(
+    //                                           "assets/images/error_image.png",
+    //                                           fit: BoxFit.fitWidth,
+    //                                           alignment: Alignment.topCenter,
+    //                                         );
+    //                                       },
+    //                                     )
+    //                                   : Image.asset(
+    //                                       widgetInfo["ImagePath"],
+    //                                       fit: BoxFit.fitWidth,
+    //                                       alignment: Alignment.topCenter,
+    //                                     ),
+    //                             ),
+    //                           ),
+    //                         ),
+    //                       );
+    //                       articleContainer.add(
+    //                         Padding(
+    //                           padding: EdgeInsets.only(
+    //                             top: double.parse(widgetInfo["Top"]),
+    //                             bottom: double.parse(widgetInfo["Bottom"]),
+    //                             left: double.parse(widgetInfo["Left"]),
+    //                             right: double.parse(widgetInfo["Right"]),
+    //                           ),
+    //                           child: widgetInfo["ImagePath"] == null
+    //                               ? Image.network(
+    //                                   widgetInfo["ImageLink"],
+    //                                   fit: BoxFit.fitWidth,
+    //                                   alignment: Alignment.topCenter,
+    //                                   errorBuilder: (BuildContext context,
+    //                                       Object exception,
+    //                                       StackTrace stackTrace) {
+    //                                     return Image.asset(
+    //                                       "assets/images/error_image.png",
+    //                                       fit: BoxFit.fitWidth,
+    //                                       alignment: Alignment.topCenter,
+    //                                     );
+    //                                   },
+    //                                 )
+    //                               : Image.asset(
+    //                                   widgetInfo["ImagePath"],
+    //                                   fit: BoxFit.fitWidth,
+    //                                   alignment: Alignment.topCenter,
+    //                                 ),
+    //                         ),
+    //                       );
+    //                       widgetsInfos.add(widgetInfo);
+    //                       index++;
+    //                       widgetInfo.clear();
+    //                       dropdownValue = 1.toString();
+    //                       fontWeight = FontWeight.w300;
+    //                       _textController.clear();
+    //                       _leftController.clear();
+    //                       _rightController.clear();
+    //                       _bottomController.clear();
+    //                       _topController.clear();
+    //                       _sizeController.clear();
+    //                     });
+    //                     refreshWorkBench();
+    //                     setState(() {
+    //                       Navigator.of(context, rootNavigator: true)
+    //                           .pop('dialog');
+    //                     });
+    //                   }
+    //                 },
+    //               ),
+    //               TextButton(
+    //                 child: Text(
+    //                   "ANNULLA",
+    //                   style: TextStyle(
+    //                     fontSize: 20,
+    //                   ),
+    //                 ),
+    //                 onPressed: () {
+    //                   setState(() {
+    //                     widgetInfo.clear();
+    //                     _leftController.clear();
+    //                     _rightController.clear();
+    //                     _bottomController.clear();
+    //                     _topController.clear();
+    //                     _linkController.clear();
+    //                     _image = null;
+    //                   });
+    //                   refreshWorkBench();
+    //                   setState(() {
+    //                     Navigator.of(context, rootNavigator: true)
+    //                         .pop('dialog');
+    //                   });
+    //                 },
+    //               ),
+    //             ],
+    //           );
+    //         },
+    //       );
+    //     },
+    //   );
+    // }
     refreshWorkBench();
     return;
   }
