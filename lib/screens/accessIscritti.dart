@@ -16,7 +16,7 @@ import 'errorpage.dart';
 
 class AccessIscritti extends StatefulWidget {
   static const String routeName = "/accessIscritti";
-  final FirebaseApp secondaryApp = FirebaseProjectsManager().getDefault();
+  final FirebaseApp secondaryApp = FirebaseProjectsManager().getSecondary();
 
   @override
   _AccessIscrittiState createState() => _AccessIscrittiState();
