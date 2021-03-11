@@ -7,7 +7,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import '../accountInfo.dart';
@@ -17,8 +16,8 @@ import 'errorpage.dart';
 
 class Access extends StatefulWidget {
   static const String routeName = "/access";
-  final FirebaseApp app = FirebaseProjectsManager().getDefault();
-
+  Access({this.defaultApp});
+  final FirebaseApp defaultApp;
   @override
   _AccessState createState() => _AccessState();
 }
@@ -33,9 +32,10 @@ class _AccessState extends State<Access> {
   @override
   Widget build(BuildContext context) {
     final bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
-    final FirebaseDatabase database = FirebaseDatabase(app: widget.app);
-    final FirebaseAuth _auth = FirebaseAuth.instanceFor(app: widget.app);
-    final firebaseUser = FirebaseAuth.instanceFor(app: widget.app).currentUser;
+    final FirebaseDatabase database = FirebaseDatabase(app: widget.defaultApp);
+    final FirebaseAuth _auth = FirebaseAuth.instanceFor(app: widget.defaultApp);
+    final firebaseUser =
+        FirebaseAuth.instanceFor(app: widget.defaultApp).currentUser;
     if (firebaseUser != null) {
       AccountInfo().setUser(firebaseUser.uid, false);
       return Home();
@@ -142,7 +142,8 @@ class _AccessState extends State<Access> {
                         password: _passwordController.text.trim(),
                       );
                       final firebaseAuthCheck =
-                          FirebaseAuth.instanceFor(app: widget.app).currentUser;
+                          FirebaseAuth.instanceFor(app: widget.defaultApp)
+                              .currentUser;
                       if (firebaseAuthCheck != null) {
                         await database
                             .reference()

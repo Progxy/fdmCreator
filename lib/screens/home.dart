@@ -11,8 +11,9 @@ import 'mainDrawer.dart';
 
 class Home extends StatefulWidget {
   static const String routeName = "/home";
+  Home({this.defaultApp});
   final FirebaseApp secondaryApp = FirebaseProjectsManager().getSecondary();
-  final FirebaseApp defaultApp = FirebaseProjectsManager().getDefault();
+  final FirebaseApp defaultApp;
 
   @override
   _HomeState createState() => _HomeState();

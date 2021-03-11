@@ -5,12 +5,7 @@ import 'firebaseProjectsManager.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await Firebase.initializeApp();
-  } catch (e) {
-    print("-\nError : $e\n-");
-    await FirebaseProjectsManager().connectFirebaseDefault();
-  }
+  await Firebase.initializeApp();
   await FirebaseProjectsManager().connectFirebaseSecondary();
   runApp(MyApp());
 }
