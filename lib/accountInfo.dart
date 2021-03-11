@@ -5,7 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 class AccountInfo {
   static String name = "Login";
   static String email = "me@example.com";
-  static bool isManager;
+  static bool isManager = false;
   static var userId;
 
   setter(String username, String mail, bool isAccountManager) {

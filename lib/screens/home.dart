@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../accountInfo.dart';
 import '../authentication_service.dart';
@@ -12,9 +11,8 @@ import 'mainDrawer.dart';
 
 class Home extends StatefulWidget {
   static const String routeName = "/home";
-  Home({this.app});
-  final FirebaseApp app;
   final FirebaseApp secondaryApp = FirebaseProjectsManager().getSecondary();
+  final FirebaseApp defaultApp = FirebaseProjectsManager().getDefault();
 
   @override
   _HomeState createState() => _HomeState();
@@ -27,10 +25,12 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final FirebaseDatabase database = isManager
-        ? FirebaseDatabase(app: widget.app)
+        ? FirebaseDatabase(app: widget.defaultApp)
         : FirebaseDatabase(app: widget.secondaryApp);
-    final FirebaseAuth _auth =
-        FirebaseAuth.instanceFor(app: widget.secondaryApp);
+    final FirebaseAuth _auth = isManager
+        ? FirebaseAuth.instanceFor(app: widget.secondaryApp)
+        : FirebaseAuth.instanceFor(app: widget.defaultApp);
+
     getAccount() async {
       if (name == "Login") {
         setState(() async {
@@ -56,7 +56,6 @@ class _HomeState extends State<Home> {
         actions: [
           IconButton(
             onPressed: () {
-              context.read<AuthenticationService>().signOut();
               AuthenticationService(_auth).signOut();
               Navigator.pushReplacementNamed(context, Access.routeName);
             },
