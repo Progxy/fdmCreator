@@ -16,8 +16,8 @@ class FirebaseProjectsManager {
         ),
       );
       return;
-    } catch (err) {
-      print("error : $err");
+    } catch (e) {
+      print("error : $e");
       secondaryApp = Firebase.app("fdmApp");
       return;
     }
@@ -38,9 +38,9 @@ class FirebaseProjectsManager {
           projectId: 'fdmcreator',
         ),
       );
-      print("defaultApp : $defaultApp");
       return;
     } catch (e) {
+      print("error : $e");
       defaultApp = Firebase.app("default");
       return;
     }
