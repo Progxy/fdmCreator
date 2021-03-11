@@ -87,20 +87,47 @@ class _CreateContentState extends State<CreateContent> {
   int index = 0;
   Random random = new Random();
   Map keysValue = {};
-  String _image;
+  File _image;
   final picker = ImagePicker();
+  String descriptionButtonCamera = "Scatta Foto";
+  String descriptionButtonGallery = "Scegli Foto Galleria";
 
-  Future getImage() async {
+  Future getImageFromCamera() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
-
+    bool isSelected = false;
+    refreshWorkBench();
     setState(() {
       if (pickedFile != null) {
-        _image = pickedFile.path;
+        _image = File(pickedFile.path);
         widgetInfo["ImagePath"] = _image;
+        isSelected = true;
       } else {
         widgetInfo["ImagePath"] = null;
+        isSelected = false;
       }
     });
+    return isSelected;
+  }
+
+  getImageFromGallery() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    bool isSelected = false;
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        widgetInfo["ImagePath"] = _image;
+        isSelected = true;
+      } else {
+        widgetInfo["ImagePath"] = null;
+        isSelected = false;
+      }
+    });
+    return isSelected;
+  }
+
+  linkGesture(String value) {
+    refreshWorkBench();
+    return value.isEmpty;
   }
 
   selectedWidget(key) {
@@ -916,6 +943,10 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   addImage() {
+    setState(() {
+      widgetInfo.addAll({"ImageLink": null});
+      widgetInfo.addAll({"ImagePath": null});
+    });
     if (Platform.isIOS) {
       showCupertinoDialog(
         barrierDismissible: false,
@@ -959,31 +990,60 @@ class _CreateContentState extends State<CreateContent> {
                           validator: (value) {
                             if (value.isEmpty && (_image == null)) {
                               return "Dati Mancanti";
-                            } else if (value.isNotEmpty && (_image == null)) {
+                            } else if (value.isNotEmpty) {
                               widgetInfo["ImageLink"] = value;
+                              widgetInfo["ImagePath"] = null;
                             } else {
-                              widgetInfo["ImageLink"] = "";
+                              widgetInfo["ImageLink"] = null;
                             }
                             return null;
                           },
                         ),
                         SizedBox(
-                          height: 20,
-                          child: Text(
-                            "Oppure",
-                            style: TextStyle(
-                              fontSize: 25,
-                            ),
+                          height: 15,
+                        ),
+                        Text(
+                          "Oppure",
+                          style: TextStyle(
+                            fontSize: 25,
                           ),
                         ),
+                        SizedBox(
+                          height: 15,
+                        ),
                         ElevatedButton(
-                          onPressed: getImage,
+                          onPressed: getImageFromCamera,
                           child: Container(
                             height: 50,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 10.0),
                               child: Text(
-                                "Scegli Foto",
+                                descriptionButtonCamera,
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Oppure",
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ElevatedButton(
+                          onPressed: getImageFromGallery,
+                          child: Container(
+                            height: 50,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: Text(
+                                descriptionButtonGallery,
                                 style: TextStyle(fontSize: 20),
                               ),
                             ),
@@ -1247,8 +1307,6 @@ class _CreateContentState extends State<CreateContent> {
         builder: (context) {
           return StatefulBuilder(
             builder: (context, setState) {
-              widgetInfo.addAll({"ImageLink": ""});
-              widgetInfo.addAll({"ImagePath": ""});
               return AlertDialog(
                 title: Text(
                   "Aggiungi Immagine",
@@ -1280,13 +1338,21 @@ class _CreateContentState extends State<CreateContent> {
                               color: Colors.black87,
                             ),
                           ),
+                          onChanged: (value) {
+                            final result = linkGesture(value);
+                            if (result) {
+                              descriptionButtonCamera = "Cattura Foto";
+                              descriptionButtonGallery = "Scegli Foto Galleria";
+                            }
+                          },
                           validator: (value) {
                             if (value.isEmpty && (_image == null)) {
                               return "Dati Mancanti";
-                            } else if (value.isNotEmpty && (_image == null)) {
+                            } else if (value.isNotEmpty) {
                               widgetInfo["ImageLink"] = value;
+                              widgetInfo["ImagePath"] = null;
                             } else {
-                              widgetInfo["ImageLink"] = "";
+                              widgetInfo["ImageLink"] = null;
                             }
                             return null;
                           },
@@ -1304,13 +1370,63 @@ class _CreateContentState extends State<CreateContent> {
                           height: 15,
                         ),
                         ElevatedButton(
-                          onPressed: getImage,
+                          onPressed: () async {
+                            final result = await getImageFromCamera();
+                            setState(() {
+                              if (result) {
+                                _linkController.clear();
+                                descriptionButtonCamera = "Foto Selezionata";
+                                descriptionButtonGallery =
+                                    "Scegli Foto Galleria";
+                              } else {
+                                descriptionButtonCamera = "Scatta Foto";
+                              }
+                            });
+                          },
                           child: Container(
                             height: 50,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 10.0),
                               child: Text(
-                                "Scegli Foto",
+                                descriptionButtonCamera,
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Oppure",
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            final result = await getImageFromGallery();
+                            refreshWorkBench();
+                            setState(() {
+                              if (result) {
+                                _linkController.clear();
+                                descriptionButtonGallery = "Foto Selezionata";
+                                descriptionButtonCamera = "Cattura Foto";
+                              } else {
+                                descriptionButtonGallery =
+                                    "Scegli Foto Galleria";
+                              }
+                            });
+                          },
+                          child: Container(
+                            height: 50,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: Text(
+                                descriptionButtonGallery,
                                 style: TextStyle(fontSize: 20),
                               ),
                             ),
@@ -1517,8 +1633,7 @@ class _CreateContentState extends State<CreateContent> {
                                       },
                                     )
                                   : Image.network(
-                                      widgetInfo[
-                                          "ImagePath"], //replace with imagePathLink
+                                      "https:\\stupidity.com", //replace with imagePathLink
                                       fit: BoxFit.fitWidth,
                                       alignment: Alignment.topCenter,
                                       errorBuilder: (BuildContext context,
@@ -1536,9 +1651,9 @@ class _CreateContentState extends State<CreateContent> {
                           widgetsInfos.add(widgetInfo);
                           index++;
                           widgetInfo.clear();
-                          dropdownValue = 1.toString();
-                          fontWeight = FontWeight.w300;
-                          _textController.clear();
+                          _linkController.clear();
+                          descriptionButtonGallery = "Scegli Foto Galleria";
+                          descriptionButtonCamera = "Scatta Foto";
                           _leftController.clear();
                           _rightController.clear();
                           _bottomController.clear();
@@ -1568,7 +1683,8 @@ class _CreateContentState extends State<CreateContent> {
                         _bottomController.clear();
                         _topController.clear();
                         _linkController.clear();
-                        _image = null;
+                        descriptionButtonGallery = "Scegli Foto Galleria";
+                        descriptionButtonCamera = "Scatta Foto";
                       });
                       refreshWorkBench();
                       setState(() {
