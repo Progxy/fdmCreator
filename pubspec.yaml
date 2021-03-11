@@ -39,7 +39,7 @@ dependencies:
   progress_dialog: ^1.2.4
   flutter_launcher_icons: ^0.8.1
   http: ^0.12.2
-  flutter_local_notifications: ^4.0.1+1
+  # flutter_local_notifications: ^4.0.1+1
   shared_preferences: ^0.5.12+4
   audioplayers: ^0.17.4
   # image_picker: ^0.6.7+22
