@@ -34,7 +34,6 @@ class _AccessState extends State<Access> {
   Widget build(BuildContext context) {
     final bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
     final FirebaseDatabase database = FirebaseDatabase(app: widget.app);
-    final FirebaseAuth _auth = FirebaseAuth.instance;
     final firebaseUser = context.watch<User>();
     if (firebaseUser != null) {
       AccountInfo().setUser(firebaseUser.uid, false);
