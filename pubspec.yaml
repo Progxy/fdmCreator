@@ -26,9 +26,7 @@ dependencies:
 
 
   cupertino_icons: ^1.0.0
-  # bordered_text: ^1.0.1
   url_launcher: ^5.7.10
-  # firebase_storage: ^7.0.0
   flutter_rating_bar: ^3.2.0+1
   mailer2: ^1.2.5
   datetime_picker_formfield: ^1.0.0
