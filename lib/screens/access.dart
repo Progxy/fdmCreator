@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:fdmCreator/firebaseProjectsManager.dart';
 import 'package:fdmCreator/screens/accessIscritti.dart';
 import 'package:fdmCreator/screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,7 +15,8 @@ import 'errorpage.dart';
 
 class Access extends StatefulWidget {
   static const String routeName = "/access";
-  final FirebaseApp defaultApp = FirebaseProjectsManager().getDefault();
+  Access({this.defaultApp});
+  final FirebaseApp defaultApp;
 
   @override
   _AccessState createState() => _AccessState();
@@ -31,7 +31,6 @@ class _AccessState extends State<Access> {
 
   @override
   Widget build(BuildContext context) {
-    print("defaultApp : ${widget.defaultApp}");
     final bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
     final FirebaseDatabase database = FirebaseDatabase(app: widget.defaultApp);
     final FirebaseAuth _auth = FirebaseAuth.instanceFor(app: widget.defaultApp);

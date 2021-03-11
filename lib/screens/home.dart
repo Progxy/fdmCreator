@@ -29,8 +29,8 @@ class _HomeState extends State<Home> {
         ? FirebaseDatabase(app: widget.defaultApp)
         : FirebaseDatabase(app: widget.secondaryApp);
     final FirebaseAuth _auth = isManager
-        ? FirebaseAuth.instanceFor(app: widget.secondaryApp)
-        : FirebaseAuth.instanceFor(app: widget.defaultApp);
+        ? FirebaseAuth.instanceFor(app: widget.defaultApp)
+        : FirebaseAuth.instanceFor(app: widget.secondaryApp);
 
     getAccount() async {
       if (name == "Login") {
