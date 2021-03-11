@@ -38,7 +38,8 @@ class FirebaseProjectsManager {
       );
       return;
     } catch (e) {
-      defaultApp = Firebase.app();
+      print("Errore : $e");
+      defaultApp = Firebase.app("default");
       return;
     }
   }
