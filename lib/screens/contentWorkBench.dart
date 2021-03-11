@@ -1264,7 +1264,7 @@ class _CreateContentState extends State<CreateContent> {
                       children: [
                         TextFormField(
                           controller: _linkController,
-                          maxLines: 20,
+                          maxLines: 4,
                           decoration: const InputDecoration(
                             hintText: "Inserire il link",
                             hintStyle: TextStyle(
@@ -1292,13 +1292,16 @@ class _CreateContentState extends State<CreateContent> {
                           },
                         ),
                         SizedBox(
-                          height: 20,
-                          child: Text(
-                            "Oppure",
-                            style: TextStyle(
-                              fontSize: 25,
-                            ),
+                          height: 15,
+                        ),
+                        Text(
+                          "Oppure",
+                          style: TextStyle(
+                            fontSize: 25,
                           ),
+                        ),
+                        SizedBox(
+                          height: 15,
                         ),
                         ElevatedButton(
                           onPressed: getImage,
@@ -1314,7 +1317,7 @@ class _CreateContentState extends State<CreateContent> {
                           ),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 20,
                         ),
                         TextFormField(
                           controller: _topController,
@@ -1465,6 +1468,8 @@ class _CreateContentState extends State<CreateContent> {
                                           widgetInfo["ImageLink"],
                                           fit: BoxFit.fitWidth,
                                           alignment: Alignment.topCenter,
+                                          height: 200,
+                                          width: 200,
                                           errorBuilder: (BuildContext context,
                                               Object exception,
                                               StackTrace stackTrace) {
@@ -1472,13 +1477,17 @@ class _CreateContentState extends State<CreateContent> {
                                               "assets/images/error_image.png",
                                               fit: BoxFit.fitWidth,
                                               alignment: Alignment.topCenter,
+                                              width: 200,
+                                              height: 200,
                                             );
                                           },
                                         )
-                                      : Image.asset(
+                                      : Image.file(
                                           widgetInfo["ImagePath"],
                                           fit: BoxFit.fitWidth,
                                           alignment: Alignment.topCenter,
+                                          width: 200,
+                                          height: 200,
                                         ),
                                 ),
                               ),
@@ -1507,10 +1516,20 @@ class _CreateContentState extends State<CreateContent> {
                                         );
                                       },
                                     )
-                                  : Image.asset(
-                                      widgetInfo["ImagePath"],
+                                  : Image.network(
+                                      widgetInfo[
+                                          "ImagePath"], //replace with imagePathLink
                                       fit: BoxFit.fitWidth,
                                       alignment: Alignment.topCenter,
+                                      errorBuilder: (BuildContext context,
+                                          Object exception,
+                                          StackTrace stackTrace) {
+                                        return Image.asset(
+                                          "assets/images/error_image.png",
+                                          fit: BoxFit.fitWidth,
+                                          alignment: Alignment.topCenter,
+                                        );
+                                      },
                                     ),
                             ),
                           );
