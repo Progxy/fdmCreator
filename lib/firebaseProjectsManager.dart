@@ -29,7 +29,6 @@ class FirebaseProjectsManager {
   connectFirebaseDefault() async {
     try {
       defaultApp = await Firebase.initializeApp(
-        name: 'default',
         options: const FirebaseOptions(
           apiKey: 'AIzaSyB9UyS_Sz1TtMNs8_qAsZnmi4WaSeR5GAQ',
           appId: '1:1096652698814:android:76ca6de6dbc5f891e0daef',
@@ -39,7 +38,7 @@ class FirebaseProjectsManager {
       );
       return;
     } catch (e) {
-      defaultApp = Firebase.app("default");
+      defaultApp = Firebase.app();
       return;
     }
   }
