@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:provider/provider.dart';
 
 import '../accountInfo.dart';
 import '../authentication_service.dart';
@@ -15,8 +16,8 @@ import 'errorpage.dart';
 
 class Access extends StatefulWidget {
   static const String routeName = "/access";
-  Access({this.defaultApp});
-  final FirebaseApp defaultApp;
+  Access({this.app});
+  final FirebaseApp app;
 
   @override
   _AccessState createState() => _AccessState();
@@ -32,10 +33,9 @@ class _AccessState extends State<Access> {
   @override
   Widget build(BuildContext context) {
     final bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
-    final FirebaseDatabase database = FirebaseDatabase(app: widget.defaultApp);
-    final FirebaseAuth _auth = FirebaseAuth.instanceFor(app: widget.defaultApp);
-    final firebaseUser =
-        FirebaseAuth.instanceFor(app: widget.defaultApp).currentUser;
+    final FirebaseDatabase database = FirebaseDatabase(app: widget.app);
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final firebaseUser = context.watch<User>();
     if (firebaseUser != null) {
       AccountInfo().setUser(firebaseUser.uid, false);
       return Home();
@@ -137,13 +137,12 @@ class _AccessState extends State<Access> {
                   child: ElevatedButton(
                     onPressed: () async {
                       if (_formKey.currentState.validate()) {
-                        await AuthenticationService(_auth).signIn(
-                          email: _emailController.text.trim(),
-                          password: _passwordController.text.trim(),
-                        );
+                        await context.read<AuthenticationService>().signIn(
+                              email: _emailController.text.trim(),
+                              password: _passwordController.text.trim(),
+                            );
                         final firebaseAuthCheck =
-                            FirebaseAuth.instanceFor(app: widget.defaultApp)
-                                .currentUser;
+                            FirebaseAuth.instance.currentUser;
                         if (firebaseAuthCheck != null) {
                           await database
                               .reference()

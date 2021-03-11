@@ -16,7 +16,6 @@ class FirebaseProjectsManager {
       );
       return;
     } catch (e) {
-      print("error : $e");
       secondaryApp = Firebase.app("fdmApp");
       return;
     }
