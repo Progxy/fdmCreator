@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 class FirebaseProjectsManager {
   static FirebaseApp secondaryApp;
+  static FirebaseApp defaultApp;
 
   connectFirebaseSecondary() async {
     try {
@@ -15,7 +16,8 @@ class FirebaseProjectsManager {
         ),
       );
       return;
-    } catch (e) {
+    } catch (err) {
+      print("error : $err");
       secondaryApp = Firebase.app("fdmApp");
       return;
     }
@@ -23,5 +25,28 @@ class FirebaseProjectsManager {
 
   getSecondary() {
     return secondaryApp;
+  }
+
+  connectFirebaseDefault() async {
+    try {
+      defaultApp = await Firebase.initializeApp(
+        name: 'default',
+        options: const FirebaseOptions(
+          apiKey: 'AIzaSyB9UyS_Sz1TtMNs8_qAsZnmi4WaSeR5GAQ',
+          appId: '1:1096652698814:android:76ca6de6dbc5f891e0daef',
+          messagingSenderId: '1096652698814',
+          projectId: 'fdmcreator',
+        ),
+      );
+      print("defaultApp : $defaultApp");
+      return;
+    } catch (e) {
+      defaultApp = Firebase.app("default");
+      return;
+    }
+  }
+
+  getDefault() {
+    return defaultApp;
   }
 }
