@@ -12,12 +12,12 @@ import 'package:firebase_database/firebase_database.dart';
 
 import '../accountInfo.dart';
 import '../authentication_service.dart';
+import '../firebaseProjectsManager.dart';
 import 'errorpage.dart';
 
 class Access extends StatefulWidget {
   static const String routeName = "/access";
-  Access({this.app});
-  final FirebaseApp app;
+  final FirebaseApp app = FirebaseProjectsManager().getDefault();
 
   @override
   _AccessState createState() => _AccessState();
@@ -34,8 +34,10 @@ class _AccessState extends State<Access> {
   Widget build(BuildContext context) {
     final bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
     final FirebaseDatabase database = FirebaseDatabase(app: widget.app);
-    final firebaseUser = context.watch<User>();
+    final FirebaseAuth _auth = FirebaseAuth.instanceFor(app: widget.app);
+    final firebaseUser = FirebaseAuth.instanceFor(app: widget.app).currentUser;
     if (firebaseUser != null) {
+      AccountInfo().setUser(firebaseUser.uid, false);
       return Home();
     }
 
@@ -135,12 +137,12 @@ class _AccessState extends State<Access> {
                 child: ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
-                      await context.read<AuthenticationService>().signIn(
-                            email: _emailController.text.trim(),
-                            password: _passwordController.text.trim(),
-                          );
+                      await AuthenticationService(_auth).signIn(
+                        email: _emailController.text.trim(),
+                        password: _passwordController.text.trim(),
+                      );
                       final firebaseAuthCheck =
-                          FirebaseAuth.instance.currentUser;
+                          FirebaseAuth.instanceFor(app: widget.app).currentUser;
                       if (firebaseAuthCheck != null) {
                         await database
                             .reference()
