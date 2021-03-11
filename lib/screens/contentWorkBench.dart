@@ -48,7 +48,7 @@ class _CreateContentState extends State<CreateContent> {
   final _bottomController = TextEditingController();
   final _topController = TextEditingController();
   final _sizeController = TextEditingController();
-  final _linkController = TextEditingController();
+  // final _linkController = TextEditingController();
   double _widthEvidence = 0;
   double _heightEvidence = 0;
   double _width = 0;
@@ -86,7 +86,7 @@ class _CreateContentState extends State<CreateContent> {
   int index = 0;
   Random random = new Random();
   Map keysValue = {};
-  String _image;
+  // String _image;
   // final picker = ImagePicker();
 
   // Future getImage() async {
