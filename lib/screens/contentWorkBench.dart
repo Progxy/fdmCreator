@@ -1340,10 +1340,13 @@ class _CreateContentState extends State<CreateContent> {
                           ),
                           onChanged: (value) {
                             final result = linkGesture(value);
-                            if (result) {
-                              descriptionButtonCamera = "Cattura Foto";
-                              descriptionButtonGallery = "Scegli Foto Galleria";
-                            }
+                            setState(() {
+                              if (result) {
+                                descriptionButtonCamera = "Cattura Foto";
+                                descriptionButtonGallery =
+                                    "Scegli Foto Galleria";
+                              }
+                            });
                           },
                           validator: (value) {
                             if (value.isEmpty && (_image == null)) {
@@ -1414,7 +1417,7 @@ class _CreateContentState extends State<CreateContent> {
                               if (result) {
                                 _linkController.clear();
                                 descriptionButtonGallery = "Foto Selezionata";
-                                descriptionButtonCamera = "Cattura Foto";
+                                descriptionButtonCamera = "Scatta Foto";
                               } else {
                                 descriptionButtonGallery =
                                     "Scegli Foto Galleria";
