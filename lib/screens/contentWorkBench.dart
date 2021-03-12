@@ -92,7 +92,14 @@ class _CreateContentState extends State<CreateContent> {
   String descriptionButtonCamera = "Scatta Foto";
   String descriptionButtonGallery = "Scegli Foto Galleria";
 
-  addMediaToStorage() async {}
+  getImageFromStorage(val) {
+    print("val");
+  }
+
+  addMediaToStorage(imagePath) {
+    final path = imagePath.toString().split("/").last.split("-").last;
+    print("-\n - Path : $path - \n-");
+  }
 
   getImageFromCamera() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
@@ -1612,6 +1619,9 @@ class _CreateContentState extends State<CreateContent> {
                               ),
                             ),
                           );
+                          if (widgetInfo["ImagePath"] != null) {
+                            addMediaToStorage(widgetInfo["ImagePath"]);
+                          }
                           articleContainer.add(
                             Padding(
                               padding: EdgeInsets.only(
@@ -1620,35 +1630,23 @@ class _CreateContentState extends State<CreateContent> {
                                 left: double.parse(widgetInfo["Left"]),
                                 right: double.parse(widgetInfo["Right"]),
                               ),
-                              child: widgetInfo["ImagePath"] == null
-                                  ? Image.network(
-                                      widgetInfo["ImageLink"],
-                                      fit: BoxFit.fitWidth,
-                                      alignment: Alignment.topCenter,
-                                      errorBuilder: (BuildContext context,
-                                          Object exception,
-                                          StackTrace stackTrace) {
-                                        return Image.asset(
-                                          "assets/images/error_image.png",
-                                          fit: BoxFit.fitWidth,
-                                          alignment: Alignment.topCenter,
-                                        );
-                                      },
-                                    )
-                                  : Image.network(
-                                      "https:\\stupidity.com", //replace with imagePathLink
-                                      fit: BoxFit.fitWidth,
-                                      alignment: Alignment.topCenter,
-                                      errorBuilder: (BuildContext context,
-                                          Object exception,
-                                          StackTrace stackTrace) {
-                                        return Image.asset(
-                                          "assets/images/error_image.png",
-                                          fit: BoxFit.fitWidth,
-                                          alignment: Alignment.topCenter,
-                                        );
-                                      },
-                                    ),
+                              child: Image.network(
+                                widgetInfo["ImagePath"] == null
+                                    ? widgetInfo["ImageLink"]
+                                    // : getImageFromStorage(
+                                    //     widgetInfo["ImagePathStorage"]),
+                                    : "stupidity.com",
+                                fit: BoxFit.fitWidth,
+                                alignment: Alignment.topCenter,
+                                errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace stackTrace) {
+                                  return Image.asset(
+                                    "assets/images/error_image.png",
+                                    fit: BoxFit.fitWidth,
+                                    alignment: Alignment.topCenter,
+                                  );
+                                },
+                              ),
                             ),
                           );
                           widgetsInfos.add(widgetInfo);
@@ -1729,10 +1727,12 @@ class _CreateContentState extends State<CreateContent> {
     setState(() {
       container.clear();
       articleContainer.clear();
+      widgetsInfos.clear();
+      widgetInfo.clear();
     });
   }
 
-  void saveWorkBench() {
+  saveWorkBench() {
     print("this function will also need title, date and type of article!");
   }
 
@@ -1878,7 +1878,7 @@ class _CreateContentState extends State<CreateContent> {
                 ),
               ),
               AnimatedPositioned(
-                top: (MediaQuery.of(context).size.height * 35) / 100,
+                top: (MediaQuery.of(context).size.height * 38) / 100,
                 left: _left,
                 duration: Duration(milliseconds: _duration),
                 child: FloatingActionButton(
@@ -2002,6 +2002,38 @@ class _CreateContentState extends State<CreateContent> {
                           .toList(),
                     ),
                   ),
+                ),
+              ),
+              AnimatedPositioned(
+                top: (MediaQuery.of(context).size.height * 2) / 100,
+                left: _left,
+                duration: Duration(milliseconds: _duration),
+                child: FloatingActionButton(
+                  onPressed: () {
+                    cleanWorkBench();
+                  },
+                  child: Icon(
+                    Icons.cleaning_services_outlined,
+                    size: 35,
+                    color: Colors.white,
+                  ),
+                  backgroundColor: Color.fromARGB(255, 24, 37, 102),
+                ),
+              ),
+              AnimatedPositioned(
+                top: (MediaQuery.of(context).size.height * 78) / 100,
+                left: _left,
+                duration: Duration(milliseconds: _duration),
+                child: FloatingActionButton(
+                  onPressed: () {
+                    saveWorkBench();
+                  },
+                  child: Icon(
+                    Icons.save,
+                    size: 35,
+                    color: Colors.white,
+                  ),
+                  backgroundColor: Color.fromARGB(255, 24, 37, 102),
                 ),
               ),
             ],
