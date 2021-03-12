@@ -50,6 +50,8 @@ class _CreateContentState extends State<CreateContent> {
   final _topController = TextEditingController();
   final _sizeController = TextEditingController();
   final _linkController = TextEditingController();
+  final _dateController = TextEditingController();
+  final _titleController = TextEditingController();
   double _widthEvidence = 0;
   double _heightEvidence = 0;
   double _width = 0;
@@ -92,6 +94,8 @@ class _CreateContentState extends State<CreateContent> {
   String descriptionButtonCamera = "Scatta Foto";
   String descriptionButtonGallery = "Scegli Foto Galleria";
   bool isCamera = false;
+  String title = "";
+  String date = "";
 
   getImageFromStorage(val) {
     print("val");
@@ -1742,6 +1746,225 @@ class _CreateContentState extends State<CreateContent> {
     });
   }
 
+  getInfoArticle() {
+    if (Platform.isIOS) {
+      showCupertinoDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return CupertinoAlertDialog(
+                title: Text(
+                  "Info Articolo",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: Form(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _titleController,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire il titolo",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Titolo Articolo",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            title = value;
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _dateController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la data dell'articolo",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Data Articolo",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            date = value;
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                actions: [
+                  CupertinoDialogAction(
+                    child: Text(
+                      "CONTINUA",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        setState(() {
+                          _titleController.clear();
+                          _dateController.clear();
+                        });
+                        refreshWorkBench();
+                        setState(() {
+                          Navigator.of(context, rootNavigator: true)
+                              .pop('dialog');
+                        });
+                      }
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    } else {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: Text(
+                  "Info Articolo",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: Form(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _titleController,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire il titolo",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Titolo Articolo",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            title = value;
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _dateController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la data dell'articolo",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Data Articolo",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            date = value;
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    child: Text(
+                      "CONTINUA",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        setState(() {
+                          _titleController.clear();
+                          _dateController.clear();
+                        });
+                        refreshWorkBench();
+                        setState(() {
+                          Navigator.of(context, rootNavigator: true)
+                              .pop('dialog');
+                        });
+                      }
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    }
+    refreshWorkBench();
+    print("title : $title; data : $date");
+    return;
+  }
+
   saveWorkBench() {
     print("this function will also need title, date and type of article!");
   }
@@ -1753,6 +1976,7 @@ class _CreateContentState extends State<CreateContent> {
       show = false;
       _left = MediaQuery.of(context).size.width - 65;
     });
+    getInfoArticle();
   }
 
   @override
@@ -1892,6 +2116,7 @@ class _CreateContentState extends State<CreateContent> {
                 left: _left,
                 duration: Duration(milliseconds: _duration),
                 child: FloatingActionButton(
+                  heroTag: null,
                   onPressed: () {
                     setState(() {
                       if (!show) {
@@ -2019,6 +2244,7 @@ class _CreateContentState extends State<CreateContent> {
                 left: _left,
                 duration: Duration(milliseconds: _duration),
                 child: FloatingActionButton(
+                  heroTag: null,
                   onPressed: () {
                     cleanWorkBench();
                   },
@@ -2035,6 +2261,7 @@ class _CreateContentState extends State<CreateContent> {
                 left: _left,
                 duration: Duration(milliseconds: _duration),
                 child: FloatingActionButton(
+                  heroTag: null,
                   onPressed: () {
                     saveWorkBench();
                   },
