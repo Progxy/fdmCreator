@@ -91,14 +91,19 @@ class _CreateContentState extends State<CreateContent> {
   final picker = ImagePicker();
   String descriptionButtonCamera = "Scatta Foto";
   String descriptionButtonGallery = "Scegli Foto Galleria";
+  bool isCamera = false;
 
   getImageFromStorage(val) {
     print("val");
   }
 
   addMediaToStorage(imagePath) {
-    final path = imagePath.toString().split("/").last.split("-").last;
+    final path = isCamera
+        ? imagePath.toString().split("/").last.split("-").last
+        : imagePath.toString().split("/").last;
     print("-\n - Path : $path - \n-");
+    // final StorageReference firebaseStorageRef = FirebaseStorage.instance.Ref().child(path);
+    // final StorageUploadTask task = firebaseStorageRef.putFile(imagePath);
   }
 
   getImageFromCamera() async {
@@ -110,9 +115,11 @@ class _CreateContentState extends State<CreateContent> {
         _image = File(pickedFile.path);
         widgetInfo["ImagePath"] = _image;
         isSelected = true;
+        isCamera = true;
       } else {
         widgetInfo["ImagePath"] = null;
         isSelected = false;
+        isCamera = false;
       }
     });
     return isSelected;
@@ -126,9 +133,11 @@ class _CreateContentState extends State<CreateContent> {
         _image = File(pickedFile.path);
         widgetInfo["ImagePath"] = _image;
         isSelected = true;
+        isCamera = false;
       } else {
         widgetInfo["ImagePath"] = null;
         isSelected = false;
+        isCamera = false;
       }
     });
     return isSelected;
