@@ -1851,6 +1851,8 @@ class _CreateContentState extends State<CreateContent> {
                         setState(() {
                           _titleController.clear();
                           _dateController.clear();
+                          title = t;
+                          date = d;
                         });
                         refreshWorkBench();
                         setState(() {
@@ -1958,6 +1960,8 @@ class _CreateContentState extends State<CreateContent> {
                         setState(() {
                           _titleController.clear();
                           _dateController.clear();
+                          title = t;
+                          date = d;
                         });
                         refreshWorkBench();
                         setState(() {
@@ -1974,12 +1978,7 @@ class _CreateContentState extends State<CreateContent> {
         },
       );
     }
-    setState(() {
-      print("t : $t; d : $d");
-      title = t;
-      date = d;
-      print("title : $title; data : $date");
-    });
+
     refreshWorkBench();
     return;
   }
