@@ -92,7 +92,9 @@ class _CreateContentState extends State<CreateContent> {
   String descriptionButtonCamera = "Scatta Foto";
   String descriptionButtonGallery = "Scegli Foto Galleria";
 
-  Future getImageFromCamera() async {
+  addMediaToStorage() async {}
+
+  getImageFromCamera() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
     bool isSelected = false;
     refreshWorkBench();
@@ -123,11 +125,6 @@ class _CreateContentState extends State<CreateContent> {
       }
     });
     return isSelected;
-  }
-
-  linkGesture(String value) {
-    refreshWorkBench();
-    return value.isEmpty;
   }
 
   selectedWidget(key) {
@@ -1339,17 +1336,20 @@ class _CreateContentState extends State<CreateContent> {
                             ),
                           ),
                           onChanged: (value) {
-                            final result = linkGesture(value);
+                            final result = value.isNotEmpty;
+                            refreshWorkBench();
                             setState(() {
                               if (result) {
-                                descriptionButtonCamera = "Cattura Foto";
+                                descriptionButtonCamera = "Scegli Foto";
                                 descriptionButtonGallery =
                                     "Scegli Foto Galleria";
                               }
                             });
+                            refreshWorkBench();
                           },
                           validator: (value) {
-                            if (value.isEmpty && (_image == null)) {
+                            final imagePath = widgetInfo["ImagePath"];
+                            if (value.isEmpty && (imagePath == null)) {
                               return "Dati Mancanti";
                             } else if (value.isNotEmpty) {
                               widgetInfo["ImageLink"] = value;

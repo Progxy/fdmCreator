@@ -34,12 +34,14 @@ dependencies:
   firebase_auth: "^0.20.0"
   provider: ^4.3.2+4
   firebase_database: ^6.0.0
+  firebase_storage: ^7.0.0
   dotted_line: ^2.0.2
   connectivity: ^2.0.2
   progress_dialog: ^1.2.4
   flutter_launcher_icons: ^0.8.1
   http: ^0.12.2
   # flutter_local_notifications: ^4.0.1+1
+  #^^^ Va prima riabilitato in AndroidManifest.xml ^^^
   shared_preferences: ^0.5.12+4
   audioplayers: ^0.17.4
   image_picker: ^0.6.7+22
