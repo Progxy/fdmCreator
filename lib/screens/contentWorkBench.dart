@@ -110,6 +110,16 @@ class _CreateContentState extends State<CreateContent> {
     // final StorageUploadTask task = firebaseStorageRef.putFile(imagePath);
   }
 
+  // _getImageLink(String image) async {
+  //   String link = "";
+  //   await FireStorageService.loadFromStorage(context, image)
+  //       .then((downloadUrl) {
+  //     link = downloadUrl.toString();
+  //   });
+
+  //   return link;
+  // }
+
   getImageFromCamera() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
     bool isSelected = false;
@@ -1747,6 +1757,8 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   getInfoArticle() {
+    var t = "";
+    var d = "";
     if (Platform.isIOS) {
       showCupertinoDialog(
         barrierDismissible: false,
@@ -1769,6 +1781,7 @@ class _CreateContentState extends State<CreateContent> {
                       children: [
                         TextFormField(
                           controller: _titleController,
+                          maxLines: 4,
                           decoration: const InputDecoration(
                             hintText: "Inserire il titolo",
                             hintStyle: TextStyle(
@@ -1788,7 +1801,7 @@ class _CreateContentState extends State<CreateContent> {
                             if (value.isEmpty) {
                               return "Dati Mancanti";
                             }
-                            title = value;
+                            t = value;
                             return null;
                           },
                         ),
@@ -1817,7 +1830,7 @@ class _CreateContentState extends State<CreateContent> {
                             if (value.isEmpty) {
                               return "Dati Mancanti";
                             }
-                            date = value;
+                            d = value;
                             return null;
                           },
                         ),
@@ -1875,6 +1888,7 @@ class _CreateContentState extends State<CreateContent> {
                       children: [
                         TextFormField(
                           controller: _titleController,
+                          maxLines: 4,
                           decoration: const InputDecoration(
                             hintText: "Inserire il titolo",
                             hintStyle: TextStyle(
@@ -1894,7 +1908,7 @@ class _CreateContentState extends State<CreateContent> {
                             if (value.isEmpty) {
                               return "Dati Mancanti";
                             }
-                            title = value;
+                            t = value;
                             return null;
                           },
                         ),
@@ -1923,7 +1937,7 @@ class _CreateContentState extends State<CreateContent> {
                             if (value.isEmpty) {
                               return "Dati Mancanti";
                             }
-                            date = value;
+                            d = value;
                             return null;
                           },
                         ),
@@ -1960,8 +1974,13 @@ class _CreateContentState extends State<CreateContent> {
         },
       );
     }
+    setState(() {
+      print("t : $t; d : $d");
+      title = t;
+      date = d;
+      print("title : $title; data : $date");
+    });
     refreshWorkBench();
-    print("title : $title; data : $date");
     return;
   }
 
