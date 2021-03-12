@@ -1725,6 +1725,7 @@ class _CreateContentState extends State<CreateContent> {
 
   cleanWorkBench() {
     setState(() {
+      _audioController.play("sounds/BroomEffect.mp3");
       container.clear();
       articleContainer.clear();
       widgetsInfos.clear();
