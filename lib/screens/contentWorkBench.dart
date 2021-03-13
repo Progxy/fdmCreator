@@ -102,10 +102,6 @@ class _CreateContentState extends State<CreateContent> {
   Map imagesStorage = {};
   Map linkStorage = {};
 
-  getImageFromStorage(val) {
-    print("val");
-  }
-
   addMediaToStorage(imagePath) async {
     final path = isCamera
         ? imagePath.toString().split("/").last.split("-").last
@@ -117,16 +113,21 @@ class _CreateContentState extends State<CreateContent> {
       final String resultLink = await getImageLink(path);
       return resultLink;
     } on FirebaseException catch (e) {
-      print("Error : $e");
+      print("Error while uploading image : $e");
       return "error.com";
     }
   }
 
   getImageLink(String image) async {
-    String link = await firebase_storage.FirebaseStorage.instance
-        .ref(image)
-        .getDownloadURL();
-    return link;
+    try {
+      String link = await firebase_storage.FirebaseStorage.instance
+          .ref(image)
+          .getDownloadURL();
+      return link;
+    } catch (e) {
+      print("Error while getting image's link : $e");
+      return "error.com";
+    }
   }
 
   getImageFromCamera() async {
@@ -1666,7 +1667,9 @@ class _CreateContentState extends State<CreateContent> {
                               child: Image.network(
                                 widgetInfo["ImagePath"] == null
                                     ? widgetInfo["ImageLink"]
-                                    : linkStorage[chiavetta],
+                                    : linkStorage[chiavetta] == null
+                                        ? "error.com"
+                                        : linkStorage[chiavetta],
                                 fit: BoxFit.fitWidth,
                                 alignment: Alignment.topCenter,
                                 errorBuilder: (BuildContext context,
@@ -1991,16 +1994,18 @@ class _CreateContentState extends State<CreateContent> {
     return;
   }
 
-  imageStorage(key, imagePath) {
-    final link = addMediaToStorage(imagePath);
+  imageStorage(key, imagePath) async {
+    final link = await addMediaToStorage(imagePath);
     linkStorage.addAll({key: link});
   }
 
-  saveWorkBench() {
+  saveWorkBench() async {
     print("title : $title, date : $date");
-    imagesStorage.forEach((k, val) => imageStorage(k, val));
+    imagesStorage.forEach((k, val) async => await imageStorage(k, val));
     print("Links : $linkStorage; articles : $articleContainer");
     //show result for admin or iscritti
+    linkStorage.clear();
+    cleanWorkBench();
   }
 
   setElements() {
