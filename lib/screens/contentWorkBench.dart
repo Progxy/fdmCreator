@@ -99,6 +99,8 @@ class _CreateContentState extends State<CreateContent> {
   String date = "";
   final firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
+  Map imagesStorage = {};
+  Map linkStorage = {};
 
   getImageFromStorage(val) {
     print("val");
@@ -1607,6 +1609,10 @@ class _CreateContentState extends State<CreateContent> {
                           Key chiavetta =
                               Key(random.nextInt(100000000).toString());
                           keysValue.addAll({chiavetta: index});
+                          if (widgetInfo["ImagePath"] != null) {
+                            imagesStorage
+                                .addAll({chiavetta: widgetInfo["ImagePath"]});
+                          }
                           container.add(
                             GestureDetector(
                               key: chiavetta,
@@ -1649,9 +1655,6 @@ class _CreateContentState extends State<CreateContent> {
                               ),
                             ),
                           );
-                          if (widgetInfo["ImagePath"] != null) {
-                            addMediaToStorage(widgetInfo["ImagePath"]);
-                          }
                           articleContainer.add(
                             Padding(
                               padding: EdgeInsets.only(
@@ -1663,9 +1666,7 @@ class _CreateContentState extends State<CreateContent> {
                               child: Image.network(
                                 widgetInfo["ImagePath"] == null
                                     ? widgetInfo["ImageLink"]
-                                    // : getImageFromStorage(
-                                    //     widgetInfo["ImagePathStorage"]),
-                                    : "stupidity.com",
+                                    : linkStorage[chiavetta],
                                 fit: BoxFit.fitWidth,
                                 alignment: Alignment.topCenter,
                                 errorBuilder: (BuildContext context,
@@ -1760,6 +1761,7 @@ class _CreateContentState extends State<CreateContent> {
       articleContainer.clear();
       widgetsInfos.clear();
       widgetInfo.clear();
+      imagesStorage.clear();
     });
   }
 
@@ -1985,13 +1987,20 @@ class _CreateContentState extends State<CreateContent> {
         },
       );
     }
-
     refreshWorkBench();
     return;
   }
 
+  imageStorage(key, imagePath) {
+    final link = addMediaToStorage(imagePath);
+    linkStorage.addAll({key: link});
+  }
+
   saveWorkBench() {
-    print("this function will also need title, date and type of article!");
+    print("title : $title, date : $date");
+    imagesStorage.forEach((k, val) => imageStorage(k, val));
+    print("Links : $linkStorage; articles : $articleContainer");
+    //show result for admin or iscritti
   }
 
   setElements() {
