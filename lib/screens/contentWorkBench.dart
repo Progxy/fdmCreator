@@ -5,10 +5,11 @@ import 'package:audioplayers/audio_cache.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:fdmCreator/screens/mainDrawer.dart';
 import 'package:fdmCreator/screens/utilizzo.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'badConnection.dart';
 import 'feedback.dart';
 
@@ -96,27 +97,35 @@ class _CreateContentState extends State<CreateContent> {
   bool isCamera = false;
   String title = "";
   String date = "";
+  final firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
 
   getImageFromStorage(val) {
     print("val");
   }
 
-  addMediaToStorage(imagePath) {
+  addMediaToStorage(imagePath) async {
     final path = isCamera
         ? imagePath.toString().split("/").last.split("-").last
         : imagePath.toString().split("/").last;
-    // final StorageReference firebaseStorageRef = FirebaseStorage.instance.Ref().child(path);
-    // final StorageUploadTask task = firebaseStorageRef.putFile(imagePath);
+    try {
+      await firebase_storage.FirebaseStorage.instance
+          .ref(path)
+          .putFile(imagePath);
+      final String resultLink = await getImageLink(path);
+      return resultLink;
+    } on FirebaseException catch (e) {
+      print("Error : $e");
+      return "error.com";
+    }
   }
 
-  // _getImageLink(String image) async {
-  //   String link = "";
-  //   await FireStorageService.loadFromStorage(context, image)
-  //       .then((downloadUrl) {
-  //     link = downloadUrl.toString();
-  //   });
-  //   return link;
-  // }
+  getImageLink(String image) async {
+    String link = await firebase_storage.FirebaseStorage.instance
+        .ref(image)
+        .getDownloadURL();
+    return link;
+  }
 
   getImageFromCamera() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
