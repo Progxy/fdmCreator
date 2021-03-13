@@ -105,7 +105,6 @@ class _CreateContentState extends State<CreateContent> {
     final path = isCamera
         ? imagePath.toString().split("/").last.split("-").last
         : imagePath.toString().split("/").last;
-    print("-\n - Path : $path - \n-");
     // final StorageReference firebaseStorageRef = FirebaseStorage.instance.Ref().child(path);
     // final StorageUploadTask task = firebaseStorageRef.putFile(imagePath);
   }
@@ -116,7 +115,6 @@ class _CreateContentState extends State<CreateContent> {
   //       .then((downloadUrl) {
   //     link = downloadUrl.toString();
   //   });
-
   //   return link;
   // }
 
