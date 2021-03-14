@@ -1766,8 +1766,112 @@ class _CreateContentState extends State<CreateContent> {
       widgetInfo.clear();
       imagesStorage.clear();
     });
+    if (Platform.isIOS) {
+      showCupertinoDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return CupertinoAlertDialog(
+                title: Text(
+                  "Modificare l'articolo ?",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+                content: Text(
+                  "Modificare anche il titolo, la data e la tipologia dell'articolo ?",
+                  style: TextStyle(
+                    fontSize: 21,
+                  ),
+                ),
+                actions: [
+                  CupertinoDialogAction(
+                    child: Text(
+                      "Sì",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop('dialog');
+                      getInfoArticle();
+                      refreshWorkBench();
+                    },
+                  ),
+                  CupertinoDialogAction(
+                    child: Text(
+                      "No",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop('dialog');
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    } else {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: Text(
+                  "Modificare l'articolo ?",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+                content: Text(
+                  "Modificare anche il titolo, la data e la tipologia dell'articolo ?",
+                  style: TextStyle(
+                    fontSize: 21,
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    child: Text(
+                      "Sì",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop('dialog');
+                      getInfoArticle();
+                      refreshWorkBench();
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                      "No",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop('dialog');
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    }
   }
 
+  //ottieni tipologia di articolo
   getInfoArticle() {
     var t = "";
     var d = "";
@@ -2003,7 +2107,7 @@ class _CreateContentState extends State<CreateContent> {
     print("title : $title, date : $date");
     imagesStorage.forEach((k, val) async => await imageStorage(k, val));
     print("Links : $linkStorage; articles : $articleContainer");
-    //show result for admin or iscritti
+    //show result for admin or subscribed
     linkStorage.clear();
     cleanWorkBench();
   }
