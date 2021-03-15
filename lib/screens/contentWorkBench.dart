@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:progress_dialog/progress_dialog.dart';
 import 'badConnection.dart';
 import 'feedback.dart';
 
@@ -76,7 +77,7 @@ class _CreateContentState extends State<CreateContent> {
     "Link": "linker.png",
     "Spaziatura": "spacer.png"
   };
-  List<Widget> articleContainer = [];
+  Map articleContainer = {};
   List<Widget> container = [];
   Map widgetInfo = {};
   List<Map> widgetsInfos = [];
@@ -101,7 +102,6 @@ class _CreateContentState extends State<CreateContent> {
   String title = "";
   String date = "";
   Map imagesStorage = {};
-  Map linkStorage = {};
   final firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
 
@@ -204,19 +204,25 @@ class _CreateContentState extends State<CreateContent> {
                   CupertinoDialogAction(
                     onPressed: () {
                       setState(() {
-                        Navigator.of(context, rootNavigator: true)
-                            .pop('dialog');
+                        _audioController.play("sounds/deleteEffect.mp4");
+                        final articleIndex =
+                            articleContainer.keys.toList()[ind];
                         widgetInfo.clear();
                         widgetsInfos.removeAt(ind);
                         container.removeAt(ind);
-                        articleContainer.removeAt(ind);
+                        articleContainer.remove(articleIndex);
                         keysValue.remove(key);
                         keysValue.forEach((key, value) => {
                               if (value > ind) {keysValue[key] = value - 1}
                             });
                         index--;
+                        print("articolo svuotato : $articleContainer");
                       });
-                      _audioController.play("assets/sounds/deleteEffect.mp4");
+                      refreshWorkBench();
+                      setState(() {
+                        Navigator.of(context, rootNavigator: true)
+                            .pop('dialog');
+                      });
                     },
                     child: Text(
                       "ELIMINA",
@@ -264,15 +270,18 @@ class _CreateContentState extends State<CreateContent> {
                     onPressed: () {
                       setState(() {
                         _audioController.play("sounds/deleteEffect.mp4");
+                        final articleIndex =
+                            articleContainer.keys.toList()[ind];
                         widgetInfo.clear();
                         widgetsInfos.removeAt(ind);
                         container.removeAt(ind);
-                        articleContainer.removeAt(ind);
+                        articleContainer.remove(articleIndex);
                         keysValue.remove(key);
                         keysValue.forEach((key, value) => {
                               if (value > ind) {keysValue[key] = value - 1}
                             });
                         index--;
+                        print("articolo svuotato : $articleContainer");
                       });
                       refreshWorkBench();
                       setState(() {
@@ -569,8 +578,8 @@ class _CreateContentState extends State<CreateContent> {
                               ),
                             ),
                           );
-                          articleContainer.add(
-                            Padding(
+                          articleContainer.addAll({
+                            chiavetta: Padding(
                               padding: EdgeInsets.only(
                                 top: double.parse(widgetInfo["Top"]),
                                 bottom: double.parse(widgetInfo["Bottom"]),
@@ -585,7 +594,7 @@ class _CreateContentState extends State<CreateContent> {
                                 ),
                               ),
                             ),
-                          );
+                          });
                           widgetsInfos.add(widgetInfo);
                           index++;
                           widgetInfo.clear();
@@ -908,8 +917,8 @@ class _CreateContentState extends State<CreateContent> {
                               ),
                             ),
                           );
-                          articleContainer.add(
-                            Padding(
+                          articleContainer.addAll({
+                            chiavetta: Padding(
                               padding: EdgeInsets.only(
                                 top: double.parse(widgetInfo["Top"]),
                                 bottom: double.parse(widgetInfo["Bottom"]),
@@ -924,7 +933,7 @@ class _CreateContentState extends State<CreateContent> {
                                 ),
                               ),
                             ),
-                          );
+                          });
                           widgetsInfos.add(widgetInfo);
                           index++;
                           widgetInfo.clear();
@@ -1224,6 +1233,16 @@ class _CreateContentState extends State<CreateContent> {
                           Key chiavetta =
                               Key(random.nextInt(100000000).toString());
                           keysValue.addAll({chiavetta: index});
+                          if (widgetInfo["ImagePath"] != null) {
+                            imagesStorage
+                                .addAll({chiavetta: widgetInfo["ImagePath"]});
+                          }
+                          final Map elem = {};
+                          elem.addAll({"Top": widgetInfo["Top"]});
+                          elem.addAll({"Bottom": widgetInfo["Bottom"]});
+                          elem.addAll({"Left": widgetInfo["Left"]});
+                          elem.addAll({"Right": widgetInfo["Right"]});
+                          articleContainer.addAll({chiavetta: elem});
                           container.add(
                             GestureDetector(
                               key: chiavetta,
@@ -1241,6 +1260,8 @@ class _CreateContentState extends State<CreateContent> {
                                           widgetInfo["ImageLink"],
                                           fit: BoxFit.fitWidth,
                                           alignment: Alignment.topCenter,
+                                          height: 200,
+                                          width: 200,
                                           errorBuilder: (BuildContext context,
                                               Object exception,
                                               StackTrace stackTrace) {
@@ -1248,54 +1269,28 @@ class _CreateContentState extends State<CreateContent> {
                                               "assets/images/error_image.png",
                                               fit: BoxFit.fitWidth,
                                               alignment: Alignment.topCenter,
+                                              width: 200,
+                                              height: 200,
                                             );
                                           },
                                         )
-                                      : Image.asset(
+                                      : Image.file(
                                           widgetInfo["ImagePath"],
                                           fit: BoxFit.fitWidth,
                                           alignment: Alignment.topCenter,
+                                          width: 200,
+                                          height: 200,
                                         ),
                                 ),
                               ),
                             ),
                           );
-                          articleContainer.add(
-                            Padding(
-                              padding: EdgeInsets.only(
-                                top: double.parse(widgetInfo["Top"]),
-                                bottom: double.parse(widgetInfo["Bottom"]),
-                                left: double.parse(widgetInfo["Left"]),
-                                right: double.parse(widgetInfo["Right"]),
-                              ),
-                              child: widgetInfo["ImagePath"] == null
-                                  ? Image.network(
-                                      widgetInfo["ImageLink"],
-                                      fit: BoxFit.fitWidth,
-                                      alignment: Alignment.topCenter,
-                                      errorBuilder: (BuildContext context,
-                                          Object exception,
-                                          StackTrace stackTrace) {
-                                        return Image.asset(
-                                          "assets/images/error_image.png",
-                                          fit: BoxFit.fitWidth,
-                                          alignment: Alignment.topCenter,
-                                        );
-                                      },
-                                    )
-                                  : Image.asset(
-                                      widgetInfo["ImagePath"],
-                                      fit: BoxFit.fitWidth,
-                                      alignment: Alignment.topCenter,
-                                    ),
-                            ),
-                          );
                           widgetsInfos.add(widgetInfo);
                           index++;
                           widgetInfo.clear();
-                          dropdownValue = 1.toString();
-                          fontWeight = FontWeight.w300;
-                          _textController.clear();
+                          _linkController.clear();
+                          descriptionButtonGallery = "Scegli Foto Galleria";
+                          descriptionButtonCamera = "Scatta Foto";
                           _leftController.clear();
                           _rightController.clear();
                           _bottomController.clear();
@@ -1617,6 +1612,12 @@ class _CreateContentState extends State<CreateContent> {
                             imagesStorage
                                 .addAll({chiavetta: widgetInfo["ImagePath"]});
                           }
+                          final Map elem = {};
+                          elem.addAll({"Top": widgetInfo["Top"]});
+                          elem.addAll({"Bottom": widgetInfo["Bottom"]});
+                          elem.addAll({"Left": widgetInfo["Left"]});
+                          elem.addAll({"Right": widgetInfo["Right"]});
+                          articleContainer.addAll({chiavetta: elem});
                           container.add(
                             GestureDetector(
                               key: chiavetta,
@@ -1656,33 +1657,6 @@ class _CreateContentState extends State<CreateContent> {
                                           height: 200,
                                         ),
                                 ),
-                              ),
-                            ),
-                          );
-                          articleContainer.add(
-                            Padding(
-                              padding: EdgeInsets.only(
-                                top: double.parse(widgetInfo["Top"]),
-                                bottom: double.parse(widgetInfo["Bottom"]),
-                                left: double.parse(widgetInfo["Left"]),
-                                right: double.parse(widgetInfo["Right"]),
-                              ),
-                              child: Image.network(
-                                widgetInfo["ImagePath"] == null
-                                    ? widgetInfo["ImageLink"]
-                                    : linkStorage[chiavetta] == null
-                                        ? "error.com"
-                                        : linkStorage[chiavetta],
-                                fit: BoxFit.fitWidth,
-                                alignment: Alignment.topCenter,
-                                errorBuilder: (BuildContext context,
-                                    Object exception, StackTrace stackTrace) {
-                                  return Image.asset(
-                                    "assets/images/error_image.png",
-                                    fit: BoxFit.fitWidth,
-                                    alignment: Alignment.topCenter,
-                                  );
-                                },
                               ),
                             ),
                           );
@@ -2102,24 +2076,64 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   imageStorage(key, imagePath) async {
-    final link = await addMediaToStorage(imagePath);
-    linkStorage.addAll({key: link});
+    try {
+      final keyInfo = articleContainer[key];
+      final link = await addMediaToStorage(imagePath);
+      final top = keyInfo["Top"];
+      final bottom = keyInfo["Bottom"];
+      final left = keyInfo["Left"];
+      final right = keyInfo["Right"];
+      articleContainer[key] = Padding(
+        padding: EdgeInsets.only(
+          top: double.parse(top),
+          bottom: double.parse(bottom),
+          left: double.parse(left),
+          right: double.parse(right),
+        ),
+        child: Image.network(
+          link,
+          fit: BoxFit.fitWidth,
+          alignment: Alignment.topCenter,
+          errorBuilder:
+              (BuildContext context, Object exception, StackTrace stackTrace) {
+            return Image.asset(
+              "assets/images/error_image.png",
+              fit: BoxFit.fitWidth,
+              alignment: Alignment.topCenter,
+            );
+          },
+        ),
+      );
+      return;
+    } catch (e) {
+      print("Errore mentre caricavo i dati sul Map : $e");
+      return;
+    }
   }
 
   saveWorkBench() async {
     print("title : $title, date : $date");
-    imagesStorage.forEach((k, val) async => await imageStorage(k, val));
-    print("Links : $linkStorage; articles : $articleContainer");
+    ProgressDialog dialog = new ProgressDialog(context);
+    dialog.style(message: 'Salvataggio articolo...');
+    await dialog.show();
+    final List values = imagesStorage.values.toList();
+    final List keys = imagesStorage.keys.toList();
+    int index = 0;
+    for (var k in keys) {
+      var val = values[index];
+      await imageStorage(k, val);
+    }
     //show result for admin or subscribed
     setState(() {
       _audioController.play("sounds/saveNotification.mp3");
-      linkStorage.clear();
       container.clear();
       articleContainer.clear();
       widgetsInfos.clear();
       widgetInfo.clear();
       imagesStorage.clear();
     });
+    await dialog.hide();
+    return;
   }
 
   setElements() {
@@ -2135,7 +2149,6 @@ class _CreateContentState extends State<CreateContent> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => setElements());
-
     super.initState();
   }
 
