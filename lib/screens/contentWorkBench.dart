@@ -15,8 +15,9 @@ import 'feedback.dart';
 
 class CreateContent extends StatefulWidget {
   static const String routeName = "/createContent";
-  CreateContent({this.app});
-  final FirebaseApp app;
+  // CreateContent({this.app});
+  // final FirebaseApp app;
+  // final FirebaseApp secondaryApp = FirebaseProjectManager().getSecondary();
 
   @override
   _CreateContentState createState() => _CreateContentState();
@@ -101,6 +102,8 @@ class _CreateContentState extends State<CreateContent> {
   String date = "";
   Map imagesStorage = {};
   Map linkStorage = {};
+  final firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
 
   addMediaToStorage(imagePath) async {
     final path = isCamera
@@ -2138,8 +2141,6 @@ class _CreateContentState extends State<CreateContent> {
 
   @override
   Widget build(BuildContext context) {
-    final firebase_storage.FirebaseStorage storage =
-        firebase_storage.FirebaseStorage.instanceFor(app: widget.app);
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
