@@ -15,6 +15,8 @@ import 'feedback.dart';
 
 class CreateContent extends StatefulWidget {
   static const String routeName = "/createContent";
+  CreateContent({this.app});
+  final FirebaseApp app;
 
   @override
   _CreateContentState createState() => _CreateContentState();
@@ -97,8 +99,6 @@ class _CreateContentState extends State<CreateContent> {
   bool isCamera = false;
   String title = "";
   String date = "";
-  final firebase_storage.FirebaseStorage storage =
-      firebase_storage.FirebaseStorage.instance;
   Map imagesStorage = {};
   Map linkStorage = {};
 
@@ -1871,7 +1871,7 @@ class _CreateContentState extends State<CreateContent> {
     }
   }
 
-  //ottieni tipologia di articolo
+  //aggiungi ottieni tipologia di articolo
   getInfoArticle() {
     var t = "";
     var d = "";
@@ -2108,8 +2108,15 @@ class _CreateContentState extends State<CreateContent> {
     imagesStorage.forEach((k, val) async => await imageStorage(k, val));
     print("Links : $linkStorage; articles : $articleContainer");
     //show result for admin or subscribed
-    linkStorage.clear();
-    cleanWorkBench();
+    setState(() {
+      _audioController.play("sounds/saveNotification.mp3");
+      linkStorage.clear();
+      container.clear();
+      articleContainer.clear();
+      widgetsInfos.clear();
+      widgetInfo.clear();
+      imagesStorage.clear();
+    });
   }
 
   setElements() {
@@ -2125,11 +2132,14 @@ class _CreateContentState extends State<CreateContent> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => setElements());
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final firebase_storage.FirebaseStorage storage =
+        firebase_storage.FirebaseStorage.instanceFor(app: widget.app);
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
