@@ -98,6 +98,8 @@ class _CreateContentState extends State<CreateContent> {
   final picker = ImagePicker();
   String descriptionButtonCamera = "Scatta Foto";
   String descriptionButtonGallery = "Scegli Foto Galleria";
+  String descriptionVideoCamera = "Registra Video";
+  String descriptionVideoGallery = "Scegli Video Galleria";
   bool isCamera = false;
   String title = "";
   String date = "";
@@ -131,6 +133,43 @@ class _CreateContentState extends State<CreateContent> {
       print("Error while getting image's link : $e");
       return "error.com";
     }
+  }
+
+  getVideoFromCamera() async {
+    final pickedFile = await picker.getVideo(source: ImageSource.camera);
+    bool isSelected = false;
+    refreshWorkBench();
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        widgetInfo["VideoPath"] = _image;
+        isSelected = true;
+        isCamera = true;
+      } else {
+        widgetInfo["VideoPath"] = null;
+        isSelected = false;
+        isCamera = false;
+      }
+    });
+    return isSelected;
+  }
+
+  getVideoFromGallery() async {
+    final pickedFile = await picker.getVideo(source: ImageSource.gallery);
+    bool isSelected = false;
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        widgetInfo["VideoPath"] = _image;
+        isSelected = true;
+        isCamera = false;
+      } else {
+        widgetInfo["VideoPath"] = null;
+        isSelected = false;
+        isCamera = false;
+      }
+    });
+    return isSelected;
   }
 
   getImageFromCamera() async {
@@ -1066,6 +1105,799 @@ class _CreateContentState extends State<CreateContent> {
                             height: 50,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 10.0),
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  descriptionButtonCamera,
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Oppure",
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ElevatedButton(
+                          onPressed: getImageFromGallery,
+                          child: Container(
+                            height: 50,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  descriptionButtonGallery,
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _topController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura Superiore",
+                            hintStyle: TextStyle(
+                              fontSize: 21.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Superiore",
+                            labelStyle: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Top": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _bottomController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura inferiore",
+                            hintStyle: TextStyle(
+                              fontSize: 21.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Inferiore",
+                            labelStyle: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Bottom": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _rightController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura destra",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Destra",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Right": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _leftController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura sinistra",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Sinistra",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Left": value});
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                actions: [
+                  CupertinoDialogAction(
+                    child: Text(
+                      "CONFERMA",
+                      style: TextStyle(
+                        fontSize: 21,
+                      ),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        setState(() {
+                          _audioController.play("sounds/addedElement.mp4");
+                          Key chiavetta =
+                              Key(random.nextInt(100000000).toString());
+                          keysValue.addAll({chiavetta: index});
+                          if (widgetInfo["ImagePath"] != null) {
+                            imagesStorage
+                                .addAll({chiavetta: widgetInfo["ImagePath"]});
+                            final Map elem = {};
+                            elem.addAll({"Top": widgetInfo["Top"]});
+                            elem.addAll({"Bottom": widgetInfo["Bottom"]});
+                            elem.addAll({"Left": widgetInfo["Left"]});
+                            elem.addAll({"Right": widgetInfo["Right"]});
+                            articleContainer.addAll({chiavetta: elem});
+                          } else {
+                            articleContainer.addAll({
+                              chiavetta: Padding(
+                                padding: EdgeInsets.only(
+                                  top: double.parse(widgetInfo["Top"]),
+                                  bottom: double.parse(widgetInfo["Bottom"]),
+                                  left: double.parse(widgetInfo["Left"]),
+                                  right: double.parse(widgetInfo["Right"]),
+                                ),
+                                child: Image.network(
+                                  widgetInfo["ImageLink"],
+                                  fit: BoxFit.fitWidth,
+                                  alignment: Alignment.topCenter,
+                                  height: 200,
+                                  width: 200,
+                                  errorBuilder: (BuildContext context,
+                                      Object exception, StackTrace stackTrace) {
+                                    return Image.asset(
+                                      "assets/images/error_image.png",
+                                      fit: BoxFit.fitWidth,
+                                      alignment: Alignment.topCenter,
+                                      width: 200,
+                                      height: 200,
+                                    );
+                                  },
+                                ),
+                              ),
+                            });
+                          }
+                          container.add(
+                            GestureDetector(
+                              key: chiavetta,
+                              onLongPress: () => selectedWidget(chiavetta),
+                              child: Container(
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    top: double.parse(widgetInfo["Top"]),
+                                    bottom: double.parse(widgetInfo["Bottom"]),
+                                    left: double.parse(widgetInfo["Left"]),
+                                    right: double.parse(widgetInfo["Right"]),
+                                  ),
+                                  child: widgetInfo["ImagePath"] == null
+                                      ? Image.network(
+                                          widgetInfo["ImageLink"],
+                                          fit: BoxFit.fitWidth,
+                                          alignment: Alignment.topCenter,
+                                          height: 200,
+                                          width: 200,
+                                          errorBuilder: (BuildContext context,
+                                              Object exception,
+                                              StackTrace stackTrace) {
+                                            return Image.asset(
+                                              "assets/images/error_image.png",
+                                              fit: BoxFit.fitWidth,
+                                              alignment: Alignment.topCenter,
+                                              width: 200,
+                                              height: 200,
+                                            );
+                                          },
+                                        )
+                                      : Image.file(
+                                          widgetInfo["ImagePath"],
+                                          fit: BoxFit.fitWidth,
+                                          alignment: Alignment.topCenter,
+                                          width: 200,
+                                          height: 200,
+                                        ),
+                                ),
+                              ),
+                            ),
+                          );
+                          widgetsInfos.add(widgetInfo);
+                          index++;
+                          widgetInfo.clear();
+                          _linkController.clear();
+                          descriptionButtonGallery = "Scegli Foto Galleria";
+                          descriptionButtonCamera = "Scatta Foto";
+                          _leftController.clear();
+                          _rightController.clear();
+                          _bottomController.clear();
+                          _topController.clear();
+                          _sizeController.clear();
+                        });
+                        refreshWorkBench();
+                        setState(() {
+                          Navigator.of(context, rootNavigator: true)
+                              .pop('dialog');
+                        });
+                      }
+                    },
+                  ),
+                  CupertinoDialogAction(
+                    child: Text(
+                      "ANNULLA",
+                      style: TextStyle(
+                        fontSize: 21,
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        widgetInfo.clear();
+                        _leftController.clear();
+                        _rightController.clear();
+                        _bottomController.clear();
+                        _topController.clear();
+                        _linkController.clear();
+                        _image = null;
+                      });
+                      refreshWorkBench();
+                      setState(() {
+                        Navigator.of(context, rootNavigator: true)
+                            .pop('dialog');
+                      });
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    } else {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: Text(
+                  "Aggiungi Immagine",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: Form(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _linkController,
+                          maxLines: 4,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire il link",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Link",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          onChanged: (value) {
+                            final result = value.isNotEmpty;
+                            refreshWorkBench();
+                            setState(() {
+                              if (result) {
+                                descriptionButtonCamera = "Scegli Foto";
+                                descriptionButtonGallery =
+                                    "Scegli Foto Galleria";
+                              }
+                            });
+                            refreshWorkBench();
+                          },
+                          validator: (value) {
+                            final imagePath = widgetInfo["ImagePath"];
+                            if (value.isEmpty && (imagePath == null)) {
+                              return "Dati Mancanti";
+                            } else if (value.isNotEmpty) {
+                              widgetInfo["ImageLink"] = value;
+                              widgetInfo["ImagePath"] = null;
+                            } else {
+                              widgetInfo["ImageLink"] = null;
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Oppure",
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            final result = await getImageFromCamera();
+                            setState(() {
+                              if (result) {
+                                _linkController.clear();
+                                descriptionButtonCamera = "Foto Selezionata";
+                                descriptionButtonGallery =
+                                    "Scegli Foto Galleria";
+                              } else {
+                                descriptionButtonCamera = "Scatta Foto";
+                              }
+                            });
+                          },
+                          child: Container(
+                            height: 50,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  descriptionButtonCamera,
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Oppure",
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            final result = await getImageFromGallery();
+                            refreshWorkBench();
+                            setState(() {
+                              if (result) {
+                                _linkController.clear();
+                                descriptionButtonGallery = "Foto Selezionata";
+                                descriptionButtonCamera = "Scatta Foto";
+                              } else {
+                                descriptionButtonGallery =
+                                    "Scegli Foto Galleria";
+                              }
+                            });
+                          },
+                          child: Container(
+                            height: 50,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  descriptionButtonGallery,
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        TextFormField(
+                          controller: _topController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura Superiore",
+                            hintStyle: TextStyle(
+                              fontSize: 21.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Superiore",
+                            labelStyle: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Top": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _bottomController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura inferiore",
+                            hintStyle: TextStyle(
+                              fontSize: 21.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Inferiore",
+                            labelStyle: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Bottom": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _rightController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura destra",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Destra",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Right": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _leftController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura sinistra",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Sinistra",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Left": value});
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    child: Text(
+                      "CONFERMA",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        setState(() {
+                          _audioController.play("sounds/addedElement.mp4");
+                          Key chiavetta =
+                              Key(random.nextInt(100000000).toString());
+                          keysValue.addAll({chiavetta: index});
+                          if (widgetInfo["ImagePath"] != null) {
+                            imagesStorage
+                                .addAll({chiavetta: widgetInfo["ImagePath"]});
+                            final Map elem = {};
+                            elem.addAll({"Top": widgetInfo["Top"]});
+                            elem.addAll({"Bottom": widgetInfo["Bottom"]});
+                            elem.addAll({"Left": widgetInfo["Left"]});
+                            elem.addAll({"Right": widgetInfo["Right"]});
+                            articleContainer.addAll({chiavetta: elem});
+                          } else {
+                            articleContainer.addAll({
+                              chiavetta: Padding(
+                                padding: EdgeInsets.only(
+                                  top: double.parse(widgetInfo["Top"]),
+                                  bottom: double.parse(widgetInfo["Bottom"]),
+                                  left: double.parse(widgetInfo["Left"]),
+                                  right: double.parse(widgetInfo["Right"]),
+                                ),
+                                child: Image.network(
+                                  widgetInfo["ImageLink"],
+                                  fit: BoxFit.fitWidth,
+                                  alignment: Alignment.topCenter,
+                                  height: 200,
+                                  width: 200,
+                                  errorBuilder: (BuildContext context,
+                                      Object exception, StackTrace stackTrace) {
+                                    return Image.asset(
+                                      "assets/images/error_image.png",
+                                      fit: BoxFit.fitWidth,
+                                      alignment: Alignment.topCenter,
+                                      width: 200,
+                                      height: 200,
+                                    );
+                                  },
+                                ),
+                              ),
+                            });
+                          }
+                          container.add(
+                            GestureDetector(
+                              key: chiavetta,
+                              onLongPress: () => selectedWidget(chiavetta),
+                              child: Container(
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    top: double.parse(widgetInfo["Top"]),
+                                    bottom: double.parse(widgetInfo["Bottom"]),
+                                    left: double.parse(widgetInfo["Left"]),
+                                    right: double.parse(widgetInfo["Right"]),
+                                  ),
+                                  child: widgetInfo["ImagePath"] == null
+                                      ? Image.network(
+                                          widgetInfo["ImageLink"],
+                                          fit: BoxFit.fitWidth,
+                                          alignment: Alignment.topCenter,
+                                          height: 200,
+                                          width: 200,
+                                          errorBuilder: (BuildContext context,
+                                              Object exception,
+                                              StackTrace stackTrace) {
+                                            return Image.asset(
+                                              "assets/images/error_image.png",
+                                              fit: BoxFit.fitWidth,
+                                              alignment: Alignment.topCenter,
+                                              width: 200,
+                                              height: 200,
+                                            );
+                                          },
+                                        )
+                                      : Image.file(
+                                          widgetInfo["ImagePath"],
+                                          fit: BoxFit.fitWidth,
+                                          alignment: Alignment.topCenter,
+                                          width: 200,
+                                          height: 200,
+                                        ),
+                                ),
+                              ),
+                            ),
+                          );
+                          widgetsInfos.add(widgetInfo);
+                          index++;
+                          widgetInfo.clear();
+                          _linkController.clear();
+                          descriptionButtonGallery = "Scegli Foto Galleria";
+                          descriptionButtonCamera = "Scatta Foto";
+                          _leftController.clear();
+                          _rightController.clear();
+                          _bottomController.clear();
+                          _topController.clear();
+                          _sizeController.clear();
+                        });
+                        refreshWorkBench();
+                        setState(() {
+                          Navigator.of(context, rootNavigator: true)
+                              .pop('dialog');
+                        });
+                      }
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                      "ANNULLA",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        widgetInfo.clear();
+                        _leftController.clear();
+                        _rightController.clear();
+                        _bottomController.clear();
+                        _topController.clear();
+                        _linkController.clear();
+                        descriptionButtonGallery = "Scegli Foto Galleria";
+                        descriptionButtonCamera = "Scatta Foto";
+                      });
+                      refreshWorkBench();
+                      setState(() {
+                        Navigator.of(context, rootNavigator: true)
+                            .pop('dialog');
+                      });
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    }
+    refreshWorkBench();
+    return;
+  }
+
+  addVideo() {
+    setState(() {
+      widgetInfo.addAll({"VideoLink": null});
+      widgetInfo.addAll({"VideoPath": null});
+    });
+    if (Platform.isIOS) {
+      showCupertinoDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              widgetInfo.addAll({"ImageLink": ""});
+              widgetInfo.addAll({"ImagePath": ""});
+              return CupertinoAlertDialog(
+                title: Text(
+                  "Aggiungi Immagine",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: Form(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _linkController,
+                          maxLines: 20,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire il link",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Link",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty && (_image == null)) {
+                              return "Dati Mancanti";
+                            } else if (value.isNotEmpty) {
+                              widgetInfo["ImageLink"] = value;
+                              widgetInfo["ImagePath"] = null;
+                            } else {
+                              widgetInfo["ImageLink"] = null;
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Oppure",
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ElevatedButton(
+                          onPressed: getImageFromCamera,
+                          child: Container(
+                            height: 50,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
                               child: Text(
                                 descriptionButtonCamera,
                                 style: TextStyle(fontSize: 20),
@@ -1344,7 +2176,7 @@ class _CreateContentState extends State<CreateContent> {
             builder: (context, setState) {
               return AlertDialog(
                 title: Text(
-                  "Aggiungi Immagine",
+                  "Aggiungi Video",
                   style: TextStyle(
                     fontSize: 28,
                   ),
@@ -1378,22 +2210,22 @@ class _CreateContentState extends State<CreateContent> {
                             refreshWorkBench();
                             setState(() {
                               if (result) {
-                                descriptionButtonCamera = "Scegli Foto";
-                                descriptionButtonGallery =
-                                    "Scegli Foto Galleria";
+                                descriptionVideoCamera = "Registra Video";
+                                descriptionVideoGallery =
+                                    "Scegli Video Galleria";
                               }
                             });
                             refreshWorkBench();
                           },
                           validator: (value) {
-                            final imagePath = widgetInfo["ImagePath"];
+                            final imagePath = widgetInfo["VideoPath"];
                             if (value.isEmpty && (imagePath == null)) {
                               return "Dati Mancanti";
                             } else if (value.isNotEmpty) {
-                              widgetInfo["ImageLink"] = value;
-                              widgetInfo["ImagePath"] = null;
+                              widgetInfo["VideoLink"] = value;
+                              widgetInfo["VideoPath"] = null;
                             } else {
-                              widgetInfo["ImageLink"] = null;
+                              widgetInfo["VideoLink"] = null;
                             }
                             return null;
                           },
@@ -1412,15 +2244,15 @@ class _CreateContentState extends State<CreateContent> {
                         ),
                         ElevatedButton(
                           onPressed: () async {
-                            final result = await getImageFromCamera();
+                            final result = await getVideoFromCamera();
                             setState(() {
                               if (result) {
                                 _linkController.clear();
-                                descriptionButtonCamera = "Foto Selezionata";
-                                descriptionButtonGallery =
-                                    "Scegli Foto Galleria";
+                                descriptionVideoCamera = "Video Selezionato";
+                                descriptionVideoGallery =
+                                    "Scegli Video Galleria";
                               } else {
-                                descriptionButtonCamera = "Scatta Foto";
+                                descriptionVideoCamera = "Registra Video";
                               }
                             });
                           },
@@ -1428,9 +2260,12 @@ class _CreateContentState extends State<CreateContent> {
                             height: 50,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 10.0),
-                              child: Text(
-                                descriptionButtonCamera,
-                                style: TextStyle(fontSize: 20),
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  descriptionVideoCamera,
+                                  style: TextStyle(fontSize: 20),
+                                ),
                               ),
                             ),
                           ),
@@ -1449,16 +2284,16 @@ class _CreateContentState extends State<CreateContent> {
                         ),
                         ElevatedButton(
                           onPressed: () async {
-                            final result = await getImageFromGallery();
+                            final result = await getVideoFromGallery();
                             refreshWorkBench();
                             setState(() {
                               if (result) {
                                 _linkController.clear();
-                                descriptionButtonGallery = "Foto Selezionata";
-                                descriptionButtonCamera = "Scatta Foto";
+                                descriptionVideoCamera = "Registra Video";
+                                descriptionVideoGallery = "Video Selezionato";
                               } else {
-                                descriptionButtonGallery =
-                                    "Scegli Foto Galleria";
+                                descriptionVideoGallery =
+                                    "Scegli Video Galleria";
                               }
                             });
                           },
@@ -1466,9 +2301,12 @@ class _CreateContentState extends State<CreateContent> {
                             height: 50,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 10.0),
-                              child: Text(
-                                descriptionButtonGallery,
-                                style: TextStyle(fontSize: 20),
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  descriptionVideoGallery,
+                                  style: TextStyle(fontSize: 20),
+                                ),
                               ),
                             ),
                           ),
@@ -1608,16 +2446,44 @@ class _CreateContentState extends State<CreateContent> {
                           Key chiavetta =
                               Key(random.nextInt(100000000).toString());
                           keysValue.addAll({chiavetta: index});
-                          if (widgetInfo["ImagePath"] != null) {
+                          if (widgetInfo["VideoPath"] != null) {
                             imagesStorage
-                                .addAll({chiavetta: widgetInfo["ImagePath"]});
+                                .addAll({chiavetta: widgetInfo["VideoPath"]});
+                            final Map elem = {};
+                            elem.addAll({"Top": widgetInfo["Top"]});
+                            elem.addAll({"Bottom": widgetInfo["Bottom"]});
+                            elem.addAll({"Left": widgetInfo["Left"]});
+                            elem.addAll({"Right": widgetInfo["Right"]});
+                            articleContainer.addAll({chiavetta: elem});
+                          } else {
+                            articleContainer.addAll({
+                              chiavetta: Padding(
+                                padding: EdgeInsets.only(
+                                  top: double.parse(widgetInfo["Top"]),
+                                  bottom: double.parse(widgetInfo["Bottom"]),
+                                  left: double.parse(widgetInfo["Left"]),
+                                  right: double.parse(widgetInfo["Right"]),
+                                ),
+                                child: Image.network(
+                                  widgetInfo["VideoLink"],
+                                  fit: BoxFit.fitWidth,
+                                  alignment: Alignment.topCenter,
+                                  height: 200,
+                                  width: 200,
+                                  errorBuilder: (BuildContext context,
+                                      Object exception, StackTrace stackTrace) {
+                                    return Image.asset(
+                                      "assets/images/error_image.png",
+                                      fit: BoxFit.fitWidth,
+                                      alignment: Alignment.topCenter,
+                                      width: 200,
+                                      height: 200,
+                                    );
+                                  },
+                                ),
+                              ),
+                            });
                           }
-                          final Map elem = {};
-                          elem.addAll({"Top": widgetInfo["Top"]});
-                          elem.addAll({"Bottom": widgetInfo["Bottom"]});
-                          elem.addAll({"Left": widgetInfo["Left"]});
-                          elem.addAll({"Right": widgetInfo["Right"]});
-                          articleContainer.addAll({chiavetta: elem});
                           container.add(
                             GestureDetector(
                               key: chiavetta,
@@ -1630,9 +2496,9 @@ class _CreateContentState extends State<CreateContent> {
                                     left: double.parse(widgetInfo["Left"]),
                                     right: double.parse(widgetInfo["Right"]),
                                   ),
-                                  child: widgetInfo["ImagePath"] == null
+                                  child: widgetInfo["VideoPath"] == null
                                       ? Image.network(
-                                          widgetInfo["ImageLink"],
+                                          widgetInfo["VideoLink"],
                                           fit: BoxFit.fitWidth,
                                           alignment: Alignment.topCenter,
                                           height: 200,
@@ -1650,7 +2516,7 @@ class _CreateContentState extends State<CreateContent> {
                                           },
                                         )
                                       : Image.file(
-                                          widgetInfo["ImagePath"],
+                                          widgetInfo["VideoPath"],
                                           fit: BoxFit.fitWidth,
                                           alignment: Alignment.topCenter,
                                           width: 200,
@@ -1664,8 +2530,8 @@ class _CreateContentState extends State<CreateContent> {
                           index++;
                           widgetInfo.clear();
                           _linkController.clear();
-                          descriptionButtonGallery = "Scegli Foto Galleria";
-                          descriptionButtonCamera = "Scatta Foto";
+                          descriptionButtonGallery = "Scegli Video Galleria";
+                          descriptionButtonCamera = "Registra Video";
                           _leftController.clear();
                           _rightController.clear();
                           _bottomController.clear();
@@ -1695,8 +2561,8 @@ class _CreateContentState extends State<CreateContent> {
                         _bottomController.clear();
                         _topController.clear();
                         _linkController.clear();
-                        descriptionButtonGallery = "Scegli Foto Galleria";
-                        descriptionButtonCamera = "Scatta Foto";
+                        descriptionVideoCamera = "Registra Video";
+                        descriptionVideoGallery = "Scegli Video Galleria";
                       });
                       refreshWorkBench();
                       setState(() {
@@ -1714,10 +2580,6 @@ class _CreateContentState extends State<CreateContent> {
     }
     refreshWorkBench();
     return;
-  }
-
-  void addVideo() {
-    print("Implement addVideo");
   }
 
   void addLink() {
@@ -1848,7 +2710,7 @@ class _CreateContentState extends State<CreateContent> {
     }
   }
 
-  //aggiungi ottieni tipologia di articolo
+  //aggiungi ottieni - "tipologia di articolo" -
   getInfoArticle() {
     var t = "";
     var d = "";
