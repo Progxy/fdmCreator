@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:audioplayers/audio_cache.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:fdmCreator/firebaseProjectsManager.dart';
 import 'package:fdmCreator/screens/mainDrawer.dart';
 import 'package:fdmCreator/screens/utilizzo.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -22,7 +23,7 @@ class CreateContent extends StatefulWidget {
   static const String routeName = "/createContent";
   // CreateContent({this.app});
   // final FirebaseApp app;
-  // final FirebaseApp secondaryApp = FirebaseProjectManager().getSecondary();
+  final FirebaseApp secondaryApp = FirebaseProjectsManager().getSecondary();
   final bool isManager = AccountInfo.isManager;
 
   @override
@@ -124,6 +125,8 @@ class _CreateContentState extends State<CreateContent> {
   ];
   String typeArticle = "Foto";
   DateTime _dateTime;
+  List imagesChoosen = [];
+  String imageChooosenDropDown = "";
 
   managerVideoController() {
     setState(() {
@@ -143,6 +146,7 @@ class _CreateContentState extends State<CreateContent> {
     refreshWorkBench();
   }
 
+  //controlla i path
   addMediaToStorage(imagePath) async {
     print("image path : $imagePath");
     final path = isCamera
@@ -3389,6 +3393,7 @@ class _CreateContentState extends State<CreateContent> {
                                         fontSize:
                                             double.parse(widgetInfo["Size"]),
                                         fontWeight: widgetInfo["FontWeight"],
+                                        color: Colors.blueAccent,
                                       ),
                                     ),
                                   ),
@@ -3415,6 +3420,7 @@ class _CreateContentState extends State<CreateContent> {
                                   style: TextStyle(
                                     fontSize: double.parse(widgetInfo["Size"]),
                                     fontWeight: widgetInfo["FontWeight"],
+                                    color: Colors.blueAccent,
                                   ),
                                 ),
                               ),
@@ -3774,6 +3780,7 @@ class _CreateContentState extends State<CreateContent> {
                                         fontSize:
                                             double.parse(widgetInfo["Size"]),
                                         fontWeight: widgetInfo["FontWeight"],
+                                        color: Colors.blueAccent,
                                       ),
                                     ),
                                   ),
@@ -3800,6 +3807,7 @@ class _CreateContentState extends State<CreateContent> {
                                   style: TextStyle(
                                     fontSize: double.parse(widgetInfo["Size"]),
                                     fontWeight: widgetInfo["FontWeight"],
+                                    color: Colors.blueAccent,
                                   ),
                                 ),
                               ),
