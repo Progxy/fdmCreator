@@ -112,6 +112,15 @@ class _CreateContentState extends State<CreateContent> {
   VideoPlayerController _videoController;
   VideoPlayerController _videoControllerSecondary;
   Map videoControllersInUse = {};
+  List<String> elementiArticoli = [
+    "Foto",
+    "Video",
+    "Articolo",
+    "Evento",
+    "Ci Hanno Scritto",
+    "Stampa"
+  ];
+  String typeArticle = "Foto";
 
   managerVideoController() {
     setState(() {
@@ -281,7 +290,15 @@ class _CreateContentState extends State<CreateContent> {
                               if (value > ind) {keysValue[key] = value - 1}
                             });
                         index--;
-                        print("articolo svuotato : $articleContainer");
+                        if (videoControllersInUse.containsKey(key)) {
+                          final val = videoControllersInUse[key];
+                          if (val == _videoController) {
+                            _videoController = null;
+                          } else if (val == _videoControllerSecondary) {
+                            _videoControllerSecondary = null;
+                          }
+                          videoControllersInUse.remove(key);
+                        }
                       });
                       refreshWorkBench();
                       setState(() {
@@ -3078,7 +3095,7 @@ class _CreateContentState extends State<CreateContent> {
             builder: (context, setState) {
               return CupertinoAlertDialog(
                 title: Text(
-                  "Aggiungi Testo",
+                  "Aggiungi Link",
                   style: TextStyle(
                     fontSize: 28,
                   ),
@@ -3844,8 +3861,460 @@ class _CreateContentState extends State<CreateContent> {
     return;
   }
 
-  void addPadding() {
-    print("Implement addPadding");
+  addPadding() {
+    if (Platform.isIOS) {
+      showCupertinoDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return CupertinoAlertDialog(
+                title: Text(
+                  "Aggiungi Spaziatura",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: Form(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _topController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura Superiore",
+                            hintStyle: TextStyle(
+                              fontSize: 21.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Superiore",
+                            labelStyle: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Top": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _bottomController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura inferiore",
+                            hintStyle: TextStyle(
+                              fontSize: 21.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Inferiore",
+                            labelStyle: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Bottom": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _rightController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura destra",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Destra",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Right": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _leftController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura sinistra",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Sinistra",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Left": value});
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                actions: [
+                  CupertinoDialogAction(
+                    child: Text(
+                      "CONFERMA",
+                      style: TextStyle(
+                        fontSize: 21,
+                      ),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        setState(() {
+                          _audioController.play("sounds/addedElement.mp4");
+                          widgetInfo.addAll({"FontWeight": fontWeight});
+                          Key chiavetta =
+                              Key(random.nextInt(100000000).toString());
+                          keysValue.addAll({chiavetta: index});
+                          container.add(
+                            GestureDetector(
+                              key: chiavetta,
+                              onLongPress: () => selectedWidget(chiavetta),
+                              child: Container(
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    top: double.parse(widgetInfo["Top"]),
+                                    bottom: double.parse(widgetInfo["Bottom"]),
+                                    left: double.parse(widgetInfo["Left"]),
+                                    right: double.parse(widgetInfo["Right"]),
+                                  ),
+                                  child: Text(
+                                      "Questo testo serve solo per capire la posizione della spaziatura e sarà invisibile!"),
+                                ),
+                              ),
+                            ),
+                          );
+                          articleContainer.addAll({
+                            chiavetta: Padding(
+                              padding: EdgeInsets.only(
+                                top: double.parse(widgetInfo["Top"]),
+                                bottom: double.parse(widgetInfo["Bottom"]),
+                                left: double.parse(widgetInfo["Left"]),
+                                right: double.parse(widgetInfo["Right"]),
+                              ),
+                            ),
+                          });
+                          widgetsInfos.add(widgetInfo);
+                          index++;
+                          widgetInfo.clear();
+                          _leftController.clear();
+                          _rightController.clear();
+                          _bottomController.clear();
+                          _topController.clear();
+                        });
+                        refreshWorkBench();
+                        setState(() {
+                          Navigator.of(context, rootNavigator: true)
+                              .pop('dialog');
+                        });
+                      }
+                    },
+                  ),
+                  CupertinoDialogAction(
+                    child: Text(
+                      "ANNULLA",
+                      style: TextStyle(
+                        fontSize: 21,
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        widgetInfo.clear();
+                        _leftController.clear();
+                        _rightController.clear();
+                        _bottomController.clear();
+                        _topController.clear();
+                      });
+                      refreshWorkBench();
+                      setState(() {
+                        Navigator.of(context, rootNavigator: true)
+                            .pop('dialog');
+                      });
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    } else {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: Text(
+                  "Aggiungi Spaziatura",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: Form(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _topController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura Superiore",
+                            hintStyle: TextStyle(
+                              fontSize: 21.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Superiore",
+                            labelStyle: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Top": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _bottomController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura inferiore",
+                            hintStyle: TextStyle(
+                              fontSize: 21.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Inferiore",
+                            labelStyle: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Bottom": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _rightController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura destra",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Destra",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Right": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _leftController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura sinistra",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Sinistra",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Left": value});
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    child: Text(
+                      "CONFERMA",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        setState(() {
+                          _audioController.play("sounds/addedElement.mp4");
+                          widgetInfo.addAll({"FontWeight": fontWeight});
+                          Key chiavetta =
+                              Key(random.nextInt(100000000).toString());
+                          keysValue.addAll({chiavetta: index});
+                          container.add(
+                            GestureDetector(
+                              key: chiavetta,
+                              onLongPress: () => selectedWidget(chiavetta),
+                              child: Container(
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    top: double.parse(widgetInfo["Top"]),
+                                    bottom: double.parse(widgetInfo["Bottom"]),
+                                    left: double.parse(widgetInfo["Left"]),
+                                    right: double.parse(widgetInfo["Right"]),
+                                  ),
+                                  child: Text(
+                                      "Questo testo serve solo per capire la posizione della spaziatura e sarà invisibile!"),
+                                ),
+                              ),
+                            ),
+                          );
+                          articleContainer.addAll({
+                            chiavetta: Padding(
+                              padding: EdgeInsets.only(
+                                top: double.parse(widgetInfo["Top"]),
+                                bottom: double.parse(widgetInfo["Bottom"]),
+                                left: double.parse(widgetInfo["Left"]),
+                                right: double.parse(widgetInfo["Right"]),
+                              ),
+                            ),
+                          });
+                          widgetsInfos.add(widgetInfo);
+                          index++;
+                          widgetInfo.clear();
+                          _leftController.clear();
+                          _rightController.clear();
+                          _bottomController.clear();
+                          _topController.clear();
+                        });
+                        refreshWorkBench();
+                        setState(() {
+                          Navigator.of(context, rootNavigator: true)
+                              .pop('dialog');
+                        });
+                      }
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                      "ANNULLA",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        widgetInfo.clear();
+                        _leftController.clear();
+                        _rightController.clear();
+                        _bottomController.clear();
+                        _topController.clear();
+                      });
+                      refreshWorkBench();
+                      setState(() {
+                        Navigator.of(context, rootNavigator: true)
+                            .pop('dialog');
+                      });
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    }
+    refreshWorkBench();
+    return;
   }
 
   refreshWorkBench() {
@@ -3875,13 +4344,13 @@ class _CreateContentState extends State<CreateContent> {
             builder: (context, setState) {
               return CupertinoAlertDialog(
                 title: Text(
-                  "Modificare l'articolo ?",
+                  "Modificare dati del contenuto ?",
                   style: TextStyle(
                     fontSize: 28,
                   ),
                 ),
                 content: Text(
-                  "Modificare anche il titolo, la data e la tipologia dell'articolo ?",
+                  "Modificare il titolo, la data e la tipologia del contenuto ?",
                   style: TextStyle(
                     fontSize: 21,
                   ),
@@ -3926,13 +4395,13 @@ class _CreateContentState extends State<CreateContent> {
             builder: (context, setState) {
               return AlertDialog(
                 title: Text(
-                  "Modificare l'articolo ?",
+                  "Modificare il contenuto ?",
                   style: TextStyle(
                     fontSize: 28,
                   ),
                 ),
                 content: Text(
-                  "Modificare anche il titolo, la data e la tipologia dell'articolo ?",
+                  "Modificare il titolo, la data e la tipologia del contenuto ?",
                   style: TextStyle(
                     fontSize: 21,
                   ),
@@ -3971,7 +4440,6 @@ class _CreateContentState extends State<CreateContent> {
     }
   }
 
-  //aggiungi ottieni - "tipologia di articolo" -
   getInfoArticle() {
     var t = "";
     var d = "";
@@ -3984,7 +4452,7 @@ class _CreateContentState extends State<CreateContent> {
             builder: (context, setState) {
               return CupertinoAlertDialog(
                 title: Text(
-                  "Info Articolo",
+                  "Dati Contenuto",
                   style: TextStyle(
                     fontSize: 28,
                   ),
@@ -4006,7 +4474,7 @@ class _CreateContentState extends State<CreateContent> {
                               color: Colors.black87,
                             ),
                             border: OutlineInputBorder(),
-                            labelText: "Titolo Articolo",
+                            labelText: "Titolo Contenuto",
                             labelStyle: TextStyle(
                               fontSize: 23.0,
                               fontWeight: FontWeight.w600,
@@ -4028,14 +4496,14 @@ class _CreateContentState extends State<CreateContent> {
                           controller: _dateController,
                           keyboardType: TextInputType.number,
                           decoration: const InputDecoration(
-                            hintText: "Inserire la data dell'articolo",
+                            hintText: "Inserire la data del contenuto",
                             hintStyle: TextStyle(
                               fontSize: 23.0,
                               fontWeight: FontWeight.w600,
                               color: Colors.black87,
                             ),
                             border: OutlineInputBorder(),
-                            labelText: "Data Articolo",
+                            labelText: "Data Contenuto",
                             labelStyle: TextStyle(
                               fontSize: 23.0,
                               fontWeight: FontWeight.w600,
@@ -4049,6 +4517,40 @@ class _CreateContentState extends State<CreateContent> {
                             d = value;
                             return null;
                           },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "Scegliere il tipo di contenuto",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        DropdownButton<String>(
+                          isExpanded: true,
+                          isDense: true,
+                          value: typeArticle,
+                          icon: Icon(Icons.arrow_downward),
+                          iconSize: 40,
+                          elevation: 20,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 23,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              typeArticle = newValue;
+                            });
+                          },
+                          items: elementiArticoli
+                              .map((value) => new DropdownMenuItem<String>(
+                                    value: value.toString(),
+                                    child: Text(value.toString()),
+                                  ))
+                              .toList(),
                         ),
                       ],
                     ),
@@ -4093,7 +4595,7 @@ class _CreateContentState extends State<CreateContent> {
             builder: (context, setState) {
               return AlertDialog(
                 title: Text(
-                  "Info Articolo",
+                  "Info Contenuto",
                   style: TextStyle(
                     fontSize: 28,
                   ),
@@ -4115,7 +4617,7 @@ class _CreateContentState extends State<CreateContent> {
                               color: Colors.black87,
                             ),
                             border: OutlineInputBorder(),
-                            labelText: "Titolo Articolo",
+                            labelText: "Titolo Contenuto",
                             labelStyle: TextStyle(
                               fontSize: 23.0,
                               fontWeight: FontWeight.w600,
@@ -4137,14 +4639,14 @@ class _CreateContentState extends State<CreateContent> {
                           controller: _dateController,
                           keyboardType: TextInputType.number,
                           decoration: const InputDecoration(
-                            hintText: "Inserire la data dell'articolo",
+                            hintText: "Inserire la data del contenuto",
                             hintStyle: TextStyle(
                               fontSize: 23.0,
                               fontWeight: FontWeight.w600,
                               color: Colors.black87,
                             ),
                             border: OutlineInputBorder(),
-                            labelText: "Data Articolo",
+                            labelText: "Data Contenuto",
                             labelStyle: TextStyle(
                               fontSize: 23.0,
                               fontWeight: FontWeight.w600,
@@ -4158,6 +4660,40 @@ class _CreateContentState extends State<CreateContent> {
                             d = value;
                             return null;
                           },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "Scegliere il tipo di contenuto",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        DropdownButton<String>(
+                          isExpanded: true,
+                          isDense: true,
+                          value: typeArticle,
+                          icon: Icon(Icons.arrow_downward),
+                          iconSize: 40,
+                          elevation: 20,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 23,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              typeArticle = newValue;
+                            });
+                          },
+                          items: elementiArticoli
+                              .map((value) => new DropdownMenuItem<String>(
+                                    value: value.toString(),
+                                    child: Text(value.toString()),
+                                  ))
+                              .toList(),
                         ),
                       ],
                     ),
@@ -4195,6 +4731,7 @@ class _CreateContentState extends State<CreateContent> {
       );
     }
     refreshWorkBench();
+    print("title: $title, date : $date, typeArticle : $typeArticle");
     return;
   }
 
@@ -4305,10 +4842,15 @@ class _CreateContentState extends State<CreateContent> {
     }
   }
 
+  void saveOnDatabase() {
+    print("implement saveOnDatabase!");
+  }
+
   saveWorkBench() async {
     //richiedi conferma salvataggio!
+    //ottieni immagine rappresentativa (cercando prima se vada bene tra le immagini già caricate)
     ProgressDialog dialog = new ProgressDialog(context);
-    dialog.style(message: 'Salvataggio articolo...');
+    dialog.style(message: 'Salvataggio contenuto...');
     await dialog.show();
     final List values = imagesStorage.values.toList();
     final List keys = imagesStorage.keys.toList();
@@ -4317,6 +4859,8 @@ class _CreateContentState extends State<CreateContent> {
       var val = values[index];
       await imageStorage(k, val);
     }
+    //use title, date, typeArticle
+    saveOnDatabase();
     //show result for admin or subscribed
     setState(() {
       _audioController.play("sounds/saveNotification.mp3");
