@@ -125,8 +125,10 @@ class _CreateContentState extends State<CreateContent> {
   ];
   String typeArticle = "Foto";
   DateTime _dateTime;
-  List imagesChoosen = [];
-  String imageChooosenDropDown = "";
+  List<String> imagesChoosen = [];
+  String imageChoosenDropDown = "";
+  Widget containerImage;
+  bool isALink = false;
 
   managerVideoController() {
     setState(() {
@@ -4805,6 +4807,8 @@ class _CreateContentState extends State<CreateContent> {
       final right = keyInfo["Right"];
       final isVideo = keyInfo["isVideo"];
       if (!isVideo) {
+        imagesChoosen.add(link);
+        imageChoosenDropDown = link;
         articleContainer[key] = Padding(
           padding: EdgeInsets.only(
             top: double.parse(top),
@@ -4902,8 +4906,621 @@ class _CreateContentState extends State<CreateContent> {
     }
   }
 
-  void saveOnDatabase() {
+  void saveOnDatabase(String title, String date, String typeArticle,
+      String posterImage, Map container) {
     print("implement saveOnDatabase!");
+  }
+
+  getPosterImage() async {
+    setState(() {
+      widgetInfo.addAll({"ImageLink": null});
+      widgetInfo.addAll({"ImagePath": null});
+    });
+    if (Platform.isIOS) {
+      showCupertinoDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              widgetInfo.addAll({"ImageLink": ""});
+              widgetInfo.addAll({"ImagePath": ""});
+              return CupertinoAlertDialog(
+                title: Text(
+                  "Aggiungi Immagine di Copertina",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: Form(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _linkController,
+                          maxLines: 4,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire il link",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Link",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          onChanged: (value) {
+                            final result = value.isNotEmpty;
+                            refreshWorkBench();
+                            setState(() {
+                              if (result) {
+                                descriptionButtonCamera = "Scegli Foto";
+                                descriptionButtonGallery =
+                                    "Scegli Foto Galleria";
+                                containerImage = Image.network(
+                                  value,
+                                  fit: BoxFit.fitWidth,
+                                  alignment: Alignment.topCenter,
+                                  height: 200,
+                                  width: 200,
+                                  errorBuilder: (BuildContext context,
+                                      Object exception, StackTrace stackTrace) {
+                                    return Image.asset(
+                                      "assets/images/error_image.png",
+                                      fit: BoxFit.fitWidth,
+                                      alignment: Alignment.topCenter,
+                                      width: 200,
+                                      height: 200,
+                                    );
+                                  },
+                                );
+                              }
+                            });
+                            refreshWorkBench();
+                          },
+                          validator: (value) {
+                            if (imageChoosenDropDown.isEmpty) {
+                              return "Dati Mancanti";
+                            } else if (value.isNotEmpty) {
+                              imageChoosenDropDown = widgetInfo["ImageLink"];
+                              isALink = true;
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Oppure",
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            final result = await getImageFromCamera();
+                            setState(() {
+                              if (result) {
+                                _linkController.clear();
+                                descriptionButtonCamera = "Foto Selezionata";
+                                descriptionButtonGallery =
+                                    "Scegli Foto Galleria";
+                                imageChoosenDropDown = widgetInfo["ImagePath"];
+                                isALink = false;
+                                containerImage = Image.network(
+                                  imageChoosenDropDown,
+                                  fit: BoxFit.fitWidth,
+                                  alignment: Alignment.topCenter,
+                                  height: 200,
+                                  width: 200,
+                                  errorBuilder: (BuildContext context,
+                                      Object exception, StackTrace stackTrace) {
+                                    return Image.asset(
+                                      "assets/images/error_image.png",
+                                      fit: BoxFit.fitWidth,
+                                      alignment: Alignment.topCenter,
+                                      width: 200,
+                                      height: 200,
+                                    );
+                                  },
+                                );
+                              } else {
+                                descriptionButtonCamera = "Scatta Foto";
+                              }
+                            });
+                          },
+                          child: Container(
+                            height: 50,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  descriptionButtonCamera,
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Oppure",
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            final result = await getImageFromGallery();
+                            refreshWorkBench();
+                            setState(() {
+                              if (result) {
+                                _linkController.clear();
+                                descriptionButtonGallery = "Foto Selezionata";
+                                descriptionButtonCamera = "Scatta Foto";
+                                imageChoosenDropDown = widgetInfo["ImagePath"];
+                                isALink = false;
+                                containerImage = Image.network(
+                                  imageChoosenDropDown,
+                                  fit: BoxFit.fitWidth,
+                                  alignment: Alignment.topCenter,
+                                  height: 200,
+                                  width: 200,
+                                  errorBuilder: (BuildContext context,
+                                      Object exception, StackTrace stackTrace) {
+                                    return Image.asset(
+                                      "assets/images/error_image.png",
+                                      fit: BoxFit.fitWidth,
+                                      alignment: Alignment.topCenter,
+                                      width: 200,
+                                      height: 200,
+                                    );
+                                  },
+                                );
+                              } else {
+                                descriptionButtonGallery =
+                                    "Scegli Foto Galleria";
+                              }
+                            });
+                          },
+                          child: Container(
+                            height: 50,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  descriptionButtonGallery,
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Oppure Scegli tra quelli già salvati",
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        DropdownButton<String>(
+                          isExpanded: true,
+                          isDense: true,
+                          value: imageChoosenDropDown,
+                          icon: Icon(Icons.arrow_downward),
+                          iconSize: 40,
+                          elevation: 20,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 23,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              imageChoosenDropDown = newValue;
+                              _linkController.clear();
+                              isALink = true;
+                              containerImage = Image.network(
+                                imageChoosenDropDown,
+                                fit: BoxFit.fitWidth,
+                                alignment: Alignment.topCenter,
+                                height: 200,
+                                width: 200,
+                                errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace stackTrace) {
+                                  return Image.asset(
+                                    "assets/images/error_image.png",
+                                    fit: BoxFit.fitWidth,
+                                    alignment: Alignment.topCenter,
+                                    width: 200,
+                                    height: 200,
+                                  );
+                                },
+                              );
+                            });
+                          },
+                          items: imagesChoosen
+                              .map((value) => new DropdownMenuItem<String>(
+                                    value: value.toString(),
+                                    child: Text(value.toString()),
+                                  ))
+                              .toList(),
+                        ),
+                        SizedBox(
+                          height: 25,
+                        ),
+                        containerImage,
+                        SizedBox(
+                          height: 15,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                actions: [
+                  CupertinoDialogAction(
+                    child: Text(
+                      "CONFERMA",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        String newLink;
+                        if (!isALink) {
+                          newLink =
+                              await addMediaToStorage(imageChoosenDropDown);
+                        }
+                        setState(() {
+                          if (!isALink) {
+                            imageChoosenDropDown = newLink;
+                          }
+                          widgetInfo.clear();
+                          _linkController.clear();
+                          descriptionButtonGallery = "Scegli Foto Galleria";
+                          descriptionButtonCamera = "Scatta Foto";
+                        });
+                        refreshWorkBench();
+                        setState(() {
+                          Navigator.of(context, rootNavigator: true)
+                              .pop('dialog');
+                        });
+                      }
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    } else {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: Text(
+                  "Aggiungi Immagine di Copertina",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: Form(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _linkController,
+                          maxLines: 4,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire il link",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Link",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          onChanged: (value) {
+                            final result = value.isNotEmpty;
+                            refreshWorkBench();
+                            setState(() {
+                              if (result) {
+                                descriptionButtonCamera = "Scegli Foto";
+                                descriptionButtonGallery =
+                                    "Scegli Foto Galleria";
+                                containerImage = Image.network(
+                                  value,
+                                  fit: BoxFit.fitWidth,
+                                  alignment: Alignment.topCenter,
+                                  height: 200,
+                                  width: 200,
+                                  errorBuilder: (BuildContext context,
+                                      Object exception, StackTrace stackTrace) {
+                                    return Image.asset(
+                                      "assets/images/error_image.png",
+                                      fit: BoxFit.fitWidth,
+                                      alignment: Alignment.topCenter,
+                                      width: 200,
+                                      height: 200,
+                                    );
+                                  },
+                                );
+                              }
+                            });
+                            refreshWorkBench();
+                          },
+                          validator: (value) {
+                            if (imageChoosenDropDown.isEmpty) {
+                              return "Dati Mancanti";
+                            } else if (value.isNotEmpty) {
+                              imageChoosenDropDown = widgetInfo["ImageLink"];
+                              isALink = true;
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Oppure",
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            final result = await getImageFromCamera();
+                            setState(() {
+                              if (result) {
+                                _linkController.clear();
+                                descriptionButtonCamera = "Foto Selezionata";
+                                descriptionButtonGallery =
+                                    "Scegli Foto Galleria";
+                                imageChoosenDropDown = widgetInfo["ImagePath"];
+                                isALink = false;
+                                containerImage = Image.network(
+                                  imageChoosenDropDown,
+                                  fit: BoxFit.fitWidth,
+                                  alignment: Alignment.topCenter,
+                                  height: 200,
+                                  width: 200,
+                                  errorBuilder: (BuildContext context,
+                                      Object exception, StackTrace stackTrace) {
+                                    return Image.asset(
+                                      "assets/images/error_image.png",
+                                      fit: BoxFit.fitWidth,
+                                      alignment: Alignment.topCenter,
+                                      width: 200,
+                                      height: 200,
+                                    );
+                                  },
+                                );
+                              } else {
+                                descriptionButtonCamera = "Scatta Foto";
+                              }
+                            });
+                          },
+                          child: Container(
+                            height: 50,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  descriptionButtonCamera,
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Oppure",
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            final result = await getImageFromGallery();
+                            refreshWorkBench();
+                            setState(() {
+                              if (result) {
+                                _linkController.clear();
+                                descriptionButtonGallery = "Foto Selezionata";
+                                descriptionButtonCamera = "Scatta Foto";
+                                imageChoosenDropDown = widgetInfo["ImagePath"];
+                                isALink = false;
+                                containerImage = Image.network(
+                                  imageChoosenDropDown,
+                                  fit: BoxFit.fitWidth,
+                                  alignment: Alignment.topCenter,
+                                  height: 200,
+                                  width: 200,
+                                  errorBuilder: (BuildContext context,
+                                      Object exception, StackTrace stackTrace) {
+                                    return Image.asset(
+                                      "assets/images/error_image.png",
+                                      fit: BoxFit.fitWidth,
+                                      alignment: Alignment.topCenter,
+                                      width: 200,
+                                      height: 200,
+                                    );
+                                  },
+                                );
+                              } else {
+                                descriptionButtonGallery =
+                                    "Scegli Foto Galleria";
+                              }
+                            });
+                          },
+                          child: Container(
+                            height: 50,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  descriptionButtonGallery,
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Oppure Scegli tra quelli già salvati",
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        DropdownButton<String>(
+                          isExpanded: true,
+                          isDense: true,
+                          value: imageChoosenDropDown,
+                          icon: Icon(Icons.arrow_downward),
+                          iconSize: 40,
+                          elevation: 20,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 23,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              imageChoosenDropDown = newValue;
+                              _linkController.clear();
+                              isALink = true;
+                              containerImage = Image.network(
+                                imageChoosenDropDown,
+                                fit: BoxFit.fitWidth,
+                                alignment: Alignment.topCenter,
+                                height: 200,
+                                width: 200,
+                                errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace stackTrace) {
+                                  return Image.asset(
+                                    "assets/images/error_image.png",
+                                    fit: BoxFit.fitWidth,
+                                    alignment: Alignment.topCenter,
+                                    width: 200,
+                                    height: 200,
+                                  );
+                                },
+                              );
+                            });
+                          },
+                          items: imagesChoosen
+                              .map((value) => new DropdownMenuItem<String>(
+                                    value: value.toString(),
+                                    child: Text(value.toString()),
+                                  ))
+                              .toList(),
+                        ),
+                        SizedBox(
+                          height: 25,
+                        ),
+                        containerImage,
+                        SizedBox(
+                          height: 15,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    child: Text(
+                      "CONFERMA",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        String newLink;
+                        if (!isALink) {
+                          newLink =
+                              await addMediaToStorage(imageChoosenDropDown);
+                        }
+                        setState(() {
+                          if (!isALink) {
+                            imageChoosenDropDown = newLink;
+                          }
+                          widgetInfo.clear();
+                          _linkController.clear();
+                          descriptionButtonGallery = "Scegli Foto Galleria";
+                          descriptionButtonCamera = "Scatta Foto";
+                        });
+                        refreshWorkBench();
+                        setState(() {
+                          Navigator.of(context, rootNavigator: true)
+                              .pop('dialog');
+                        });
+                      }
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    }
+    refreshWorkBench();
+    return;
   }
 
   saveWorkBench() async {
@@ -5018,7 +5635,6 @@ class _CreateContentState extends State<CreateContent> {
     if (!continuare) {
       return;
     }
-    //ottieni immagine rappresentativa (cercando prima se vada bene tra le immagini già caricate)
     ProgressDialog dialog = new ProgressDialog(context);
     dialog.style(message: 'Salvataggio contenuto...');
     await dialog.show();
@@ -5029,8 +5645,10 @@ class _CreateContentState extends State<CreateContent> {
       var val = values[index];
       await imageStorage(k, val);
     }
-    //use title, date, typeArticle
-    saveOnDatabase();
+    await getPosterImage();
+    //use title, date, typeArticle, imageChoosenDropDown and ArticleContainer
+    saveOnDatabase(
+        title, date, typeArticle, imageChoosenDropDown, articleContainer);
     //show result for admin or subscribed
     setState(() {
       _audioController.play("sounds/saveNotification.mp3");
