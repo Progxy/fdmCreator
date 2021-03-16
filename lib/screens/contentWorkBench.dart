@@ -1837,8 +1837,76 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   addVideo() {
-    if ((_videoController == null) && (_videoControllerSecondary == null)) {
-      print("Troppi video scelti, eliminare qualcuno");
+    if ((_videoController != null) && (_videoControllerSecondary != null)) {
+      if (Platform.isIOS) {
+        showCupertinoDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return CupertinoAlertDialog(
+              title: Text(
+                "Errore",
+                style: TextStyle(
+                  fontSize: 28,
+                ),
+              ),
+              content: Text(
+                "Troppi video in uso, eliminarne uno!",
+                style: TextStyle(
+                  fontSize: 28,
+                ),
+              ),
+              actions: [
+                CupertinoDialogAction(
+                  child: Text(
+                    "OK",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop('dialog');
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(
+                "Errore",
+                style: TextStyle(
+                  fontSize: 28,
+                ),
+              ),
+              content: Text(
+                "Troppi video in uso, eliminarne uno!",
+                style: TextStyle(
+                  fontSize: 28,
+                ),
+              ),
+              actions: [
+                TextButton(
+                  child: Text(
+                    "OK",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop('dialog');
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
       return;
     }
     setState(() {
@@ -2456,45 +2524,134 @@ class _CreateContentState extends State<CreateContent> {
                         fontSize: 20,
                       ),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState.validate()) {
+                        bool isSecondary;
+                        if (_videoController == null) {
+                          if (widgetInfo["VideoPath"] != null) {
+                            _videoController = VideoPlayerController.file(
+                                widgetInfo["VideoPath"]);
+                            await _videoController.initialize();
+                          } else {
+                            _videoController = VideoPlayerController.network(
+                                widgetInfo["VideoLink"]);
+                            await _videoController.initialize();
+                          }
+                          isSecondary = false;
+                        } else {
+                          if (widgetInfo["VideoPath"] != null) {
+                            _videoControllerSecondary =
+                                VideoPlayerController.file(
+                                    widgetInfo["VideoPath"]);
+                            await _videoControllerSecondary.initialize();
+                          } else {
+                            _videoControllerSecondary =
+                                VideoPlayerController.network(
+                                    widgetInfo["VideoLink"]);
+                            await _videoControllerSecondary.initialize();
+                          }
+                          isSecondary = true;
+                        }
+                        Key chiavetta =
+                            Key(random.nextInt(100000000).toString());
+                        container.add(
+                          GestureDetector(
+                            key: chiavetta,
+                            onLongPress: () => selectedWidget(chiavetta),
+                            child: Container(
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: double.parse(widgetInfo["Top"]),
+                                  bottom: double.parse(widgetInfo["Bottom"]),
+                                  left: double.parse(widgetInfo["Left"]),
+                                  right: double.parse(widgetInfo["Right"]),
+                                ),
+                                child: Column(
+                                  children: [
+                                    isSecondary
+                                        ? _videoControllerSecondary
+                                                .value.initialized
+                                            ? AspectRatio(
+                                                aspectRatio:
+                                                    _videoControllerSecondary
+                                                        .value.aspectRatio,
+                                                child: VideoPlayer(
+                                                    _videoControllerSecondary),
+                                              )
+                                            : Container(
+                                                color: Colors.black,
+                                                height: 200,
+                                                width: 200,
+                                              )
+                                        : _videoController.value.initialized
+                                            ? AspectRatio(
+                                                aspectRatio: _videoController
+                                                    .value.aspectRatio,
+                                                child: VideoPlayer(
+                                                    _videoController),
+                                              )
+                                            : Container(
+                                                color: Colors.black,
+                                                height: 200,
+                                                width: 200,
+                                              ),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    Center(
+                                      child: FloatingActionButton(
+                                        onPressed: isSecondary
+                                            ? () {
+                                                if (mounted) {
+                                                  setState(() {
+                                                    _videoControllerSecondary
+                                                            .value.isPlaying
+                                                        ? _videoControllerSecondary
+                                                            .pause()
+                                                        : _videoControllerSecondary
+                                                            .play();
+                                                  });
+                                                }
+                                              }
+                                            : () {
+                                                if (mounted) {
+                                                  setState(() {
+                                                    _videoController
+                                                            .value.isPlaying
+                                                        ? _videoController
+                                                            .pause()
+                                                        : _videoController
+                                                            .play();
+                                                  });
+                                                }
+                                              },
+                                        child: isSecondary
+                                            ? Icon(
+                                                _videoControllerSecondary
+                                                        .value.isPlaying
+                                                    ? Icons.pause
+                                                    : Icons.play_arrow,
+                                                size: 45,
+                                              )
+                                            : Icon(
+                                                _videoController.value.isPlaying
+                                                    ? Icons.pause
+                                                    : Icons.play_arrow,
+                                                size: 45,
+                                              ),
+                                        backgroundColor:
+                                            Color.fromARGB(255, 24, 37, 102),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
                         setState(() {
                           _audioController.play("sounds/addedElement.mp4");
-                          Key chiavetta =
-                              Key(random.nextInt(100000000).toString());
                           keysValue.addAll({chiavetta: index});
-                          bool isSecondary;
-                          if (_videoController == null) {
-                            if (widgetInfo["VideoPath"] != null) {
-                              _videoController = VideoPlayerController.file(
-                                  widgetInfo["VideoPath"])
-                                ..initialize().then((_) {
-                                  setState(() {});
-                                });
-                            } else {
-                              _videoController = VideoPlayerController.network(
-                                  widgetInfo["VideoLink"])
-                                ..initialize().then((_) {
-                                  setState(() {});
-                                });
-                            }
-                            isSecondary = false;
-                          } else {
-                            if (widgetInfo["VideoPath"] != null) {
-                              _videoControllerSecondary = VideoPlayerController
-                                  .file(widgetInfo["VideoPath"])
-                                ..initialize().then((_) {
-                                  setState(() {});
-                                });
-                            } else {
-                              _videoControllerSecondary = VideoPlayerController
-                                  .network(widgetInfo["VideoLink"])
-                                ..initialize().then((_) {
-                                  setState(() {});
-                                });
-                            }
-                            isSecondary = true;
-                          }
                           if (widgetInfo["VideoPath"] != null) {
                             imagesStorage
                                 .addAll({chiavetta: widgetInfo["VideoPath"]});
@@ -2533,96 +2690,18 @@ class _CreateContentState extends State<CreateContent> {
                               ),
                             });
                           }
-                          container.add(
-                            GestureDetector(
-                              key: chiavetta,
-                              onLongPress: () => selectedWidget(chiavetta),
-                              child: Container(
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                    top: double.parse(widgetInfo["Top"]),
-                                    bottom: double.parse(widgetInfo["Bottom"]),
-                                    left: double.parse(widgetInfo["Left"]),
-                                    right: double.parse(widgetInfo["Right"]),
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      isSecondary
-                                          ? _videoControllerSecondary
-                                                  .value.initialized
-                                              ? AspectRatio(
-                                                  aspectRatio:
-                                                      _videoControllerSecondary
-                                                          .value.aspectRatio,
-                                                  child: VideoPlayer(
-                                                      _videoControllerSecondary),
-                                                )
-                                              : Container()
-                                          : _videoController.value.initialized
-                                              ? AspectRatio(
-                                                  aspectRatio: _videoController
-                                                      .value.aspectRatio,
-                                                  child: VideoPlayer(
-                                                      _videoController),
-                                                )
-                                              : Container(),
-                                      Center(
-                                        child: FloatingActionButton(
-                                          onPressed: isSecondary
-                                              ? () {
-                                                  setState(() {
-                                                    _videoControllerSecondary
-                                                            .value.isPlaying
-                                                        ? _videoControllerSecondary
-                                                            .pause()
-                                                        : _videoControllerSecondary
-                                                            .play();
-                                                  });
-                                                }
-                                              : () {
-                                                  setState(() {
-                                                    _videoController
-                                                            .value.isPlaying
-                                                        ? _videoController
-                                                            .pause()
-                                                        : _videoController
-                                                            .play();
-                                                  });
-                                                },
-                                          child: isSecondary
-                                              ? Icon(
-                                                  _videoControllerSecondary
-                                                          .value.isPlaying
-                                                      ? Icons.pause
-                                                      : Icons.play_arrow,
-                                                )
-                                              : Icon(
-                                                  _videoController
-                                                          .value.isPlaying
-                                                      ? Icons.pause
-                                                      : Icons.play_arrow,
-                                                ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
                           widgetsInfos.add(widgetInfo);
                           index++;
                           widgetInfo.clear();
                           _linkController.clear();
-                          descriptionButtonGallery = "Scegli Video Galleria";
-                          descriptionButtonCamera = "Registra Video";
+                          descriptionVideoGallery = "Scegli Video Galleria";
+                          descriptionVideoCamera = "Registra Video";
                           _leftController.clear();
                           _rightController.clear();
                           _bottomController.clear();
                           _topController.clear();
                           _sizeController.clear();
                         });
-                        refreshWorkBench();
                         setState(() {
                           Navigator.of(context, rootNavigator: true)
                               .pop('dialog');
