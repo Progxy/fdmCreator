@@ -20,6 +20,7 @@ class CreateContent extends StatefulWidget {
   // CreateContent({this.app});
   // final FirebaseApp app;
   // final FirebaseApp secondaryApp = FirebaseProjectManager().getSecondary();
+  // final bool isManager = AccountInfo.isManager;
 
   @override
   _CreateContentState createState() => _CreateContentState();
@@ -110,23 +111,6 @@ class _CreateContentState extends State<CreateContent> {
   VideoPlayerController _videoController;
   VideoPlayerController _videoControllerSecondary;
   Map videoControllersInUse = {};
-  Map videoType = {};
-
-  managerIconVideo(key) {
-    final isSecondary = videoType[key];
-
-    return isSecondary
-        ? Icon(
-            _videoControllerSecondary.value.isPlaying
-                ? Icons.pause
-                : Icons.play_arrow,
-            size: 45,
-          )
-        : Icon(
-            _videoController.value.isPlaying ? Icons.pause : Icons.play_arrow,
-            size: 45,
-          );
-  }
 
   managerVideoController() {
     setState(() {
@@ -147,9 +131,11 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   addMediaToStorage(imagePath) async {
+    print("image path : $imagePath");
     final path = isCamera
         ? imagePath.toString().split("/").last.split("-").last
         : imagePath.toString().split("/").last;
+    print("final path : $path");
     try {
       await firebase_storage.FirebaseStorage.instance
           .ref(path)
@@ -1333,6 +1319,7 @@ class _CreateContentState extends State<CreateContent> {
                             elem.addAll({"Bottom": widgetInfo["Bottom"]});
                             elem.addAll({"Left": widgetInfo["Left"]});
                             elem.addAll({"Right": widgetInfo["Right"]});
+                            elem.addAll({"isVideo": false});
                             articleContainer.addAll({chiavetta: elem});
                           } else {
                             articleContainer.addAll({
@@ -1742,6 +1729,7 @@ class _CreateContentState extends State<CreateContent> {
                             elem.addAll({"Bottom": widgetInfo["Bottom"]});
                             elem.addAll({"Left": widgetInfo["Left"]});
                             elem.addAll({"Right": widgetInfo["Right"]});
+                            elem.addAll({"isVideo": false});
                             articleContainer.addAll({chiavetta: elem});
                           } else {
                             articleContainer.addAll({
@@ -1954,11 +1942,9 @@ class _CreateContentState extends State<CreateContent> {
         builder: (context) {
           return StatefulBuilder(
             builder: (context, setState) {
-              widgetInfo.addAll({"ImageLink": ""});
-              widgetInfo.addAll({"ImagePath": ""});
               return CupertinoAlertDialog(
                 title: Text(
-                  "Aggiungi Immagine",
+                  "Aggiungi Video",
                   style: TextStyle(
                     fontSize: 28,
                   ),
@@ -1971,7 +1957,7 @@ class _CreateContentState extends State<CreateContent> {
                       children: [
                         TextFormField(
                           controller: _linkController,
-                          maxLines: 20,
+                          maxLines: 4,
                           decoration: const InputDecoration(
                             hintText: "Inserire il link",
                             hintStyle: TextStyle(
@@ -1987,14 +1973,27 @@ class _CreateContentState extends State<CreateContent> {
                               color: Colors.black87,
                             ),
                           ),
+                          onChanged: (value) {
+                            final result = value.isNotEmpty;
+                            refreshWorkBench();
+                            setState(() {
+                              if (result) {
+                                descriptionVideoCamera = "Registra Video";
+                                descriptionVideoGallery =
+                                    "Scegli Video Galleria";
+                              }
+                            });
+                            refreshWorkBench();
+                          },
                           validator: (value) {
-                            if (value.isEmpty && (_image == null)) {
+                            final imagePath = widgetInfo["VideoPath"];
+                            if (value.isEmpty && (imagePath == null)) {
                               return "Dati Mancanti";
                             } else if (value.isNotEmpty) {
-                              widgetInfo["ImageLink"] = value;
-                              widgetInfo["ImagePath"] = null;
+                              widgetInfo["VideoLink"] = value;
+                              widgetInfo["VideoPath"] = null;
                             } else {
-                              widgetInfo["ImageLink"] = null;
+                              widgetInfo["VideoLink"] = null;
                             }
                             return null;
                           },
@@ -2012,14 +2011,29 @@ class _CreateContentState extends State<CreateContent> {
                           height: 15,
                         ),
                         ElevatedButton(
-                          onPressed: getImageFromCamera,
+                          onPressed: () async {
+                            final result = await getVideoFromCamera();
+                            setState(() {
+                              if (result) {
+                                _linkController.clear();
+                                descriptionVideoCamera = "Video Selezionato";
+                                descriptionVideoGallery =
+                                    "Scegli Video Galleria";
+                              } else {
+                                descriptionVideoCamera = "Registra Video";
+                              }
+                            });
+                          },
                           child: Container(
                             height: 50,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 10.0),
-                              child: Text(
-                                descriptionButtonCamera,
-                                style: TextStyle(fontSize: 20),
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  descriptionVideoCamera,
+                                  style: TextStyle(fontSize: 20),
+                                ),
                               ),
                             ),
                           ),
@@ -2037,20 +2051,36 @@ class _CreateContentState extends State<CreateContent> {
                           height: 15,
                         ),
                         ElevatedButton(
-                          onPressed: getImageFromGallery,
+                          onPressed: () async {
+                            final result = await getVideoFromGallery();
+                            refreshWorkBench();
+                            setState(() {
+                              if (result) {
+                                _linkController.clear();
+                                descriptionVideoCamera = "Registra Video";
+                                descriptionVideoGallery = "Video Selezionato";
+                              } else {
+                                descriptionVideoGallery =
+                                    "Scegli Video Galleria";
+                              }
+                            });
+                          },
                           child: Container(
                             height: 50,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 10.0),
-                              child: Text(
-                                descriptionButtonGallery,
-                                style: TextStyle(fontSize: 20),
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  descriptionVideoGallery,
+                                  style: TextStyle(fontSize: 20),
+                                ),
                               ),
                             ),
                           ),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 20,
                         ),
                         TextFormField(
                           controller: _topController,
@@ -2174,74 +2204,256 @@ class _CreateContentState extends State<CreateContent> {
                     child: Text(
                       "CONFERMA",
                       style: TextStyle(
-                        fontSize: 21,
+                        fontSize: 20,
                       ),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState.validate()) {
-                        setState(() {
-                          _audioController.play("sounds/addedElement.mp4");
-                          Key chiavetta =
-                              Key(random.nextInt(100000000).toString());
-                          keysValue.addAll({chiavetta: index});
-                          if (widgetInfo["ImagePath"] != null) {
-                            imagesStorage
-                                .addAll({chiavetta: widgetInfo["ImagePath"]});
+                        bool isSecondary;
+                        Key chiavetta =
+                            Key(random.nextInt(100000000).toString());
+                        if (_videoController == null) {
+                          if (widgetInfo["VideoPath"] != null) {
+                            _videoController = VideoPlayerController.file(
+                                widgetInfo["VideoPath"]);
+                            await _videoController.initialize();
+                            await _videoController.setLooping(true);
+                            videoControllersInUse
+                                .addAll({chiavetta: _videoController});
+                          } else {
+                            print(widgetInfo["VideoLink"]);
+                            _videoController = VideoPlayerController.network(
+                                widgetInfo["VideoLink"]);
+                            await _videoController.initialize();
+                            await _videoController.setLooping(true);
+
+                            videoControllersInUse
+                                .addAll({chiavetta: _videoController});
                           }
-                          final Map elem = {};
-                          elem.addAll({"Top": widgetInfo["Top"]});
-                          elem.addAll({"Bottom": widgetInfo["Bottom"]});
-                          elem.addAll({"Left": widgetInfo["Left"]});
-                          elem.addAll({"Right": widgetInfo["Right"]});
-                          articleContainer.addAll({chiavetta: elem});
-                          container.add(
-                            GestureDetector(
-                              key: chiavetta,
-                              onLongPress: () => selectedWidget(chiavetta),
-                              child: Container(
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                    top: double.parse(widgetInfo["Top"]),
-                                    bottom: double.parse(widgetInfo["Bottom"]),
-                                    left: double.parse(widgetInfo["Left"]),
-                                    right: double.parse(widgetInfo["Right"]),
+                          isSecondary = false;
+                        } else {
+                          if (widgetInfo["VideoPath"] != null) {
+                            _videoControllerSecondary =
+                                VideoPlayerController.file(
+                                    widgetInfo["VideoPath"]);
+                            await _videoControllerSecondary.initialize();
+                            await _videoController.setLooping(true);
+                            videoControllersInUse
+                                .addAll({chiavetta: _videoControllerSecondary});
+                          } else {
+                            _videoControllerSecondary =
+                                VideoPlayerController.network(
+                                    widgetInfo["VideoLink"]);
+                            await _videoControllerSecondary.initialize();
+                            await _videoController.setLooping(true);
+                            videoControllersInUse
+                                .addAll({chiavetta: _videoControllerSecondary});
+                          }
+                          isSecondary = true;
+                        }
+                        container.add(
+                          Column(
+                            children: [
+                              GestureDetector(
+                                key: chiavetta,
+                                onLongPress: () => selectedWidget(chiavetta),
+                                child: Container(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      top: double.parse(widgetInfo["Top"]),
+                                      bottom:
+                                          double.parse(widgetInfo["Bottom"]),
+                                      left: double.parse(widgetInfo["Left"]),
+                                      right: double.parse(widgetInfo["Right"]),
+                                    ),
+                                    child: GestureDetector(
+                                      onTap: isSecondary
+                                          ? () =>
+                                              managerVideocontrollerSecondary()
+                                          : () => managerVideoController(),
+                                      child: Container(
+                                        child: isSecondary
+                                            ? _videoControllerSecondary
+                                                    .value.initialized
+                                                ? AspectRatio(
+                                                    aspectRatio:
+                                                        _videoControllerSecondary
+                                                            .value.aspectRatio,
+                                                    child: Stack(
+                                                      alignment: Alignment
+                                                          .bottomCenter,
+                                                      children: <Widget>[
+                                                        VideoPlayer(
+                                                            _videoControllerSecondary),
+                                                        VideoProgressIndicator(
+                                                          _videoControllerSecondary,
+                                                          allowScrubbing: true,
+                                                          colors:
+                                                              VideoProgressColors(
+                                                            playedColor:
+                                                                const Color
+                                                                        .fromARGB(
+                                                                    255,
+                                                                    24,
+                                                                    37,
+                                                                    102),
+                                                            backgroundColor:
+                                                                Colors.white,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                : Container(
+                                                    color: Colors.black,
+                                                    height: 200,
+                                                    width: 200,
+                                                  )
+                                            : _videoController.value.initialized
+                                                ? AspectRatio(
+                                                    aspectRatio:
+                                                        _videoController
+                                                            .value.aspectRatio,
+                                                    child: Stack(
+                                                      alignment: Alignment
+                                                          .bottomCenter,
+                                                      children: <Widget>[
+                                                        VideoPlayer(
+                                                            _videoController),
+                                                        VideoProgressIndicator(
+                                                          _videoController,
+                                                          allowScrubbing: true,
+                                                          colors:
+                                                              VideoProgressColors(
+                                                            playedColor:
+                                                                const Color
+                                                                        .fromARGB(
+                                                                    255,
+                                                                    24,
+                                                                    37,
+                                                                    102),
+                                                            backgroundColor:
+                                                                Colors.white,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                : Container(
+                                                    color: Colors.black,
+                                                    height: 200,
+                                                    width: 200,
+                                                  ),
+                                      ),
+                                    ),
                                   ),
-                                  child: widgetInfo["ImagePath"] == null
-                                      ? Image.network(
-                                          widgetInfo["ImageLink"],
-                                          fit: BoxFit.fitWidth,
-                                          alignment: Alignment.topCenter,
-                                          height: 200,
-                                          width: 200,
-                                          errorBuilder: (BuildContext context,
-                                              Object exception,
-                                              StackTrace stackTrace) {
-                                            return Image.asset(
-                                              "assets/images/error_image.png",
-                                              fit: BoxFit.fitWidth,
-                                              alignment: Alignment.topCenter,
-                                              width: 200,
-                                              height: 200,
-                                            );
-                                          },
-                                        )
-                                      : Image.file(
-                                          widgetInfo["ImagePath"],
-                                          fit: BoxFit.fitWidth,
-                                          alignment: Alignment.topCenter,
-                                          width: 200,
-                                          height: 200,
-                                        ),
                                 ),
                               ),
-                            ),
-                          );
+                            ],
+                          ),
+                        );
+                        setState(() {
+                          _audioController.play("sounds/addedElement.mp4");
+                          keysValue.addAll({chiavetta: index});
+                          if (widgetInfo["VideoPath"] != null) {
+                            imagesStorage
+                                .addAll({chiavetta: widgetInfo["VideoPath"]});
+                            final Map elem = {};
+                            elem.addAll({"Top": widgetInfo["Top"]});
+                            elem.addAll({"Bottom": widgetInfo["Bottom"]});
+                            elem.addAll({"Left": widgetInfo["Left"]});
+                            elem.addAll({"Right": widgetInfo["Right"]});
+                            elem.addAll({"isVideo": true});
+                            elem.addAll({"isSecondary": isSecondary});
+                            articleContainer.addAll({chiavetta: elem});
+                          } else {
+                            articleContainer.addAll({
+                              chiavetta: Padding(
+                                padding: EdgeInsets.only(
+                                  top: double.parse(widgetInfo["Top"]),
+                                  bottom: double.parse(widgetInfo["Bottom"]),
+                                  left: double.parse(widgetInfo["Left"]),
+                                  right: double.parse(widgetInfo["Right"]),
+                                ),
+                                child: GestureDetector(
+                                  onTap: isSecondary
+                                      ? () => managerVideocontrollerSecondary()
+                                      : () => managerVideoController(),
+                                  child: Container(
+                                    child: isSecondary
+                                        ? _videoControllerSecondary
+                                                .value.initialized
+                                            ? AspectRatio(
+                                                aspectRatio:
+                                                    _videoControllerSecondary
+                                                        .value.aspectRatio,
+                                                child: Stack(
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  children: <Widget>[
+                                                    VideoPlayer(
+                                                        _videoControllerSecondary),
+                                                    VideoProgressIndicator(
+                                                      _videoControllerSecondary,
+                                                      allowScrubbing: true,
+                                                      colors:
+                                                          VideoProgressColors(
+                                                        playedColor: const Color
+                                                                .fromARGB(
+                                                            255, 24, 37, 102),
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            : Container(
+                                                color: Colors.black,
+                                                height: 200,
+                                                width: 200,
+                                              )
+                                        : _videoController.value.initialized
+                                            ? AspectRatio(
+                                                aspectRatio: _videoController
+                                                    .value.aspectRatio,
+                                                child: Stack(
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  children: <Widget>[
+                                                    VideoPlayer(
+                                                        _videoController),
+                                                    VideoProgressIndicator(
+                                                      _videoController,
+                                                      allowScrubbing: true,
+                                                      colors:
+                                                          VideoProgressColors(
+                                                        playedColor: const Color
+                                                                .fromARGB(
+                                                            255, 24, 37, 102),
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            : Container(
+                                                color: Colors.black,
+                                                height: 200,
+                                                width: 200,
+                                              ),
+                                  ),
+                                ),
+                              ),
+                            });
+                          }
                           widgetsInfos.add(widgetInfo);
                           index++;
                           widgetInfo.clear();
                           _linkController.clear();
-                          descriptionButtonGallery = "Scegli Foto Galleria";
-                          descriptionButtonCamera = "Scatta Foto";
+                          descriptionVideoGallery = "Scegli Video Galleria";
+                          descriptionVideoCamera = "Registra Video";
                           _leftController.clear();
                           _rightController.clear();
                           _bottomController.clear();
@@ -2260,7 +2472,7 @@ class _CreateContentState extends State<CreateContent> {
                     child: Text(
                       "ANNULLA",
                       style: TextStyle(
-                        fontSize: 21,
+                        fontSize: 20,
                       ),
                     ),
                     onPressed: () {
@@ -2271,7 +2483,8 @@ class _CreateContentState extends State<CreateContent> {
                         _bottomController.clear();
                         _topController.clear();
                         _linkController.clear();
-                        _image = null;
+                        descriptionVideoCamera = "Registra Video";
+                        descriptionVideoGallery = "Scegli Video Galleria";
                       });
                       refreshWorkBench();
                       setState(() {
@@ -2577,12 +2790,10 @@ class _CreateContentState extends State<CreateContent> {
                                 widgetInfo["VideoLink"]);
                             await _videoController.initialize();
                             await _videoController.setLooping(true);
-
                             videoControllersInUse
                                 .addAll({chiavetta: _videoController});
                           }
                           isSecondary = false;
-                          videoType.addAll({chiavetta: false});
                         } else {
                           if (widgetInfo["VideoPath"] != null) {
                             _videoControllerSecondary =
@@ -2602,7 +2813,6 @@ class _CreateContentState extends State<CreateContent> {
                                 .addAll({chiavetta: _videoControllerSecondary});
                           }
                           isSecondary = true;
-                          videoType.addAll({chiavetta: true});
                         }
                         container.add(
                           Column(
@@ -2716,6 +2926,8 @@ class _CreateContentState extends State<CreateContent> {
                             elem.addAll({"Bottom": widgetInfo["Bottom"]});
                             elem.addAll({"Left": widgetInfo["Left"]});
                             elem.addAll({"Right": widgetInfo["Right"]});
+                            elem.addAll({"isVideo": true});
+                            elem.addAll({"isSecondary": isSecondary});
                             articleContainer.addAll({chiavetta: elem});
                           } else {
                             articleContainer.addAll({
@@ -2726,22 +2938,75 @@ class _CreateContentState extends State<CreateContent> {
                                   left: double.parse(widgetInfo["Left"]),
                                   right: double.parse(widgetInfo["Right"]),
                                 ),
-                                child: Image.network(
-                                  widgetInfo["VideoLink"],
-                                  fit: BoxFit.fitWidth,
-                                  alignment: Alignment.topCenter,
-                                  height: 200,
-                                  width: 200,
-                                  errorBuilder: (BuildContext context,
-                                      Object exception, StackTrace stackTrace) {
-                                    return Image.asset(
-                                      "assets/images/error_image.png",
-                                      fit: BoxFit.fitWidth,
-                                      alignment: Alignment.topCenter,
-                                      width: 200,
-                                      height: 200,
-                                    );
-                                  },
+                                child: GestureDetector(
+                                  onTap: isSecondary
+                                      ? () => managerVideocontrollerSecondary()
+                                      : () => managerVideoController(),
+                                  child: Container(
+                                    child: isSecondary
+                                        ? _videoControllerSecondary
+                                                .value.initialized
+                                            ? AspectRatio(
+                                                aspectRatio:
+                                                    _videoControllerSecondary
+                                                        .value.aspectRatio,
+                                                child: Stack(
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  children: <Widget>[
+                                                    VideoPlayer(
+                                                        _videoControllerSecondary),
+                                                    VideoProgressIndicator(
+                                                      _videoControllerSecondary,
+                                                      allowScrubbing: true,
+                                                      colors:
+                                                          VideoProgressColors(
+                                                        playedColor: const Color
+                                                                .fromARGB(
+                                                            255, 24, 37, 102),
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            : Container(
+                                                color: Colors.black,
+                                                height: 200,
+                                                width: 200,
+                                              )
+                                        : _videoController.value.initialized
+                                            ? AspectRatio(
+                                                aspectRatio: _videoController
+                                                    .value.aspectRatio,
+                                                child: Stack(
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  children: <Widget>[
+                                                    VideoPlayer(
+                                                        _videoController),
+                                                    VideoProgressIndicator(
+                                                      _videoController,
+                                                      allowScrubbing: true,
+                                                      colors:
+                                                          VideoProgressColors(
+                                                        playedColor: const Color
+                                                                .fromARGB(
+                                                            255, 24, 37, 102),
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            : Container(
+                                                color: Colors.black,
+                                                height: 200,
+                                                width: 200,
+                                              ),
+                                  ),
                                 ),
                               ),
                             });
@@ -2802,7 +3067,7 @@ class _CreateContentState extends State<CreateContent> {
     return;
   }
 
-  void addLink() {
+  addLink() {
     print("Implement addLink");
   }
 
@@ -3168,27 +3433,98 @@ class _CreateContentState extends State<CreateContent> {
       final bottom = keyInfo["Bottom"];
       final left = keyInfo["Left"];
       final right = keyInfo["Right"];
-      articleContainer[key] = Padding(
-        padding: EdgeInsets.only(
-          top: double.parse(top),
-          bottom: double.parse(bottom),
-          left: double.parse(left),
-          right: double.parse(right),
-        ),
-        child: Image.network(
-          link,
-          fit: BoxFit.fitWidth,
-          alignment: Alignment.topCenter,
-          errorBuilder:
-              (BuildContext context, Object exception, StackTrace stackTrace) {
-            return Image.asset(
-              "assets/images/error_image.png",
-              fit: BoxFit.fitWidth,
-              alignment: Alignment.topCenter,
-            );
-          },
-        ),
-      );
+      final isVideo = keyInfo["isVideo"];
+      if (!isVideo) {
+        articleContainer[key] = Padding(
+          padding: EdgeInsets.only(
+            top: double.parse(top),
+            bottom: double.parse(bottom),
+            left: double.parse(left),
+            right: double.parse(right),
+          ),
+          child: Image.network(
+            link,
+            fit: BoxFit.fitWidth,
+            alignment: Alignment.topCenter,
+            errorBuilder: (BuildContext context, Object exception,
+                StackTrace stackTrace) {
+              return Image.asset(
+                "assets/images/error_image.png",
+                fit: BoxFit.fitWidth,
+                alignment: Alignment.topCenter,
+              );
+            },
+          ),
+        );
+      } else {
+        final isSecondary = keyInfo["isSecondary"];
+        articleContainer[key] = Padding(
+          padding: EdgeInsets.only(
+            top: double.parse(widgetInfo["Top"]),
+            bottom: double.parse(widgetInfo["Bottom"]),
+            left: double.parse(widgetInfo["Left"]),
+            right: double.parse(widgetInfo["Right"]),
+          ),
+          child: GestureDetector(
+            onTap: isSecondary
+                ? () => managerVideocontrollerSecondary()
+                : () => managerVideoController(),
+            child: Container(
+              child: isSecondary
+                  ? _videoControllerSecondary.value.initialized
+                      ? AspectRatio(
+                          aspectRatio:
+                              _videoControllerSecondary.value.aspectRatio,
+                          child: Stack(
+                            alignment: Alignment.bottomCenter,
+                            children: <Widget>[
+                              VideoPlayer(_videoControllerSecondary),
+                              VideoProgressIndicator(
+                                _videoControllerSecondary,
+                                allowScrubbing: true,
+                                colors: VideoProgressColors(
+                                  playedColor:
+                                      const Color.fromARGB(255, 24, 37, 102),
+                                  backgroundColor: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(
+                          color: Colors.black,
+                          height: 200,
+                          width: 200,
+                        )
+                  : _videoController.value.initialized
+                      ? AspectRatio(
+                          aspectRatio: _videoController.value.aspectRatio,
+                          child: Stack(
+                            alignment: Alignment.bottomCenter,
+                            children: <Widget>[
+                              VideoPlayer(_videoController),
+                              VideoProgressIndicator(
+                                _videoController,
+                                allowScrubbing: true,
+                                colors: VideoProgressColors(
+                                  playedColor:
+                                      const Color.fromARGB(255, 24, 37, 102),
+                                  backgroundColor: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(
+                          color: Colors.black,
+                          height: 200,
+                          width: 200,
+                        ),
+            ),
+          ),
+        );
+        //save in database the video's link
+      }
       return;
     } catch (e) {
       print("Errore mentre caricavo i dati sul Map : $e");
@@ -3197,7 +3533,7 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   saveWorkBench() async {
-    print("title : $title, date : $date");
+    //richiedi conferma salvataggio!
     ProgressDialog dialog = new ProgressDialog(context);
     dialog.style(message: 'Salvataggio articolo...');
     await dialog.show();
