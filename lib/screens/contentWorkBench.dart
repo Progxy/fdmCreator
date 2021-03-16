@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:video_player/video_player.dart';
 import 'badConnection.dart';
 import 'feedback.dart';
 
@@ -106,6 +107,9 @@ class _CreateContentState extends State<CreateContent> {
   Map imagesStorage = {};
   final firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
+  VideoPlayerController _videoController;
+  VideoPlayerController _videoControllerSecondary;
+  Map videoControllersInUse = {};
 
   addMediaToStorage(imagePath) async {
     final path = isCamera
@@ -320,6 +324,15 @@ class _CreateContentState extends State<CreateContent> {
                               if (value > ind) {keysValue[key] = value - 1}
                             });
                         index--;
+                        if (videoControllersInUse.containsKey(key)) {
+                          final val = videoControllersInUse[key];
+                          if (val == _videoController) {
+                            _videoController = null;
+                          } else if (val == _videoControllerSecondary) {
+                            _videoControllerSecondary = null;
+                          }
+                          videoControllersInUse.remove(key);
+                        }
                         print("articolo svuotato : $articleContainer");
                       });
                       refreshWorkBench();
@@ -1824,6 +1837,10 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   addVideo() {
+    if ((_videoController == null) && (_videoControllerSecondary == null)) {
+      print("Troppi video scelti, eliminare qualcuno");
+      return;
+    }
     setState(() {
       widgetInfo.addAll({"VideoLink": null});
       widgetInfo.addAll({"VideoPath": null});
@@ -2446,6 +2463,38 @@ class _CreateContentState extends State<CreateContent> {
                           Key chiavetta =
                               Key(random.nextInt(100000000).toString());
                           keysValue.addAll({chiavetta: index});
+                          bool isSecondary;
+                          if (_videoController == null) {
+                            if (widgetInfo["VideoPath"] != null) {
+                              _videoController = VideoPlayerController.file(
+                                  widgetInfo["VideoPath"])
+                                ..initialize().then((_) {
+                                  setState(() {});
+                                });
+                            } else {
+                              _videoController = VideoPlayerController.network(
+                                  widgetInfo["VideoLink"])
+                                ..initialize().then((_) {
+                                  setState(() {});
+                                });
+                            }
+                            isSecondary = false;
+                          } else {
+                            if (widgetInfo["VideoPath"] != null) {
+                              _videoControllerSecondary = VideoPlayerController
+                                  .file(widgetInfo["VideoPath"])
+                                ..initialize().then((_) {
+                                  setState(() {});
+                                });
+                            } else {
+                              _videoControllerSecondary = VideoPlayerController
+                                  .network(widgetInfo["VideoLink"])
+                                ..initialize().then((_) {
+                                  setState(() {});
+                                });
+                            }
+                            isSecondary = true;
+                          }
                           if (widgetInfo["VideoPath"] != null) {
                             imagesStorage
                                 .addAll({chiavetta: widgetInfo["VideoPath"]});
@@ -2496,32 +2545,67 @@ class _CreateContentState extends State<CreateContent> {
                                     left: double.parse(widgetInfo["Left"]),
                                     right: double.parse(widgetInfo["Right"]),
                                   ),
-                                  child: widgetInfo["VideoPath"] == null
-                                      ? Image.network(
-                                          widgetInfo["VideoLink"],
-                                          fit: BoxFit.fitWidth,
-                                          alignment: Alignment.topCenter,
-                                          height: 200,
-                                          width: 200,
-                                          errorBuilder: (BuildContext context,
-                                              Object exception,
-                                              StackTrace stackTrace) {
-                                            return Image.asset(
-                                              "assets/images/error_image.png",
-                                              fit: BoxFit.fitWidth,
-                                              alignment: Alignment.topCenter,
-                                              width: 200,
-                                              height: 200,
-                                            );
-                                          },
-                                        )
-                                      : Image.file(
-                                          widgetInfo["VideoPath"],
-                                          fit: BoxFit.fitWidth,
-                                          alignment: Alignment.topCenter,
-                                          width: 200,
-                                          height: 200,
+                                  child: Stack(
+                                    children: [
+                                      isSecondary
+                                          ? _videoControllerSecondary
+                                                  .value.initialized
+                                              ? AspectRatio(
+                                                  aspectRatio:
+                                                      _videoControllerSecondary
+                                                          .value.aspectRatio,
+                                                  child: VideoPlayer(
+                                                      _videoControllerSecondary),
+                                                )
+                                              : Container()
+                                          : _videoController.value.initialized
+                                              ? AspectRatio(
+                                                  aspectRatio: _videoController
+                                                      .value.aspectRatio,
+                                                  child: VideoPlayer(
+                                                      _videoController),
+                                                )
+                                              : Container(),
+                                      Center(
+                                        child: FloatingActionButton(
+                                          onPressed: isSecondary
+                                              ? () {
+                                                  setState(() {
+                                                    _videoControllerSecondary
+                                                            .value.isPlaying
+                                                        ? _videoControllerSecondary
+                                                            .pause()
+                                                        : _videoControllerSecondary
+                                                            .play();
+                                                  });
+                                                }
+                                              : () {
+                                                  setState(() {
+                                                    _videoController
+                                                            .value.isPlaying
+                                                        ? _videoController
+                                                            .pause()
+                                                        : _videoController
+                                                            .play();
+                                                  });
+                                                },
+                                          child: isSecondary
+                                              ? Icon(
+                                                  _videoControllerSecondary
+                                                          .value.isPlaying
+                                                      ? Icons.pause
+                                                      : Icons.play_arrow,
+                                                )
+                                              : Icon(
+                                                  _videoController
+                                                          .value.isPlaying
+                                                      ? Icons.pause
+                                                      : Icons.play_arrow,
+                                                ),
                                         ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -2604,6 +2688,9 @@ class _CreateContentState extends State<CreateContent> {
       widgetsInfos.clear();
       widgetInfo.clear();
       imagesStorage.clear();
+      videoControllersInUse.clear();
+      _videoController = null;
+      _videoControllerSecondary = null;
     });
     if (Platform.isIOS) {
       showCupertinoDialog(
@@ -2993,6 +3080,9 @@ class _CreateContentState extends State<CreateContent> {
       widgetsInfos.clear();
       widgetInfo.clear();
       imagesStorage.clear();
+      videoControllersInUse.clear();
+      _videoController = null;
+      _videoControllerSecondary = null;
     });
     await dialog.hide();
     return;
@@ -3012,6 +3102,13 @@ class _CreateContentState extends State<CreateContent> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => setElements());
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _videoController.dispose();
+    _videoControllerSecondary.dispose();
   }
 
   @override
