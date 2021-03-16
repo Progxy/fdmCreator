@@ -114,6 +114,7 @@ class _CreateContentState extends State<CreateContent> {
 
   managerIconVideo(key) {
     final isSecondary = videoType[key];
+    print("called me is secondary : $isSecondary");
     return isSecondary
         ? Icon(
             _videoControllerSecondary.value.isPlaying
@@ -133,7 +134,7 @@ class _CreateContentState extends State<CreateContent> {
           ? _videoController.pause()
           : _videoController.play();
     });
-    print("stato riproduzione : ${_videoController.value.isPlaying}");
+    refreshWorkBench();
   }
 
   managerVideocontrollerSecondary() {
@@ -142,7 +143,7 @@ class _CreateContentState extends State<CreateContent> {
           ? _videoControllerSecondary.pause()
           : _videoControllerSecondary.play();
     });
-    print("stato riproduzione : ${_videoControllerSecondary.value.isPlaying}");
+    refreshWorkBench();
   }
 
   addMediaToStorage(imagePath) async {
@@ -2571,6 +2572,7 @@ class _CreateContentState extends State<CreateContent> {
                             videoControllersInUse
                                 .addAll({chiavetta: _videoController});
                           } else {
+                            print(widgetInfo["VideoLink"]);
                             _videoController = VideoPlayerController.network(
                                 widgetInfo["VideoLink"]);
                             await _videoController.initialize();
@@ -2591,6 +2593,7 @@ class _CreateContentState extends State<CreateContent> {
                             videoControllersInUse
                                 .addAll({chiavetta: _videoControllerSecondary});
                           } else {
+                            print(widgetInfo["VideoLink"]);
                             _videoControllerSecondary =
                                 VideoPlayerController.network(
                                     widgetInfo["VideoLink"]);
