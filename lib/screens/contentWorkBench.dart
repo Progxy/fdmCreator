@@ -114,7 +114,7 @@ class _CreateContentState extends State<CreateContent> {
 
   managerIconVideo(key) {
     final isSecondary = videoType[key];
-    print("called me is secondary : $isSecondary");
+
     return isSecondary
         ? Icon(
             _videoControllerSecondary.value.isPlaying
@@ -2593,7 +2593,6 @@ class _CreateContentState extends State<CreateContent> {
                             videoControllersInUse
                                 .addAll({chiavetta: _videoControllerSecondary});
                           } else {
-                            print(widgetInfo["VideoLink"]);
                             _videoControllerSecondary =
                                 VideoPlayerController.network(
                                     widgetInfo["VideoLink"]);
@@ -2620,47 +2619,87 @@ class _CreateContentState extends State<CreateContent> {
                                       left: double.parse(widgetInfo["Left"]),
                                       right: double.parse(widgetInfo["Right"]),
                                     ),
-                                    child: isSecondary
-                                        ? _videoControllerSecondary
-                                                .value.initialized
-                                            ? AspectRatio(
-                                                aspectRatio:
-                                                    _videoControllerSecondary
-                                                        .value.aspectRatio,
-                                                child: VideoPlayer(
-                                                    _videoControllerSecondary),
-                                              )
-                                            : Container(
-                                                color: Colors.black,
-                                                height: 200,
-                                                width: 200,
-                                              )
-                                        : _videoController.value.initialized
-                                            ? AspectRatio(
-                                                aspectRatio: _videoController
-                                                    .value.aspectRatio,
-                                                child: VideoPlayer(
-                                                    _videoController),
-                                              )
-                                            : Container(
-                                                color: Colors.black,
-                                                height: 200,
-                                                width: 200,
-                                              ),
+                                    child: GestureDetector(
+                                      onTap: isSecondary
+                                          ? () =>
+                                              managerVideocontrollerSecondary()
+                                          : () => managerVideoController(),
+                                      child: Container(
+                                        child: isSecondary
+                                            ? _videoControllerSecondary
+                                                    .value.initialized
+                                                ? AspectRatio(
+                                                    aspectRatio:
+                                                        _videoControllerSecondary
+                                                            .value.aspectRatio,
+                                                    child: Stack(
+                                                      alignment: Alignment
+                                                          .bottomCenter,
+                                                      children: <Widget>[
+                                                        VideoPlayer(
+                                                            _videoControllerSecondary),
+                                                        VideoProgressIndicator(
+                                                          _videoControllerSecondary,
+                                                          allowScrubbing: true,
+                                                          colors:
+                                                              VideoProgressColors(
+                                                            playedColor:
+                                                                const Color
+                                                                        .fromARGB(
+                                                                    255,
+                                                                    24,
+                                                                    37,
+                                                                    102),
+                                                            backgroundColor:
+                                                                Colors.white,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                : Container(
+                                                    color: Colors.black,
+                                                    height: 200,
+                                                    width: 200,
+                                                  )
+                                            : _videoController.value.initialized
+                                                ? AspectRatio(
+                                                    aspectRatio:
+                                                        _videoController
+                                                            .value.aspectRatio,
+                                                    child: Stack(
+                                                      alignment: Alignment
+                                                          .bottomCenter,
+                                                      children: <Widget>[
+                                                        VideoPlayer(
+                                                            _videoController),
+                                                        VideoProgressIndicator(
+                                                          _videoController,
+                                                          allowScrubbing: true,
+                                                          colors:
+                                                              VideoProgressColors(
+                                                            playedColor:
+                                                                const Color
+                                                                        .fromARGB(
+                                                                    255,
+                                                                    24,
+                                                                    37,
+                                                                    102),
+                                                            backgroundColor:
+                                                                Colors.white,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                : Container(
+                                                    color: Colors.black,
+                                                    height: 200,
+                                                    width: 200,
+                                                  ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Center(
-                                child: FloatingActionButton(
-                                  onPressed: isSecondary
-                                      ? () => managerVideocontrollerSecondary()
-                                      : () => managerVideoController(),
-                                  child: managerIconVideo(chiavetta),
-                                  backgroundColor:
-                                      Color.fromARGB(255, 24, 37, 102),
                                 ),
                               ),
                             ],
