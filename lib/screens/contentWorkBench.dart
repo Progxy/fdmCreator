@@ -110,6 +110,40 @@ class _CreateContentState extends State<CreateContent> {
   VideoPlayerController _videoController;
   VideoPlayerController _videoControllerSecondary;
   Map videoControllersInUse = {};
+  Map videoType = {};
+
+  managerIconVideo(key) {
+    final isSecondary = videoType[key];
+    return isSecondary
+        ? Icon(
+            _videoControllerSecondary.value.isPlaying
+                ? Icons.pause
+                : Icons.play_arrow,
+            size: 45,
+          )
+        : Icon(
+            _videoController.value.isPlaying ? Icons.pause : Icons.play_arrow,
+            size: 45,
+          );
+  }
+
+  managerVideoController() {
+    setState(() {
+      _videoController.value.isPlaying
+          ? _videoController.pause()
+          : _videoController.play();
+    });
+    print("stato riproduzione : ${_videoController.value.isPlaying}");
+  }
+
+  managerVideocontrollerSecondary() {
+    setState(() {
+      _videoControllerSecondary.value.isPlaying
+          ? _videoControllerSecondary.pause()
+          : _videoControllerSecondary.play();
+    });
+    print("stato riproduzione : ${_videoControllerSecondary.value.isPlaying}");
+  }
 
   addMediaToStorage(imagePath) async {
     final path = isCamera
@@ -333,7 +367,6 @@ class _CreateContentState extends State<CreateContent> {
                           }
                           videoControllersInUse.remove(key);
                         }
-                        print("articolo svuotato : $articleContainer");
                       });
                       refreshWorkBench();
                       setState(() {
@@ -2527,48 +2560,64 @@ class _CreateContentState extends State<CreateContent> {
                     onPressed: () async {
                       if (_formKey.currentState.validate()) {
                         bool isSecondary;
+                        Key chiavetta =
+                            Key(random.nextInt(100000000).toString());
                         if (_videoController == null) {
                           if (widgetInfo["VideoPath"] != null) {
                             _videoController = VideoPlayerController.file(
                                 widgetInfo["VideoPath"]);
                             await _videoController.initialize();
+                            await _videoController.setLooping(true);
+                            videoControllersInUse
+                                .addAll({chiavetta: _videoController});
                           } else {
                             _videoController = VideoPlayerController.network(
                                 widgetInfo["VideoLink"]);
                             await _videoController.initialize();
+                            await _videoController.setLooping(true);
+
+                            videoControllersInUse
+                                .addAll({chiavetta: _videoController});
                           }
                           isSecondary = false;
+                          videoType.addAll({chiavetta: false});
                         } else {
                           if (widgetInfo["VideoPath"] != null) {
                             _videoControllerSecondary =
                                 VideoPlayerController.file(
                                     widgetInfo["VideoPath"]);
                             await _videoControllerSecondary.initialize();
+                            await _videoController.setLooping(true);
+                            videoControllersInUse
+                                .addAll({chiavetta: _videoControllerSecondary});
                           } else {
                             _videoControllerSecondary =
                                 VideoPlayerController.network(
                                     widgetInfo["VideoLink"]);
                             await _videoControllerSecondary.initialize();
+                            await _videoController.setLooping(true);
+                            videoControllersInUse
+                                .addAll({chiavetta: _videoControllerSecondary});
                           }
                           isSecondary = true;
+                          videoType.addAll({chiavetta: true});
                         }
-                        Key chiavetta =
-                            Key(random.nextInt(100000000).toString());
                         container.add(
-                          GestureDetector(
-                            key: chiavetta,
-                            onLongPress: () => selectedWidget(chiavetta),
-                            child: Container(
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  top: double.parse(widgetInfo["Top"]),
-                                  bottom: double.parse(widgetInfo["Bottom"]),
-                                  left: double.parse(widgetInfo["Left"]),
-                                  right: double.parse(widgetInfo["Right"]),
-                                ),
-                                child: Column(
-                                  children: [
-                                    isSecondary
+                          Column(
+                            children: [
+                              GestureDetector(
+                                key: chiavetta,
+                                onLongPress: () => selectedWidget(chiavetta),
+                                child: Container(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      top: double.parse(widgetInfo["Top"]),
+                                      bottom:
+                                          double.parse(widgetInfo["Bottom"]),
+                                      left: double.parse(widgetInfo["Left"]),
+                                      right: double.parse(widgetInfo["Right"]),
+                                    ),
+                                    child: isSecondary
                                         ? _videoControllerSecondary
                                                 .value.initialized
                                             ? AspectRatio(
@@ -2595,58 +2644,23 @@ class _CreateContentState extends State<CreateContent> {
                                                 height: 200,
                                                 width: 200,
                                               ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    Center(
-                                      child: FloatingActionButton(
-                                        onPressed: isSecondary
-                                            ? () {
-                                                if (mounted) {
-                                                  setState(() {
-                                                    _videoControllerSecondary
-                                                            .value.isPlaying
-                                                        ? _videoControllerSecondary
-                                                            .pause()
-                                                        : _videoControllerSecondary
-                                                            .play();
-                                                  });
-                                                }
-                                              }
-                                            : () {
-                                                if (mounted) {
-                                                  setState(() {
-                                                    _videoController
-                                                            .value.isPlaying
-                                                        ? _videoController
-                                                            .pause()
-                                                        : _videoController
-                                                            .play();
-                                                  });
-                                                }
-                                              },
-                                        child: isSecondary
-                                            ? Icon(
-                                                _videoControllerSecondary
-                                                        .value.isPlaying
-                                                    ? Icons.pause
-                                                    : Icons.play_arrow,
-                                                size: 45,
-                                              )
-                                            : Icon(
-                                                _videoController.value.isPlaying
-                                                    ? Icons.pause
-                                                    : Icons.play_arrow,
-                                                size: 45,
-                                              ),
-                                        backgroundColor:
-                                            Color.fromARGB(255, 24, 37, 102),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
-                            ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Center(
+                                child: FloatingActionButton(
+                                  onPressed: isSecondary
+                                      ? () => managerVideocontrollerSecondary()
+                                      : () => managerVideoController(),
+                                  child: managerIconVideo(chiavetta),
+                                  backgroundColor:
+                                      Color.fromARGB(255, 24, 37, 102),
+                                ),
+                              ),
+                            ],
                           ),
                         );
                         setState(() {
@@ -2702,6 +2716,7 @@ class _CreateContentState extends State<CreateContent> {
                           _topController.clear();
                           _sizeController.clear();
                         });
+                        refreshWorkBench();
                         setState(() {
                           Navigator.of(context, rootNavigator: true)
                               .pop('dialog');
