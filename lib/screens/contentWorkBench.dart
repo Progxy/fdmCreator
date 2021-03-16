@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import 'badConnection.dart';
 import 'feedback.dart';
@@ -3068,7 +3069,779 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   addLink() {
-    print("Implement addLink");
+    if (Platform.isIOS) {
+      showCupertinoDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return CupertinoAlertDialog(
+                title: Text(
+                  "Aggiungi Testo",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: Form(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _linkController,
+                          maxLines: 5,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire il link",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Link",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Link": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _textController,
+                          maxLines: 5,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire il testo",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Testo (Opzionale)",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              widgetInfo["Text"] = null;
+                            } else {
+                              widgetInfo["Text"] = value;
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _sizeController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la grandezza del testo",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Grandezza Testo",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Size": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "Scegliere l'intesità dei caratteri",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        DropdownButton<String>(
+                          isExpanded: true,
+                          isDense: true,
+                          value: dropdownValue,
+                          icon: Icon(Icons.arrow_downward),
+                          iconSize: 40,
+                          elevation: 20,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 23,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              dropdownValue = newValue;
+                              fontWeight = lista[int.parse(dropdownValue)];
+                            });
+                          },
+                          items: elementi
+                              .map((value) => new DropdownMenuItem<String>(
+                                    value: value.toString(),
+                                    child: Text(value.toString()),
+                                  ))
+                              .toList(),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _topController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura Superiore",
+                            hintStyle: TextStyle(
+                              fontSize: 21.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Superiore",
+                            labelStyle: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Top": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _bottomController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura inferiore",
+                            hintStyle: TextStyle(
+                              fontSize: 21.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Inferiore",
+                            labelStyle: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Bottom": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _rightController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura destra",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Destra",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Right": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _leftController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura sinistra",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Sinistra",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Left": value});
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                actions: [
+                  CupertinoDialogAction(
+                    child: Text(
+                      "CONFERMA",
+                      style: TextStyle(
+                        fontSize: 21,
+                      ),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        setState(() {
+                          _audioController.play("sounds/addedElement.mp4");
+                          widgetInfo.addAll({"FontWeight": fontWeight});
+                          Key chiavetta =
+                              Key(random.nextInt(100000000).toString());
+                          keysValue.addAll({chiavetta: index});
+                          container.add(
+                            GestureDetector(
+                              key: chiavetta,
+                              onLongPress: () => selectedWidget(chiavetta),
+                              child: Container(
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    top: double.parse(widgetInfo["Top"]),
+                                    bottom: double.parse(widgetInfo["Bottom"]),
+                                    left: double.parse(widgetInfo["Left"]),
+                                    right: double.parse(widgetInfo["Right"]),
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      launch(widgetInfo["Link"]);
+                                    },
+                                    child: Text(
+                                      widgetInfo["Text"] == null
+                                          ? widgetInfo["Link"]
+                                          : widgetInfo["Text"],
+                                      style: TextStyle(
+                                        fontSize:
+                                            double.parse(widgetInfo["Size"]),
+                                        fontWeight: widgetInfo["FontWeight"],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                          articleContainer.addAll({
+                            chiavetta: Padding(
+                              padding: EdgeInsets.only(
+                                top: double.parse(widgetInfo["Top"]),
+                                bottom: double.parse(widgetInfo["Bottom"]),
+                                left: double.parse(widgetInfo["Left"]),
+                                right: double.parse(widgetInfo["Right"]),
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  launch(widgetInfo["Link"]);
+                                },
+                                child: Text(
+                                  widgetInfo["Text"] == null
+                                      ? widgetInfo["Link"]
+                                      : widgetInfo["Text"],
+                                  style: TextStyle(
+                                    fontSize: double.parse(widgetInfo["Size"]),
+                                    fontWeight: widgetInfo["FontWeight"],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          });
+                          widgetsInfos.add(widgetInfo);
+                          index++;
+                          widgetInfo.clear();
+                          dropdownValue = 1.toString();
+                          fontWeight = FontWeight.w300;
+                          _textController.clear();
+                          _linkController.clear();
+                          _leftController.clear();
+                          _rightController.clear();
+                          _bottomController.clear();
+                          _topController.clear();
+                          _sizeController.clear();
+                        });
+                        refreshWorkBench();
+                        setState(() {
+                          Navigator.of(context, rootNavigator: true)
+                              .pop('dialog');
+                        });
+                      }
+                    },
+                  ),
+                  CupertinoDialogAction(
+                    child: Text(
+                      "ANNULLA",
+                      style: TextStyle(
+                        fontSize: 21,
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        widgetInfo.clear();
+                        dropdownValue = 1.toString();
+                        fontWeight = FontWeight.w300;
+                        _textController.clear();
+                        _linkController.clear();
+                        _leftController.clear();
+                        _rightController.clear();
+                        _bottomController.clear();
+                        _topController.clear();
+                        _sizeController.clear();
+                      });
+                      refreshWorkBench();
+                      setState(() {
+                        Navigator.of(context, rootNavigator: true)
+                            .pop('dialog');
+                      });
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    } else {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: Text(
+                  "Aggiungi Link",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: Form(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _linkController,
+                          maxLines: 5,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire il link",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Link",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Link": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _textController,
+                          maxLines: 5,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire il testo",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Testo (Opzionale)",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              widgetInfo["Text"] = null;
+                            } else {
+                              widgetInfo["Text"] = value;
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _sizeController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la grandezza del testo",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Grandezza Testo",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Size": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "Scegliere l'intesità dei caratteri",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        DropdownButton<String>(
+                          isExpanded: true,
+                          isDense: true,
+                          value: dropdownValue,
+                          icon: Icon(Icons.arrow_downward),
+                          iconSize: 40,
+                          elevation: 20,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 23,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              dropdownValue = newValue;
+                              fontWeight = lista[int.parse(dropdownValue)];
+                            });
+                          },
+                          items: elementi
+                              .map((value) => new DropdownMenuItem<String>(
+                                    value: value.toString(),
+                                    child: Text(value.toString()),
+                                  ))
+                              .toList(),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _topController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura Superiore",
+                            hintStyle: TextStyle(
+                              fontSize: 21.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Superiore",
+                            labelStyle: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Top": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _bottomController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura inferiore",
+                            hintStyle: TextStyle(
+                              fontSize: 21.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Inferiore",
+                            labelStyle: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Bottom": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _rightController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura destra",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Destra",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Right": value});
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _leftController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "Inserire la spaziatura sinistra",
+                            hintStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            border: OutlineInputBorder(),
+                            labelText: "Spaziatura Sinistra",
+                            labelStyle: TextStyle(
+                              fontSize: 23.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Dati Mancanti";
+                            }
+                            widgetInfo.addAll({"Left": value});
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    child: Text(
+                      "CONFERMA",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        setState(() {
+                          _audioController.play("sounds/addedElement.mp4");
+                          widgetInfo.addAll({"FontWeight": fontWeight});
+                          Key chiavetta =
+                              Key(random.nextInt(100000000).toString());
+                          keysValue.addAll({chiavetta: index});
+                          container.add(
+                            GestureDetector(
+                              key: chiavetta,
+                              onLongPress: () => selectedWidget(chiavetta),
+                              child: Container(
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    top: double.parse(widgetInfo["Top"]),
+                                    bottom: double.parse(widgetInfo["Bottom"]),
+                                    left: double.parse(widgetInfo["Left"]),
+                                    right: double.parse(widgetInfo["Right"]),
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      launch(widgetInfo["Link"]);
+                                    },
+                                    child: Text(
+                                      widgetInfo["Text"] == null
+                                          ? widgetInfo["Link"]
+                                          : widgetInfo["Text"],
+                                      style: TextStyle(
+                                        fontSize:
+                                            double.parse(widgetInfo["Size"]),
+                                        fontWeight: widgetInfo["FontWeight"],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                          articleContainer.addAll({
+                            chiavetta: Padding(
+                              padding: EdgeInsets.only(
+                                top: double.parse(widgetInfo["Top"]),
+                                bottom: double.parse(widgetInfo["Bottom"]),
+                                left: double.parse(widgetInfo["Left"]),
+                                right: double.parse(widgetInfo["Right"]),
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  launch(widgetInfo["Link"]);
+                                },
+                                child: Text(
+                                  widgetInfo["Text"] == null
+                                      ? widgetInfo["Link"]
+                                      : widgetInfo["Text"],
+                                  style: TextStyle(
+                                    fontSize: double.parse(widgetInfo["Size"]),
+                                    fontWeight: widgetInfo["FontWeight"],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          });
+                          widgetsInfos.add(widgetInfo);
+                          index++;
+                          widgetInfo.clear();
+                          dropdownValue = 1.toString();
+                          fontWeight = FontWeight.w300;
+                          _textController.clear();
+                          _linkController.clear();
+                          _leftController.clear();
+                          _rightController.clear();
+                          _bottomController.clear();
+                          _topController.clear();
+                          _sizeController.clear();
+                        });
+                        refreshWorkBench();
+                        setState(() {
+                          Navigator.of(context, rootNavigator: true)
+                              .pop('dialog');
+                        });
+                      }
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                      "ANNULLA",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        widgetInfo.clear();
+                        dropdownValue = 1.toString();
+                        fontWeight = FontWeight.w300;
+                        _textController.clear();
+                        _linkController.clear();
+                        _leftController.clear();
+                        _rightController.clear();
+                        _bottomController.clear();
+                        _topController.clear();
+                        _sizeController.clear();
+                      });
+                      refreshWorkBench();
+                      setState(() {
+                        Navigator.of(context, rootNavigator: true)
+                            .pop('dialog');
+                      });
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    }
+    refreshWorkBench();
+    return;
   }
 
   void addPadding() {
