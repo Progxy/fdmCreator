@@ -13,6 +13,7 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
+import 'package:intl/intl.dart';
 import '../accountInfo.dart';
 import 'badConnection.dart';
 import 'feedback.dart';
@@ -122,6 +123,7 @@ class _CreateContentState extends State<CreateContent> {
     "Stampa"
   ];
   String typeArticle = "Foto";
+  DateTime _dateTime;
 
   managerVideoController() {
     setState(() {
@@ -4493,30 +4495,55 @@ class _CreateContentState extends State<CreateContent> {
                         SizedBox(
                           height: 10,
                         ),
-                        TextFormField(
-                          controller: _dateController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            hintText: "Inserire la data del contenuto",
-                            hintStyle: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                            border: OutlineInputBorder(),
-                            labelText: "Data Contenuto",
-                            labelStyle: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
+                        TextButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                              const Color.fromARGB(255, 24, 37, 102),
                             ),
                           ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Dati Mancanti";
-                            }
-                            d = value;
-                            return null;
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              "Data del contenuto",
+                              style: TextStyle(
+                                fontSize: 23,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          onPressed: () async {
+                            var date = await showDatePicker(
+                              context: context,
+                              initialDate: _dateTime == null
+                                  ? DateTime(
+                                      DateTime.now().year,
+                                      DateTime.now().month - 3,
+                                      DateTime.now().day)
+                                  : _dateTime,
+                              builder: (BuildContext context, Widget child) {
+                                return Theme(
+                                  data: ThemeData.light().copyWith(
+                                    primaryColor:
+                                        const Color.fromARGB(255, 24, 37, 102),
+                                    accentColor:
+                                        const Color.fromARGB(255, 24, 37, 102),
+                                    colorScheme: ColorScheme.light(
+                                        primary: const Color.fromARGB(
+                                            255, 24, 37, 102)),
+                                    buttonTheme: ButtonThemeData(
+                                        textTheme: ButtonTextTheme.primary),
+                                  ),
+                                  child: child,
+                                );
+                              },
+                              firstDate: DateTime(DateTime.now().year,
+                                  DateTime.now().month - 3, DateTime.now().day),
+                              lastDate: DateTime(2100),
+                            );
+                            final DateFormat formatter =
+                                DateFormat('dd-MM-yyyy');
+                            d = formatter.format(date);
                           },
                         ),
                         SizedBox(
@@ -4636,30 +4663,55 @@ class _CreateContentState extends State<CreateContent> {
                         SizedBox(
                           height: 10,
                         ),
-                        TextFormField(
-                          controller: _dateController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            hintText: "Inserire la data del contenuto",
-                            hintStyle: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                            border: OutlineInputBorder(),
-                            labelText: "Data Contenuto",
-                            labelStyle: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
+                        TextButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                              const Color.fromARGB(255, 24, 37, 102),
                             ),
                           ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Dati Mancanti";
-                            }
-                            d = value;
-                            return null;
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              "Data del contenuto",
+                              style: TextStyle(
+                                fontSize: 23,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          onPressed: () async {
+                            var date = await showDatePicker(
+                              context: context,
+                              initialDate: _dateTime == null
+                                  ? DateTime(
+                                      DateTime.now().year,
+                                      DateTime.now().month - 3,
+                                      DateTime.now().day)
+                                  : _dateTime,
+                              builder: (BuildContext context, Widget child) {
+                                return Theme(
+                                  data: ThemeData.light().copyWith(
+                                    primaryColor:
+                                        const Color.fromARGB(255, 24, 37, 102),
+                                    accentColor:
+                                        const Color.fromARGB(255, 24, 37, 102),
+                                    colorScheme: ColorScheme.light(
+                                        primary: const Color.fromARGB(
+                                            255, 24, 37, 102)),
+                                    buttonTheme: ButtonThemeData(
+                                        textTheme: ButtonTextTheme.primary),
+                                  ),
+                                  child: child,
+                                );
+                              },
+                              firstDate: DateTime(DateTime.now().year,
+                                  DateTime.now().month - 3, DateTime.now().day),
+                              lastDate: DateTime(2100),
+                            );
+                            final DateFormat formatter =
+                                DateFormat('dd-MM-yyyy');
+                            d = formatter.format(date);
                           },
                         ),
                         SizedBox(
@@ -4721,6 +4773,8 @@ class _CreateContentState extends State<CreateContent> {
                           Navigator.of(context, rootNavigator: true)
                               .pop('dialog');
                         });
+                        print(
+                            "title: $title, date: $date, typeArticle: $typeArticle");
                       }
                     },
                   ),
@@ -4732,7 +4786,6 @@ class _CreateContentState extends State<CreateContent> {
       );
     }
     refreshWorkBench();
-    print("title: $title, date : $date, typeArticle : $typeArticle");
     return;
   }
 
