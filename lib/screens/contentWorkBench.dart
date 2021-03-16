@@ -22,8 +22,6 @@ import 'feedback.dart';
 
 class CreateContent extends StatefulWidget {
   static const String routeName = "/createContent";
-  // CreateContent({this.app});
-  // final FirebaseApp app;
   final bool isManager = AccountInfo.isManager;
   final FirebaseDatabase database =
       FirebaseDatabase(app: FirebaseProjectsManager().getSecondary());
