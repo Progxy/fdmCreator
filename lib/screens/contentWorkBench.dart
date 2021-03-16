@@ -13,6 +13,7 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
+import '../accountInfo.dart';
 import 'badConnection.dart';
 import 'feedback.dart';
 
@@ -21,7 +22,7 @@ class CreateContent extends StatefulWidget {
   // CreateContent({this.app});
   // final FirebaseApp app;
   // final FirebaseApp secondaryApp = FirebaseProjectManager().getSecondary();
-  // final bool isManager = AccountInfo.isManager;
+  final bool isManager = AccountInfo.isManager;
 
   @override
   _CreateContentState createState() => _CreateContentState();
@@ -4847,7 +4848,117 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   saveWorkBench() async {
-    //richiedi conferma salvataggio!
+    bool continuare = false;
+    if (Platform.isIOS) {
+      showCupertinoDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return CupertinoAlertDialog(
+                title: Text(
+                  "Confermare il salvataggio ?",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+                content: Text(
+                  widget.isManager
+                      ? "Confermare il salvataggio e la pubblicazione del contenuto ? Proseguendo il contenuto verrà pubblicato e l'area di lavoro ripulita!"
+                      : "Confermare il salvataggio e la richiesta di pubblicazione del contenuto ? Proseguendo verrà richiesta la pubblicazione del contenuto e l'area di lavoro sarà ripulita!",
+                  style: TextStyle(
+                    fontSize: 21,
+                  ),
+                ),
+                actions: [
+                  CupertinoDialogAction(
+                    child: Text(
+                      "Sì",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop('dialog');
+                      continuare = true;
+                    },
+                  ),
+                  CupertinoDialogAction(
+                    child: Text(
+                      "No",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop('dialog');
+                      continuare = false;
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    } else {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: Text(
+                  "Confermare il salvataggio ?",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+                content: Text(
+                  widget.isManager
+                      ? "Confermare il salvataggio e la pubblicazione del contenuto ? Proseguendo il contenuto verrà pubblicato e l'area di lavoro ripulita!"
+                      : "Confermare il salvataggio e la richiesta di pubblicazione del contenuto ? Proseguendo verrà richiesta la pubblicazione del contenuto e l'area di lavoro sarà ripulita!",
+                  style: TextStyle(
+                    fontSize: 21,
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    child: Text(
+                      "Sì",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop('dialog');
+                      continuare = true;
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                      "No",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop('dialog');
+                      continuare = false;
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    }
+    if (!continuare) {
+      return;
+    }
     //ottieni immagine rappresentativa (cercando prima se vada bene tra le immagini già caricate)
     ProgressDialog dialog = new ProgressDialog(context);
     dialog.style(message: 'Salvataggio contenuto...');
