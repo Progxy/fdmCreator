@@ -130,6 +130,9 @@ class _CreateContentState extends State<CreateContent> {
   Widget containerImage;
   bool isALink = false;
 
+  //modifica sicurezza per evitare errori,
+  // soprattutto nei valori di padding e che il link dei video non sia youtube !
+
   managerVideoController() {
     setState(() {
       _videoController.value.isPlaying
@@ -148,13 +151,10 @@ class _CreateContentState extends State<CreateContent> {
     refreshWorkBench();
   }
 
-  //controlla i path
   addMediaToStorage(imagePath) async {
-    print("image path : $imagePath");
     final path = isCamera
         ? imagePath.toString().split("/").last.split("-").last
         : imagePath.toString().split("/").last;
-    print("final path : $path");
     try {
       await firebase_storage.FirebaseStorage.instance
           .ref(path)
@@ -2248,7 +2248,6 @@ class _CreateContentState extends State<CreateContent> {
                             videoControllersInUse
                                 .addAll({chiavetta: _videoController});
                           } else {
-                            print(widgetInfo["VideoLink"]);
                             _videoController = VideoPlayerController.network(
                                 widgetInfo["VideoLink"]);
                             await _videoController.initialize();
@@ -2812,7 +2811,6 @@ class _CreateContentState extends State<CreateContent> {
                             videoControllersInUse
                                 .addAll({chiavetta: _videoController});
                           } else {
-                            print(widgetInfo["VideoLink"]);
                             _videoController = VideoPlayerController.network(
                                 widgetInfo["VideoLink"]);
                             await _videoController.initialize();
@@ -3095,6 +3093,10 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   addLink() {
+    setState(() {
+      widgetInfo.addAll({"Text": null});
+      widgetInfo.addAll({"Link": null});
+    });
     if (Platform.isIOS) {
       showCupertinoDialog(
         barrierDismissible: false,
@@ -3136,8 +3138,9 @@ class _CreateContentState extends State<CreateContent> {
                           validator: (value) {
                             if (value.isEmpty) {
                               return "Dati Mancanti";
+                            } else {
+                              widgetInfo["Link"] = value;
                             }
-                            widgetInfo.addAll({"Link": value});
                             return null;
                           },
                         ),
@@ -3523,8 +3526,9 @@ class _CreateContentState extends State<CreateContent> {
                           validator: (value) {
                             if (value.isEmpty) {
                               return "Dati Mancanti";
+                            } else {
+                              widgetInfo["Link"] = value;
                             }
-                            widgetInfo.addAll({"Link": value});
                             return null;
                           },
                         ),
@@ -3752,6 +3756,7 @@ class _CreateContentState extends State<CreateContent> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
+                        final String link = widgetInfo["Link"];
                         setState(() {
                           _audioController.play("sounds/addedElement.mp4");
                           widgetInfo.addAll({"FontWeight": fontWeight});
@@ -3772,7 +3777,7 @@ class _CreateContentState extends State<CreateContent> {
                                   ),
                                   child: GestureDetector(
                                     onTap: () {
-                                      launch(widgetInfo["Link"]);
+                                      launch(link);
                                     },
                                     child: Text(
                                       widgetInfo["Text"] == null
@@ -4897,7 +4902,6 @@ class _CreateContentState extends State<CreateContent> {
             ),
           ),
         );
-        //save in database the video's link
       }
       return;
     } catch (e) {
@@ -4909,6 +4913,7 @@ class _CreateContentState extends State<CreateContent> {
   saveOnDatabase(String title, String date, String typeArticle,
       String posterImage, Map container) async {
     final contentContainer = container.values.toList();
+    //save in database the video's link
     try {
       var databaseReference = widget.database.reference().child(typeArticle);
       databaseReference.set({
