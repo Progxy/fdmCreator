@@ -7,6 +7,7 @@ import 'package:fdmCreator/firebaseProjectsManager.dart';
 import 'package:fdmCreator/screens/mainDrawer.dart';
 import 'package:fdmCreator/screens/utilizzo.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,8 +24,9 @@ class CreateContent extends StatefulWidget {
   static const String routeName = "/createContent";
   // CreateContent({this.app});
   // final FirebaseApp app;
-  final FirebaseApp secondaryApp = FirebaseProjectsManager().getSecondary();
   final bool isManager = AccountInfo.isManager;
+  final FirebaseDatabase database =
+      FirebaseDatabase(app: FirebaseProjectsManager().getSecondary());
 
   @override
   _CreateContentState createState() => _CreateContentState();
@@ -4908,8 +4910,20 @@ class _CreateContentState extends State<CreateContent> {
 
   saveOnDatabase(String title, String date, String typeArticle,
       String posterImage, Map container) async {
-    final contentContainer = container.keys.toList();
-    return true;
+    final contentContainer = container.values.toList();
+    try {
+      var databaseReference = widget.database.reference().child(typeArticle);
+      databaseReference.set({
+        "Title": title,
+        "Date": date,
+        "PosterImage": posterImage,
+        "Content": contentContainer,
+      });
+      return true;
+    } catch (e) {
+      print("An error occurred while posting on database : $e");
+      return false;
+    }
   }
 
   getPosterImage() async {
