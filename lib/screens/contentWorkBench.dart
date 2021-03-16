@@ -5663,8 +5663,6 @@ class _CreateContentState extends State<CreateContent> {
     await getPosterImage();
     final resultDb = await saveOnDatabase(
         title, date, typeArticle, imageChoosenDropDown, articleContainer);
-    //show result for admin or subscribed
-    print(resultDb);
     setState(() {
       _audioController.play("sounds/saveNotification.mp3");
       container.clear();
@@ -5677,6 +5675,88 @@ class _CreateContentState extends State<CreateContent> {
       _videoControllerSecondary = null;
     });
     await dialog.hide();
+    if (Platform.isIOS) {
+      showCupertinoDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return CupertinoAlertDialog(
+                title: Text(
+                  "Esito Salvataggio",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+                content: Text(
+                  resultDb
+                      ? "Salvataggio completato con successo !"
+                      : "Ops... Si è verificato un'errore durante il salvataggio !",
+                  style: TextStyle(
+                    fontSize: 21,
+                  ),
+                ),
+                actions: [
+                  CupertinoDialogAction(
+                    child: Text(
+                      "OK",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop('dialog');
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    } else {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: Text(
+                  "Esito Salvataggio",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+                content: Text(
+                  resultDb
+                      ? "Salvataggio completato con successo !"
+                      : "Ops... Si è verificato un'errore durante il salvataggio !",
+                  style: TextStyle(
+                    fontSize: 21,
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    child: Text(
+                      "OK",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop('dialog');
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    }
+
     return;
   }
 
