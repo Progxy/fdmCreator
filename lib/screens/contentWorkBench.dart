@@ -4906,9 +4906,10 @@ class _CreateContentState extends State<CreateContent> {
     }
   }
 
-  void saveOnDatabase(String title, String date, String typeArticle,
-      String posterImage, Map container) {
-    print("implement saveOnDatabase!");
+  saveOnDatabase(String title, String date, String typeArticle,
+      String posterImage, Map container) async {
+    final contentContainer = container.keys.toList();
+    return true;
   }
 
   getPosterImage() async {
@@ -5646,10 +5647,10 @@ class _CreateContentState extends State<CreateContent> {
       await imageStorage(k, val);
     }
     await getPosterImage();
-    //use title, date, typeArticle, imageChoosenDropDown and ArticleContainer
-    saveOnDatabase(
+    final resultDb = await saveOnDatabase(
         title, date, typeArticle, imageChoosenDropDown, articleContainer);
     //show result for admin or subscribed
+    print(resultDb);
     setState(() {
       _audioController.play("sounds/saveNotification.mp3");
       container.clear();
