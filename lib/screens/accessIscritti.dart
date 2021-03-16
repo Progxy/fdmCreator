@@ -31,7 +31,6 @@ class _AccessIscrittiState extends State<AccessIscritti> {
 
   @override
   Widget build(BuildContext context) {
-    print("secondaryApp : ${widget.secondaryApp}");
     final bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
     final FirebaseDatabase database =
         FirebaseDatabase(app: widget.secondaryApp);

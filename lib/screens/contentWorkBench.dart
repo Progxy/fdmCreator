@@ -4773,8 +4773,6 @@ class _CreateContentState extends State<CreateContent> {
                           Navigator.of(context, rootNavigator: true)
                               .pop('dialog');
                         });
-                        print(
-                            "title: $title, date: $date, typeArticle: $typeArticle");
                       }
                     },
                   ),
