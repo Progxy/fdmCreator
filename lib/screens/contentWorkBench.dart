@@ -4869,6 +4869,7 @@ class _CreateContentState extends State<CreateContent> {
       } else {
         linkStorage.add(link);
         final isSecondary = keyInfo["isSecondary"];
+        print("isSecondary : $isSecondary");
         articleContainer[key] = Padding(
           padding: EdgeInsets.only(
             top: double.parse(widgetInfo["Top"]),
@@ -4945,15 +4946,17 @@ class _CreateContentState extends State<CreateContent> {
   saveOnDatabase(String title, String date, String typeArticle,
       String posterImage, Map container) async {
     final contentContainer = container.values.toList();
+    Map resultUpload = {
+      "Title": title,
+      "Date": date,
+      "PosterImage": posterImage,
+      "Content": contentContainer,
+      "VideoLink": linkStorage,
+    };
+    print("this will be the map to upload : $resultUpload");
     try {
       var databaseReference = widget.database.reference().child(typeArticle);
-      databaseReference.set({
-        "Title": title,
-        "Date": date,
-        "PosterImage": posterImage,
-        "Content": contentContainer,
-        "VideoLink": linkStorage,
-      });
+      databaseReference.set(resultUpload);
       return true;
     } catch (e) {
       print("An error occurred while posting on database : $e");
@@ -5368,22 +5371,12 @@ class _CreateContentState extends State<CreateContent> {
                                     "Scegli Foto Galleria";
                                 imageChoosenDropDown = widgetInfo["ImagePath"];
                                 isALink = false;
-                                containerImage = Image.network(
-                                  imageChoosenDropDown,
+                                containerImage = Image.file(
+                                  result,
                                   fit: BoxFit.fitWidth,
                                   alignment: Alignment.topCenter,
                                   height: 200,
                                   width: 200,
-                                  errorBuilder: (BuildContext context,
-                                      Object exception, StackTrace stackTrace) {
-                                    return Image.asset(
-                                      "assets/images/error_image.png",
-                                      fit: BoxFit.fitWidth,
-                                      alignment: Alignment.topCenter,
-                                      width: 200,
-                                      height: 200,
-                                    );
-                                  },
                                 );
                               } else {
                                 descriptionButtonCamera = "Scatta Foto";
@@ -5427,22 +5420,12 @@ class _CreateContentState extends State<CreateContent> {
                                 descriptionButtonCamera = "Scatta Foto";
                                 imageChoosenDropDown = widgetInfo["ImagePath"];
                                 isALink = false;
-                                containerImage = Image.network(
-                                  imageChoosenDropDown,
+                                containerImage = Image.file(
+                                  result,
                                   fit: BoxFit.fitWidth,
                                   alignment: Alignment.topCenter,
                                   height: 200,
                                   width: 200,
-                                  errorBuilder: (BuildContext context,
-                                      Object exception, StackTrace stackTrace) {
-                                    return Image.asset(
-                                      "assets/images/error_image.png",
-                                      fit: BoxFit.fitWidth,
-                                      alignment: Alignment.topCenter,
-                                      width: 200,
-                                      height: 200,
-                                    );
-                                  },
                                 );
                               } else {
                                 descriptionButtonGallery =
@@ -5682,9 +5665,10 @@ class _CreateContentState extends State<CreateContent> {
         },
       );
     }
-    print("valore continuare : $continuare");
+    ProgressDialog dialog = new ProgressDialog(context);
+    dialog.style(message: 'Salvataggio contenuto...');
+    await dialog.show();
     if (!continuare) {
-      print("return");
       return;
     }
     final List values = imagesStorage.values.toList();
@@ -5694,9 +5678,8 @@ class _CreateContentState extends State<CreateContent> {
       var val = values[index];
       await imageStorage(k, val);
     }
+    await dialog.hide();
     await getPosterImage();
-    ProgressDialog dialog = new ProgressDialog(context);
-    dialog.style(message: 'Salvataggio contenuto...');
     await dialog.show();
     final resultDb = await saveOnDatabase(
         title, date, typeArticle, imageChoosenDropDown, articleContainer);
