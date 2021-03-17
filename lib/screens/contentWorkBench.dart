@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 import 'dart:math';
 
@@ -129,7 +130,7 @@ class _CreateContentState extends State<CreateContent> {
   String imageChoosenDropDown = "";
   Widget containerImage;
   bool isALink = false;
-
+  List linkStorage = [];
   //modifica sicurezza per evitare errori,
   // soprattutto nei valori di padding e che il link dei video non sia youtube !
 
@@ -4836,6 +4837,7 @@ class _CreateContentState extends State<CreateContent> {
           ),
         );
       } else {
+        linkStorage.add(link);
         final isSecondary = keyInfo["isSecondary"];
         articleContainer[key] = Padding(
           padding: EdgeInsets.only(
@@ -4913,7 +4915,6 @@ class _CreateContentState extends State<CreateContent> {
   saveOnDatabase(String title, String date, String typeArticle,
       String posterImage, Map container) async {
     final contentContainer = container.values.toList();
-    //save in database the video's link
     try {
       var databaseReference = widget.database.reference().child(typeArticle);
       databaseReference.set({
@@ -4921,6 +4922,7 @@ class _CreateContentState extends State<CreateContent> {
         "Date": date,
         "PosterImage": posterImage,
         "Content": contentContainer,
+        "VideoLink": linkStorage,
       });
       return true;
     } catch (e) {
