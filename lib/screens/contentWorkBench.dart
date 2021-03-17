@@ -126,7 +126,7 @@ class _CreateContentState extends State<CreateContent> {
   String typeArticle = "Foto";
   DateTime _dateTime;
   List<String> imagesChoosen = [];
-  String imageChoosenDropDown = "";
+  var imageChoosenDropDown = "";
   Widget containerImage = Image.network(
     "statrt.com",
     fit: BoxFit.fitWidth,
@@ -5372,7 +5372,7 @@ class _CreateContentState extends State<CreateContent> {
                                 imageChoosenDropDown = widgetInfo["ImagePath"];
                                 isALink = false;
                                 containerImage = Image.file(
-                                  result,
+                                  File(imageChoosenDropDown),
                                   fit: BoxFit.fitWidth,
                                   alignment: Alignment.topCenter,
                                   height: 200,
@@ -5421,7 +5421,7 @@ class _CreateContentState extends State<CreateContent> {
                                 imageChoosenDropDown = widgetInfo["ImagePath"];
                                 isALink = false;
                                 containerImage = Image.file(
-                                  result,
+                                  File(imageChoosenDropDown),
                                   fit: BoxFit.fitWidth,
                                   alignment: Alignment.topCenter,
                                   height: 200,
