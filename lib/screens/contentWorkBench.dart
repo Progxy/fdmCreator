@@ -148,7 +148,7 @@ class _CreateContentState extends State<CreateContent> {
   List linkStorage = [];
   //modifica sicurezza per evitare errori,
   // soprattutto nei valori di padding e che il link dei video non sia youtube !
-
+  //e anche la validità dei link inseriti
   managerVideoController() {
     setState(() {
       _videoController.value.isPlaying
@@ -4807,7 +4807,7 @@ class _CreateContentState extends State<CreateContent> {
                       ),
                     ),
                     onPressed: () {
-                      if (_formKey.currentState.validate()) {
+                      if (_formKey.currentState.validate() && d.isNotEmpty) {
                         setState(() {
                           _titleController.clear();
                           _dateController.clear();
@@ -4869,7 +4869,6 @@ class _CreateContentState extends State<CreateContent> {
       } else {
         linkStorage.add(link);
         final isSecondary = keyInfo["isSecondary"];
-        print("isSecondary : $isSecondary");
         articleContainer[key] = Padding(
           padding: EdgeInsets.only(
             top: double.parse(widgetInfo["Top"]),
@@ -4935,6 +4934,7 @@ class _CreateContentState extends State<CreateContent> {
             ),
           ),
         );
+        print("article : ${articleContainer[key]}");
       }
       return;
     } catch (e) {
