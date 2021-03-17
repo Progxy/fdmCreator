@@ -4836,113 +4836,107 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   imageStorage(key, imagePath) async {
-    try {
-      final keyInfo = articleContainer[key];
-      final link = await addMediaToStorage(imagePath);
-      final top = keyInfo["Top"];
-      final bottom = keyInfo["Bottom"];
-      final left = keyInfo["Left"];
-      final right = keyInfo["Right"];
-      final isVideo = keyInfo["isVideo"];
-      if (!isVideo) {
-        imagesChoosen.add(link);
-        imageChoosenDropDown = link;
-        articleContainer[key] = Padding(
-          padding: EdgeInsets.only(
-            top: double.parse(top),
-            bottom: double.parse(bottom),
-            left: double.parse(left),
-            right: double.parse(right),
-          ),
-          child: Image.network(
-            link,
-            fit: BoxFit.fitWidth,
-            alignment: Alignment.topCenter,
-            errorBuilder: (BuildContext context, Object exception,
-                StackTrace stackTrace) {
-              return Image.asset(
-                "assets/images/error_image.png",
-                fit: BoxFit.fitWidth,
-                alignment: Alignment.topCenter,
-              );
-            },
-          ),
-        );
-      } else {
-        linkStorage.add(link);
-        final isSecondary = keyInfo["isSecondary"];
-        articleContainer[key] = Padding(
-          padding: EdgeInsets.only(
-            top: double.parse(widgetInfo["Top"]),
-            bottom: double.parse(widgetInfo["Bottom"]),
-            left: double.parse(widgetInfo["Left"]),
-            right: double.parse(widgetInfo["Right"]),
-          ),
-          child: GestureDetector(
-            onTap: isSecondary
-                ? () => managerVideocontrollerSecondary()
-                : () => managerVideoController(),
-            child: Container(
-              child: isSecondary
-                  ? _videoControllerSecondary.value.initialized
-                      ? AspectRatio(
-                          aspectRatio:
-                              _videoControllerSecondary.value.aspectRatio,
-                          child: Stack(
-                            alignment: Alignment.bottomCenter,
-                            children: <Widget>[
-                              VideoPlayer(_videoControllerSecondary),
-                              VideoProgressIndicator(
-                                _videoControllerSecondary,
-                                allowScrubbing: true,
-                                colors: VideoProgressColors(
-                                  playedColor:
-                                      const Color.fromARGB(255, 24, 37, 102),
-                                  backgroundColor: Colors.white,
-                                ),
+    final keyInfo = articleContainer[key];
+    final link = await addMediaToStorage(imagePath);
+    final top = keyInfo["Top"];
+    final bottom = keyInfo["Bottom"];
+    final left = keyInfo["Left"];
+    final right = keyInfo["Right"];
+    final isVideo = keyInfo["isVideo"];
+    if (!isVideo) {
+      imagesChoosen.add(link);
+      imageChoosenDropDown = link;
+      articleContainer[key] = Padding(
+        padding: EdgeInsets.only(
+          top: double.parse(top),
+          bottom: double.parse(bottom),
+          left: double.parse(left),
+          right: double.parse(right),
+        ),
+        child: Image.network(
+          link,
+          fit: BoxFit.fitWidth,
+          alignment: Alignment.topCenter,
+          errorBuilder:
+              (BuildContext context, Object exception, StackTrace stackTrace) {
+            return Image.asset(
+              "assets/images/error_image.png",
+              fit: BoxFit.fitWidth,
+              alignment: Alignment.topCenter,
+            );
+          },
+        ),
+      );
+    } else {
+      linkStorage.add(link);
+      final isSecondary = keyInfo["isSecondary"];
+      articleContainer[key] = Padding(
+        padding: EdgeInsets.only(
+          top: double.parse(top),
+          bottom: double.parse(bottom),
+          left: double.parse(left),
+          right: double.parse(right),
+        ),
+        child: GestureDetector(
+          onTap: isSecondary
+              ? () => managerVideocontrollerSecondary()
+              : () => managerVideoController(),
+          child: Container(
+            child: isSecondary
+                ? _videoControllerSecondary.value.initialized
+                    ? AspectRatio(
+                        aspectRatio:
+                            _videoControllerSecondary.value.aspectRatio,
+                        child: Stack(
+                          alignment: Alignment.bottomCenter,
+                          children: <Widget>[
+                            VideoPlayer(_videoControllerSecondary),
+                            VideoProgressIndicator(
+                              _videoControllerSecondary,
+                              allowScrubbing: true,
+                              colors: VideoProgressColors(
+                                playedColor:
+                                    const Color.fromARGB(255, 24, 37, 102),
+                                backgroundColor: Colors.white,
                               ),
-                            ],
-                          ),
-                        )
-                      : Container(
-                          color: Colors.black,
-                          height: 200,
-                          width: 200,
-                        )
-                  : _videoController.value.initialized
-                      ? AspectRatio(
-                          aspectRatio: _videoController.value.aspectRatio,
-                          child: Stack(
-                            alignment: Alignment.bottomCenter,
-                            children: <Widget>[
-                              VideoPlayer(_videoController),
-                              VideoProgressIndicator(
-                                _videoController,
-                                allowScrubbing: true,
-                                colors: VideoProgressColors(
-                                  playedColor:
-                                      const Color.fromARGB(255, 24, 37, 102),
-                                  backgroundColor: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : Container(
-                          color: Colors.black,
-                          height: 200,
-                          width: 200,
+                            ),
+                          ],
                         ),
-            ),
+                      )
+                    : Container(
+                        color: Colors.black,
+                        height: 200,
+                        width: 200,
+                      )
+                : _videoController.value.initialized
+                    ? AspectRatio(
+                        aspectRatio: _videoController.value.aspectRatio,
+                        child: Stack(
+                          alignment: Alignment.bottomCenter,
+                          children: <Widget>[
+                            VideoPlayer(_videoController),
+                            VideoProgressIndicator(
+                              _videoController,
+                              allowScrubbing: true,
+                              colors: VideoProgressColors(
+                                playedColor:
+                                    const Color.fromARGB(255, 24, 37, 102),
+                                backgroundColor: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Container(
+                        color: Colors.black,
+                        height: 200,
+                        width: 200,
+                      ),
           ),
-        );
-        print("article : ${articleContainer[key]}");
-      }
-      return;
-    } catch (e) {
-      print("Errore mentre caricavo i dati sul Map : $e");
-      return;
+        ),
+      );
     }
+    return;
   }
 
   saveOnDatabase(String title, String date, String typeArticle,
