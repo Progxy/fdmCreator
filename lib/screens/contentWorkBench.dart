@@ -146,9 +146,11 @@ class _CreateContentState extends State<CreateContent> {
   );
   bool isALink = false;
   List linkStorage = [];
+
   //modifica sicurezza per evitare errori,
   // soprattutto nei valori di padding e che il link dei video non sia youtube !
   //e anche la validità dei link inseriti
+
   managerVideoController() {
     setState(() {
       _videoController.value.isPlaying
