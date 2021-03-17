@@ -64,6 +64,7 @@ class _CreateContentState extends State<CreateContent> {
   final _dateController = TextEditingController();
   final _titleController = TextEditingController();
   var colorEvidence = Colors.white;
+  var containerColorEvidence = Colors.white;
   double _width = 0;
   bool show = false;
   double _left = 0;
@@ -5869,7 +5870,7 @@ class _CreateContentState extends State<CreateContent> {
                                   50,
                               curve: Curves.fastLinearToSlowEaseIn,
                               decoration: BoxDecoration(
-                                color: Color.fromARGB(100, 135, 206, 250),
+                                color: containerColorEvidence,
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(15)),
                                 border: Border.all(
@@ -5904,6 +5905,7 @@ class _CreateContentState extends State<CreateContent> {
                               show = false;
                               _left = MediaQuery.of(context).size.width - 65;
                               colorEvidence = Colors.white;
+                              containerColorEvidence = Colors.white;
                             });
                           },
                         ),
@@ -6010,6 +6012,8 @@ class _CreateContentState extends State<CreateContent> {
                                           MediaQuery.of(context).size.width -
                                               65;
                                       colorEvidence = Colors.blueAccent;
+                                      containerColorEvidence =
+                                          Color.fromARGB(100, 135, 206, 250);
                                     });
                                   },
                                   onDragEnd: (_) {
@@ -6025,6 +6029,7 @@ class _CreateContentState extends State<CreateContent> {
                                                   65) -
                                               _width;
                                       colorEvidence = Colors.white;
+                                      containerColorEvidence = Colors.white;
                                     });
                                   },
                                 ),
