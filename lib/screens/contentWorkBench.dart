@@ -63,8 +63,7 @@ class _CreateContentState extends State<CreateContent> {
   final _linkController = TextEditingController();
   final _dateController = TextEditingController();
   final _titleController = TextEditingController();
-  double _widthEvidence = 0;
-  double _heightEvidence = 0;
+  var colorEvidence = Colors.white;
   double _width = 0;
   bool show = false;
   double _left = 0;
@@ -5864,15 +5863,17 @@ class _CreateContentState extends State<CreateContent> {
                           builder: (BuildContext context, List<String> incoming,
                               List rejected) {
                             return AnimatedContainer(
-                              height: _heightEvidence,
-                              width: _widthEvidence,
+                              height: 150,
+                              width: ((MediaQuery.of(context).size.width * 75) /
+                                      100) -
+                                  50,
                               curve: Curves.fastLinearToSlowEaseIn,
                               decoration: BoxDecoration(
                                 color: Color.fromARGB(100, 135, 206, 250),
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(15)),
                                 border: Border.all(
-                                  color: Colors.blueAccent,
+                                  color: colorEvidence,
                                   width: 3,
                                 ),
                               ),
@@ -5902,8 +5903,7 @@ class _CreateContentState extends State<CreateContent> {
                               _width = 0;
                               show = false;
                               _left = MediaQuery.of(context).size.width - 65;
-                              _heightEvidence = 0;
-                              _widthEvidence = 0;
+                              colorEvidence = Colors.white;
                             });
                           },
                         ),
@@ -6009,12 +6009,7 @@ class _CreateContentState extends State<CreateContent> {
                                       _left =
                                           MediaQuery.of(context).size.width -
                                               65;
-                                      _heightEvidence = 150;
-                                      _widthEvidence =
-                                          ((MediaQuery.of(context).size.width *
-                                                      75) /
-                                                  100) -
-                                              50;
+                                      colorEvidence = Colors.blueAccent;
                                     });
                                   },
                                   onDragEnd: (_) {
@@ -6029,8 +6024,7 @@ class _CreateContentState extends State<CreateContent> {
                                           (MediaQuery.of(context).size.width -
                                                   65) -
                                               _width;
-                                      _heightEvidence = 0;
-                                      _widthEvidence = 0;
+                                      colorEvidence = Colors.white;
                                     });
                                   },
                                 ),
