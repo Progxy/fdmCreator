@@ -127,7 +127,23 @@ class _CreateContentState extends State<CreateContent> {
   DateTime _dateTime;
   List<String> imagesChoosen = [];
   String imageChoosenDropDown = "";
-  Widget containerImage;
+  Widget containerImage = Image.network(
+    "statrt.com",
+    fit: BoxFit.fitWidth,
+    alignment: Alignment.topCenter,
+    height: 200,
+    width: 200,
+    errorBuilder:
+        (BuildContext context, Object exception, StackTrace stackTrace) {
+      return Image.asset(
+        "assets/images/error_image.png",
+        fit: BoxFit.fitWidth,
+        alignment: Alignment.topCenter,
+        width: 200,
+        height: 200,
+      );
+    },
+  );
   bool isALink = false;
   List linkStorage = [];
   //modifica sicurezza per evitare errori,
@@ -4270,8 +4286,18 @@ class _CreateContentState extends State<CreateContent> {
                                     left: double.parse(widgetInfo["Left"]),
                                     right: double.parse(widgetInfo["Right"]),
                                   ),
-                                  child: Text(
-                                      "Questo testo serve solo per capire la posizione della spaziatura e sarà invisibile!"),
+                                  child: Container(
+                                    height: double.parse(widgetInfo["Top"]) +
+                                        double.parse(widgetInfo["Bottom"]),
+                                    child: FittedBox(
+                                      fit: BoxFit.fitHeight,
+                                      child: FittedBox(
+                                        fit: BoxFit.fitWidth,
+                                        child: Text(
+                                            "Questo testo serve solo per capire la posizione della spaziatura e sarà invisibile!"),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -4284,6 +4310,7 @@ class _CreateContentState extends State<CreateContent> {
                                 left: double.parse(widgetInfo["Left"]),
                                 right: double.parse(widgetInfo["Right"]),
                               ),
+                              child: Container(),
                             ),
                           });
                           widgetsInfos.add(widgetInfo);
@@ -4461,6 +4488,7 @@ class _CreateContentState extends State<CreateContent> {
   getInfoArticle() {
     var t = "";
     var d = "";
+    String textButton = "Data del contenuto";
     if (Platform.isIOS) {
       showCupertinoDialog(
         barrierDismissible: false,
@@ -4687,7 +4715,7 @@ class _CreateContentState extends State<CreateContent> {
                           child: FittedBox(
                             fit: BoxFit.fitWidth,
                             child: Text(
-                              "Data del contenuto",
+                              textButton,
                               style: TextStyle(
                                 fontSize: 23,
                                 color: Colors.white,
@@ -4727,6 +4755,9 @@ class _CreateContentState extends State<CreateContent> {
                             final DateFormat formatter =
                                 DateFormat('dd-MM-yyyy');
                             d = formatter.format(date);
+                            setState(() {
+                              textButton = d;
+                            });
                           },
                         ),
                         SizedBox(
@@ -4936,7 +4967,7 @@ class _CreateContentState extends State<CreateContent> {
       widgetInfo.addAll({"ImagePath": null});
     });
     if (Platform.isIOS) {
-      showCupertinoDialog(
+      await showCupertinoDialog(
         barrierDismissible: false,
         context: context,
         builder: (context) {
@@ -5238,7 +5269,7 @@ class _CreateContentState extends State<CreateContent> {
         },
       );
     } else {
-      showDialog(
+      await showDialog(
         barrierDismissible: false,
         context: context,
         builder: (context) {
@@ -5545,7 +5576,7 @@ class _CreateContentState extends State<CreateContent> {
   saveWorkBench() async {
     bool continuare = false;
     if (Platform.isIOS) {
-      showCupertinoDialog(
+      await showCupertinoDialog(
         barrierDismissible: false,
         context: context,
         builder: (context) {
@@ -5598,7 +5629,7 @@ class _CreateContentState extends State<CreateContent> {
         },
       );
     } else {
-      showDialog(
+      await showDialog(
         barrierDismissible: false,
         context: context,
         builder: (context) {
@@ -5651,12 +5682,11 @@ class _CreateContentState extends State<CreateContent> {
         },
       );
     }
+    print("valore continuare : $continuare");
     if (!continuare) {
+      print("return");
       return;
     }
-    ProgressDialog dialog = new ProgressDialog(context);
-    dialog.style(message: 'Salvataggio contenuto...');
-    await dialog.show();
     final List values = imagesStorage.values.toList();
     final List keys = imagesStorage.keys.toList();
     int index = 0;
@@ -5665,6 +5695,9 @@ class _CreateContentState extends State<CreateContent> {
       await imageStorage(k, val);
     }
     await getPosterImage();
+    ProgressDialog dialog = new ProgressDialog(context);
+    dialog.style(message: 'Salvataggio contenuto...');
+    await dialog.show();
     final resultDb = await saveOnDatabase(
         title, date, typeArticle, imageChoosenDropDown, articleContainer);
     setState(() {
