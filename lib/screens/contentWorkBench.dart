@@ -5474,6 +5474,8 @@ class _CreateContentState extends State<CreateContent> {
                               posterImage = imageChoosenDropDown;
                               _linkController.clear();
                               isALink = true;
+                              descriptionButtonGallery = "Scegli Foto Galleria";
+                              descriptionButtonCamera = "Scatta Foto";
                               containerImage = Image.network(
                                 imageChoosenDropDown,
                                 fit: BoxFit.fitWidth,
