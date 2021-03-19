@@ -19,23 +19,36 @@ class AccountInfo {
     isManager = manager;
   }
 
-  setFromUserId(database) async {
-    await database
-        .reference()
-        .child(userId)
-        .child("User")
-        .orderByValue()
-        .once()
-        .then((DataSnapshot snapshot) {
-      LinkedHashMap<dynamic, dynamic> values = snapshot.value;
-      String username;
-      String email;
-      Map<String, String> map =
-          values.map((a, b) => MapEntry(a as String, b as String));
-      map.forEach((k, value) => {username = k});
-      map.forEach((k, value) => {email = value});
-      AccountInfo().setter(username, email, isManager ?? false);
-    });
+  setFromUserId(database, isAManager) async {
+    if (isAManager) {
+      await database
+          .reference()
+          .child(userId + "/User")
+          .once()
+          .then((DataSnapshot snapshot) {
+        final Map map = snapshot.value.map((a, b) => MapEntry(a, b));
+        final username = map.keys.first;
+        final email = map.values.first;
+        AccountInfo().setter(username, email, true);
+      });
+    } else {
+      await database
+          .reference()
+          .child(userId)
+          .child("User")
+          .orderByValue()
+          .once()
+          .then((DataSnapshot snapshot) {
+        LinkedHashMap<dynamic, dynamic> values = snapshot.value;
+        String username;
+        String email;
+        Map<String, String> map =
+            values.map((a, b) => MapEntry(a as String, b as String));
+        map.forEach((k, value) => {username = k});
+        map.forEach((k, value) => {email = value});
+        AccountInfo().setter(username, email, false);
+      });
+    }
   }
 
   resetCredentials() {

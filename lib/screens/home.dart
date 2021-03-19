@@ -11,9 +11,8 @@ import 'mainDrawer.dart';
 
 class Home extends StatefulWidget {
   static const String routeName = "/home";
-  Home({this.defaultApp});
   final FirebaseApp secondaryApp = FirebaseProjectsManager().getSecondary();
-  final FirebaseApp defaultApp;
+  final FirebaseApp defaultApp = Firebase.app();
 
   @override
   _HomeState createState() => _HomeState();
@@ -34,7 +33,7 @@ class _HomeState extends State<Home> {
 
     getAccount() async {
       if (name == "Login") {
-        await AccountInfo().setFromUserId(database);
+        await AccountInfo().setFromUserId(database, isManager);
         setState(() {
           name = AccountInfo.name;
         });
@@ -47,11 +46,14 @@ class _HomeState extends State<Home> {
         iconTheme: IconThemeData(
           color: Color.fromARGB(255, 192, 192, 192),
         ),
-        title: Text(
-          "Home di $name",
-          style: TextStyle(
-            color: Color.fromARGB(255, 192, 192, 192),
-            fontWeight: FontWeight.w700,
+        title: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Text(
+            "Home di $name",
+            style: TextStyle(
+              color: Color.fromARGB(255, 192, 192, 192),
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
         actions: [

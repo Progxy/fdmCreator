@@ -55,6 +55,8 @@ class _NotificationsCreatorState extends State<NotificationsCreator> {
     }
   }
 
+  verifyTitleExist(String title) async {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -169,6 +171,10 @@ class _NotificationsCreatorState extends State<NotificationsCreator> {
                         final title = _titleController.text.trim();
                         final text = _textController.text.trim();
                         final result = pushNotification(title, text);
+                        if (result.runtimeType == String) {
+                          print("error : $result");
+                          return;
+                        }
                         if (!result) {
                           if (Platform.isIOS) {
                             showCupertinoDialog(

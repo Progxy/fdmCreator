@@ -22,6 +22,7 @@ class _MainDrawerState extends State<MainDrawer> {
   final String email = AccountInfo.email;
   final bool isManager = AccountInfo.isManager;
   GlobalKey _finalWidgetKey = GlobalKey();
+  GlobalKey _widgetKey = GlobalKey();
   double heightArea = 0.0;
   getPosition() {
     double height = MediaQuery.of(context).size.height;
@@ -29,7 +30,12 @@ class _MainDrawerState extends State<MainDrawer> {
     Offset position = box.localToGlobal(Offset.zero);
     double y = position.dy;
     setState(() {
-      heightArea = height - (y + 115);
+      heightArea = height - y;
+      if (isManager) {
+        heightArea -= 245;
+      } else {
+        heightArea -= 115;
+      }
     });
   }
 
@@ -104,7 +110,7 @@ class _MainDrawerState extends State<MainDrawer> {
               },
             ),
             ListTile(
-              key: _finalWidgetKey,
+              key: isManager ? _widgetKey : _finalWidgetKey,
               title: Text("Crea Contenuti", style: TextStyle(fontSize: 23)),
               onTap: () async {
                 var connectivityResult =
@@ -120,7 +126,6 @@ class _MainDrawerState extends State<MainDrawer> {
             ),
             isManager
                 ? ListTile(
-                    key: _finalWidgetKey,
                     title: Text("Recupero Password",
                         style: TextStyle(fontSize: 23)),
                     onTap: () async {
@@ -142,7 +147,6 @@ class _MainDrawerState extends State<MainDrawer> {
                   ),
             isManager
                 ? ListTile(
-                    key: _finalWidgetKey,
                     title:
                         Text("Cambio Password", style: TextStyle(fontSize: 23)),
                     onTap: () async {

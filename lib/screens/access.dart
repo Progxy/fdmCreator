@@ -36,7 +36,7 @@ class _AccessState extends State<Access> {
     final FirebaseDatabase database = FirebaseDatabase(app: widget.app);
     final firebaseUser = context.watch<User>();
     if (firebaseUser != null) {
-      AccountInfo().setUser(firebaseUser.uid, false);
+      AccountInfo().setUser(firebaseUser.uid, true);
       return Home();
     }
 
@@ -150,12 +150,7 @@ class _AccessState extends State<Access> {
                               .orderByValue()
                               .once()
                               .then((DataSnapshot snapshot) {
-                            LinkedHashMap<dynamic, dynamic> values =
-                                snapshot.value;
-                            String username;
-                            Map<String, String> map = values.map(
-                                (a, b) => MapEntry(a as String, b as String));
-                            map.forEach((k, value) => {username = k});
+                            final String username = snapshot.value;
                             AccountInfo().setter(username, email, true);
                             Navigator.push(
                                 context,
