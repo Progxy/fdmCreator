@@ -5660,6 +5660,7 @@ class _CreateContentState extends State<CreateContent> {
     for (var k in keys) {
       var val = values[index];
       await imageStorage(k, val);
+      index++;
     }
     await dialog.hide();
     await getPosterImage();
