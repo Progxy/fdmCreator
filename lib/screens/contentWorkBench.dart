@@ -4941,7 +4941,7 @@ class _CreateContentState extends State<CreateContent> {
 
   saveOnDatabase(String title, String date, String typeArticle,
       String posterImage, Map container) async {
-    final contentContainer = container.values.toList();
+    final contentContainer = container.values.toList().toString();
     Map resultUpload = {
       "Title": title,
       "Date": date,
@@ -5365,7 +5365,8 @@ class _CreateContentState extends State<CreateContent> {
                                 descriptionButtonCamera = "Foto Selezionata";
                                 descriptionButtonGallery =
                                     "Scegli Foto Galleria";
-                                imageChoosenDropDown = widgetInfo["ImagePath"];
+                                imageChoosenDropDown =
+                                    widgetInfo["ImagePath"].toString();
                                 isALink = false;
                                 containerImage = Image.file(
                                   File(imageChoosenDropDown),
@@ -5414,7 +5415,8 @@ class _CreateContentState extends State<CreateContent> {
                                 _linkController.clear();
                                 descriptionButtonGallery = "Foto Selezionata";
                                 descriptionButtonCamera = "Scatta Foto";
-                                imageChoosenDropDown = widgetInfo["ImagePath"];
+                                imageChoosenDropDown =
+                                    widgetInfo["ImagePath"].toString();
                                 isALink = false;
                                 containerImage = Image.file(
                                   File(imageChoosenDropDown),
@@ -5521,8 +5523,8 @@ class _CreateContentState extends State<CreateContent> {
                       if (_formKey.currentState.validate()) {
                         String newLink;
                         if (!isALink) {
-                          newLink =
-                              await addMediaToStorage(imageChoosenDropDown);
+                          newLink = await addMediaToStorage(
+                              File(imageChoosenDropDown));
                         }
                         setState(() {
                           if (!isALink) {
