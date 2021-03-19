@@ -163,7 +163,7 @@ class _NotificationsCreatorState extends State<NotificationsCreator> {
                     ),
                   ),
                   SizedBox(
-                    height: 25,
+                    height: 40,
                   ),
                   TextButton(
                     style: ButtonStyle(
@@ -382,7 +382,7 @@ class _NotificationsCreatorState extends State<NotificationsCreator> {
               ),
             ),
             SizedBox(
-              height: 35,
+              height: 65,
             ),
             Image.asset(
               "assets/images/don_milani.png",
