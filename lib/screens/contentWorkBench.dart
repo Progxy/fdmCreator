@@ -5336,7 +5336,7 @@ class _CreateContentState extends State<CreateContent> {
                             refreshWorkBench();
                           },
                           validator: (value) {
-                            if (posterImage.isEmpty) {
+                            if (posterImage.toString().isEmpty) {
                               return "Dati Mancanti";
                             } else if (value.isNotEmpty) {
                               posterImage = widgetInfo["ImageLink"];
@@ -5372,7 +5372,6 @@ class _CreateContentState extends State<CreateContent> {
                                   posterImage,
                                   fit: BoxFit.fitWidth,
                                   alignment: Alignment.topCenter,
-                                  height: 200,
                                   width: 200,
                                 );
                               } else {
@@ -5421,7 +5420,6 @@ class _CreateContentState extends State<CreateContent> {
                                   posterImage,
                                   fit: BoxFit.fitWidth,
                                   alignment: Alignment.topCenter,
-                                  height: 200,
                                   width: 200,
                                 );
                               } else {
@@ -5480,7 +5478,6 @@ class _CreateContentState extends State<CreateContent> {
                                 imageChoosenDropDown,
                                 fit: BoxFit.fitWidth,
                                 alignment: Alignment.topCenter,
-                                height: 200,
                                 width: 200,
                                 errorBuilder: (BuildContext context,
                                     Object exception, StackTrace stackTrace) {
