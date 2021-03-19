@@ -1529,6 +1529,7 @@ class _CreateContentState extends State<CreateContent> {
                             final result = value.isNotEmpty;
                             refreshWorkBench();
                             setState(() {
+                              error = "";
                               if (result) {
                                 descriptionButtonCamera = "Scegli Foto";
                                 descriptionButtonGallery =
@@ -1747,6 +1748,17 @@ class _CreateContentState extends State<CreateContent> {
                             return null;
                           },
                         ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          error,
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.red,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -1759,8 +1771,21 @@ class _CreateContentState extends State<CreateContent> {
                         fontSize: 20,
                       ),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState.validate()) {
+                        bool isValidLink =
+                            await verifyLink(widgetInfo["ImageLink"]);
+                        if (!isValidLink) {
+                          setState(() {
+                            _linkController.clear();
+                            error = "Link Invalido";
+                          });
+                          return;
+                        } else {
+                          setState(() {
+                            error = "";
+                          });
+                        }
                         setState(() {
                           _audioController.play("sounds/addedElement.mp4");
                           Key chiavetta =
@@ -2585,6 +2610,7 @@ class _CreateContentState extends State<CreateContent> {
                             final result = value.isNotEmpty;
                             refreshWorkBench();
                             setState(() {
+                              error = "";
                               if (result) {
                                 descriptionVideoCamera = "Registra Video";
                                 descriptionVideoGallery =
@@ -2805,7 +2831,9 @@ class _CreateContentState extends State<CreateContent> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 15),
+                        SizedBox(
+                          height: 15,
+                        ),
                         Text(
                           error,
                           style: TextStyle(
@@ -2813,7 +2841,7 @@ class _CreateContentState extends State<CreateContent> {
                             color: Colors.red,
                             fontWeight: FontWeight.w300,
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -2835,7 +2863,11 @@ class _CreateContentState extends State<CreateContent> {
                             _linkController.clear();
                             error = "Link Invalido";
                           });
-                          return false;
+                          return;
+                        } else {
+                          setState(() {
+                            error = "";
+                          });
                         }
                         bool isSecondary;
                         Key chiavetta =
@@ -3561,6 +3593,11 @@ class _CreateContentState extends State<CreateContent> {
                               color: Colors.black87,
                             ),
                           ),
+                          onChanged: (value) {
+                            setState(() {
+                              error = "";
+                            });
+                          },
                           validator: (value) {
                             if (value.isEmpty) {
                               return "Dati Mancanti";
@@ -3780,6 +3817,17 @@ class _CreateContentState extends State<CreateContent> {
                             return null;
                           },
                         ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          error,
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.red,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -3792,9 +3840,21 @@ class _CreateContentState extends State<CreateContent> {
                         fontSize: 20,
                       ),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState.validate()) {
                         final String link = widgetInfo["Link"];
+                        bool isValidLink = await verifyLink(link);
+                        if (!isValidLink) {
+                          setState(() {
+                            _linkController.clear();
+                            error = "Link Invalido";
+                          });
+                          return;
+                        } else {
+                          setState(() {
+                            error = "";
+                          });
+                        }
                         setState(() {
                           _audioController.play("sounds/addedElement.mp4");
                           widgetInfo.addAll({"FontWeight": fontWeight});
