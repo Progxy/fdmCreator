@@ -34,12 +34,12 @@ class _HomeState extends State<Home> {
 
     getAccount() async {
       if (name == "Login") {
-        setState(() async {
-          await AccountInfo().setFromUserId(database);
+        await AccountInfo().setFromUserId(database);
+        setState(() {
           name = AccountInfo.name;
         });
-        return name;
       }
+      return name;
     }
 
     return Scaffold(
@@ -75,9 +75,6 @@ class _HomeState extends State<Home> {
           future: getAccount(),
           builder: (context, AsyncSnapshot<dynamic> snapshot) {
             if (snapshot.hasData) {
-              setState(() {
-                name = snapshot.data;
-              });
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.only(
@@ -94,6 +91,8 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               );
+            } else if (snapshot.hasError) {
+              print("Error : ${snapshot.error}");
             }
             return Center(
               child: CircularProgressIndicator(
