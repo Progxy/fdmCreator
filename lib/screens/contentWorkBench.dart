@@ -149,7 +149,7 @@ class _CreateContentState extends State<CreateContent> {
   List linkStorage = [];
   String error = "";
 
-  //TODO : modifica sicurezza per evitare errori, soprattutto che il link dei video non sia youtube ! E anche la validità dei link inseriti ! Fare il sync tra ios e android !
+  //TODO: Fare il sync tra ios e android !
 
   verifyLink(link) async {
     final response = await http.head(link);
