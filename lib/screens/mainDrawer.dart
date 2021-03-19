@@ -115,37 +115,72 @@ class _MainDrawerState extends State<MainDrawer> {
                 }
               },
             ),
-            // if (isManager){
-            // ListTile(
-            //   key: _finalWidgetKey,
-            //   title: Text("Crea Contenuti", style: TextStyle(fontSize: 23)),
-            //   onTap: () async {
-            //     var connectivityResult =
-            //         await (Connectivity().checkConnectivity());
-            //     if (connectivityResult == ConnectivityResult.none) {
-            //       Navigator.push(context,
-            //           MaterialPageRoute(builder: (context) => BadConnection()));
-            //     } else {
-            //       Navigator.pushReplacementNamed(
-            //           context, RecuperoPassword.routeName);
-            //     }
-            //   },
-            // ),ListTile(
-            //   key: _finalWidgetKey,
-            //   title: Text("Crea Contenuti", style: TextStyle(fontSize: 23)),
-            //   onTap: () async {
-            //     var connectivityResult =
-            //         await (Connectivity().checkConnectivity());
-            //     if (connectivityResult == ConnectivityResult.none) {
-            //       Navigator.push(context,
-            //           MaterialPageRoute(builder: (context) => BadConnection()));
-            //     } else {
-            //       Navigator.pushReplacementNamed(
-            //           context, CambioPassword.routeName);
-            //     }
-            //   },
-            // ),
-            // }
+            isManager
+                ? ListTile(
+                    key: _finalWidgetKey,
+                    title:
+                        Text("Crea Contenuti", style: TextStyle(fontSize: 23)),
+                    onTap: () async {
+                      var connectivityResult =
+                          await (Connectivity().checkConnectivity());
+                      if (connectivityResult == ConnectivityResult.none) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BadConnection()));
+                      } else {
+                        Navigator.pushReplacementNamed(
+                            context, RecuperoPassword.routeName);
+                      }
+                    },
+                  )
+                : SizedBox(
+                    height: 1,
+                  ),
+            isManager
+                ? ListTile(
+                    key: _finalWidgetKey,
+                    title:
+                        Text("Crea Contenuti", style: TextStyle(fontSize: 23)),
+                    onTap: () async {
+                      var connectivityResult =
+                          await (Connectivity().checkConnectivity());
+                      if (connectivityResult == ConnectivityResult.none) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BadConnection()));
+                      } else {
+                        Navigator.pushReplacementNamed(
+                            context, CambioPassword.routeName);
+                      }
+                    },
+                  )
+                : SizedBox(
+                    height: 1,
+                  ),
+            isManager
+                ? ListTile(
+                    key: _finalWidgetKey,
+                    title:
+                        Text("Crea Contenuti", style: TextStyle(fontSize: 23)),
+                    onTap: () async {
+                      var connectivityResult =
+                          await (Connectivity().checkConnectivity());
+                      if (connectivityResult == ConnectivityResult.none) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BadConnection()));
+                      } else {
+                        Navigator.pushReplacementNamed(
+                            context, NotificationsCreator.routeName);
+                      }
+                    },
+                  )
+                : SizedBox(
+                    height: 1,
+                  ),
             Padding(
               padding: EdgeInsets.only(
                 top: heightArea,
