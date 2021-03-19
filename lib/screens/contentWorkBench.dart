@@ -149,6 +149,10 @@ class _CreateContentState extends State<CreateContent> {
 
   //TODO : modifica sicurezza per evitare errori, soprattutto che il link dei video non sia youtube ! E anche la validità dei link inseriti !
 
+  void verifyLink() {
+    print("Implement verify Link ");
+  }
+
   managerVideoController() {
     setState(() {
       _videoController.value.isPlaying
