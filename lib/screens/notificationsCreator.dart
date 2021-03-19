@@ -102,68 +102,88 @@ class _NotificationsCreatorState extends State<NotificationsCreator> {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 15,
+                    height: 25,
                   ),
-                  TextFormField(
-                    controller: _titleController,
-                    decoration: const InputDecoration(
-                      hintText: "Inserire il titolo",
-                      hintStyle: TextStyle(
-                        fontSize: 23.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    child: TextFormField(
+                      controller: _titleController,
+                      decoration: const InputDecoration(
+                        hintText: "Inserire il titolo",
+                        hintStyle: TextStyle(
+                          fontSize: 23.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                        border: OutlineInputBorder(),
+                        labelText: "Titolo Notifica",
+                        labelStyle: TextStyle(
+                          fontSize: 23.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
                       ),
-                      border: OutlineInputBorder(),
-                      labelText: "Titolo Notifica",
-                      labelStyle: TextStyle(
-                        fontSize: 23.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Dati Mancanti";
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Dati Mancanti";
-                      }
-                      return null;
-                    },
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 30,
                   ),
-                  TextFormField(
-                    controller: _textController,
-                    maxLines: 5,
-                    decoration: const InputDecoration(
-                      hintText: "Inserire il testo",
-                      hintStyle: TextStyle(
-                        fontSize: 23.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    child: TextFormField(
+                      controller: _textController,
+                      maxLines: 5,
+                      decoration: const InputDecoration(
+                        hintText: "Inserire il testo",
+                        hintStyle: TextStyle(
+                          fontSize: 23.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                        border: OutlineInputBorder(),
+                        labelText: "Testo Notifica",
+                        labelStyle: TextStyle(
+                          fontSize: 23.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
                       ),
-                      border: OutlineInputBorder(),
-                      labelText: "Testo Notifica",
-                      labelStyle: TextStyle(
-                        fontSize: 23.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Dati Mancanti";
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Dati Mancanti";
-                      }
-                      return null;
-                    },
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 25,
                   ),
                   TextButton(
-                    child: Text(
-                      "CREA NOTIFICA",
-                      style: TextStyle(
-                        fontSize: 20,
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                        const Color.fromARGB(255, 24, 37, 102),
+                      ),
+                    ),
+                    child: Container(
+                      height: 40,
+                      width: 200,
+                      child: FittedBox(
+                        fit: BoxFit.fitWidth,
+                        child: Text(
+                          "CREA NOTIFICA",
+                          style: TextStyle(
+                            fontSize: 23,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
                     onPressed: () {
