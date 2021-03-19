@@ -16,6 +16,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 import '../accountInfo.dart';
 import 'badConnection.dart';
 import 'feedback.dart';
@@ -146,11 +147,17 @@ class _CreateContentState extends State<CreateContent> {
   );
   bool isALink = false;
   List linkStorage = [];
+  String error = "";
 
-  //TODO : modifica sicurezza per evitare errori, soprattutto che il link dei video non sia youtube ! E anche la validità dei link inseriti !
+  //TODO : modifica sicurezza per evitare errori, soprattutto che il link dei video non sia youtube ! E anche la validità dei link inseriti ! Fare il sync tra ios e android !
 
-  void verifyLink() {
-    print("Implement verify Link ");
+  verifyLink(link) async {
+    final response = await http.head(link);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   managerVideoController() {
@@ -2590,6 +2597,8 @@ class _CreateContentState extends State<CreateContent> {
                             final imagePath = widgetInfo["VideoPath"];
                             if (value.isEmpty && (imagePath == null)) {
                               return "Dati Mancanti";
+                            } else if (value.contains("youtube")) {
+                              return "Link Invalido";
                             } else if (value.isNotEmpty) {
                               widgetInfo["VideoLink"] = value;
                               widgetInfo["VideoPath"] = null;
@@ -2796,6 +2805,15 @@ class _CreateContentState extends State<CreateContent> {
                             return null;
                           },
                         ),
+                        SizedBox(height: 15),
+                        Text(
+                          error,
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.red,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -2810,6 +2828,15 @@ class _CreateContentState extends State<CreateContent> {
                     ),
                     onPressed: () async {
                       if (_formKey.currentState.validate()) {
+                        bool isValidLink =
+                            await verifyLink(widgetInfo["VideoLink"]);
+                        if (!isValidLink) {
+                          setState(() {
+                            _linkController.clear();
+                            error = "Link Invalido";
+                          });
+                          return false;
+                        }
                         bool isSecondary;
                         Key chiavetta =
                             Key(random.nextInt(100000000).toString());
