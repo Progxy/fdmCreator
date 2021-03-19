@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:audioplayers/audio_cache.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:fdmCreator/firebaseProjectsManager.dart';
