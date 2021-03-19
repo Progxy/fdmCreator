@@ -4948,9 +4948,8 @@ class _CreateContentState extends State<CreateContent> {
       "Date": date,
       "PosterImage": posterImage,
       "Content": contentContainer,
-      "VideoLink": linkStorage,
+      "VideoLink": linkStorage.toString(),
     };
-    print("this will be the map to upload : $resultUpload");
     try {
       var databaseReference = widget.database.reference().child(typeArticle);
       databaseReference.set(resultUpload);
