@@ -121,8 +121,8 @@ class _MainDrawerState extends State<MainDrawer> {
             isManager
                 ? ListTile(
                     key: _finalWidgetKey,
-                    title:
-                        Text("Crea Contenuti", style: TextStyle(fontSize: 23)),
+                    title: Text("Recupero Password",
+                        style: TextStyle(fontSize: 23)),
                     onTap: () async {
                       var connectivityResult =
                           await (Connectivity().checkConnectivity());
@@ -144,7 +144,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 ? ListTile(
                     key: _finalWidgetKey,
                     title:
-                        Text("Crea Contenuti", style: TextStyle(fontSize: 23)),
+                        Text("Cambio Password", style: TextStyle(fontSize: 23)),
                     onTap: () async {
                       var connectivityResult =
                           await (Connectivity().checkConnectivity());
@@ -166,7 +166,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 ? ListTile(
                     key: _finalWidgetKey,
                     title:
-                        Text("Crea Contenuti", style: TextStyle(fontSize: 23)),
+                        Text("Crea Notifica", style: TextStyle(fontSize: 23)),
                     onTap: () async {
                       var connectivityResult =
                           await (Connectivity().checkConnectivity());

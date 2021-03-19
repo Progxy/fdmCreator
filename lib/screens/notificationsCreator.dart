@@ -1,5 +1,7 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:fdmCreator/firebaseProjectsManager.dart';
 import 'package:fdmCreator/screens/utilizzo.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import 'badConnection.dart';
@@ -8,7 +10,8 @@ import 'mainDrawer.dart';
 
 class NotificationsCreator extends StatefulWidget {
   static const String routeName = "/creaNotifica";
-
+  final FirebaseDatabase database =
+      FirebaseDatabase(app: FirebaseProjectsManager().getSecondary());
   @override
   _NotificationsCreatorState createState() => _NotificationsCreatorState();
 }
@@ -43,7 +46,7 @@ class _NotificationsCreatorState extends State<NotificationsCreator> {
             color: Color.fromARGB(255, 192, 192, 192),
           ),
           title: Text(
-            "Crea notifica",
+            "Crea una Notifica",
             style: TextStyle(
               color: Color.fromARGB(255, 192, 192, 192),
               fontWeight: FontWeight.w700,
