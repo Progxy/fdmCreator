@@ -74,20 +74,31 @@ class _HomeState extends State<Home> {
       body: FutureBuilder(
           future: getAccount(),
           builder: (context, AsyncSnapshot<dynamic> snapshot) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  right: 15.0,
-                  left: 15.0,
-                ),
-                child: Text(
-                  "Benvenuto $name nella tua area di Creator, qui potrai creare articoli e altri contenuti per le risorse digitali della Fondazione Don Milani!",
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w800,
+            if (snapshot.hasData) {
+              setState(() {
+                name = snapshot.data;
+              });
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    right: 15.0,
+                    left: 15.0,
                   ),
-                  textAlign: TextAlign.center,
+                  child: Text(
+                    "Benvenuto $name nella tua area di Creator, qui potrai creare articoli e altri contenuti per le risorse digitali della Fondazione Don Milani!",
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w800,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
+              );
+            }
+            return Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 4.0,
+                backgroundColor: Color.fromARGB(255, 24, 37, 102),
               ),
             );
           }),

@@ -127,6 +127,7 @@ class _CreateContentState extends State<CreateContent> {
   DateTime _dateTime;
   List<String> imagesChoosen = [];
   var imageChoosenDropDown = "";
+  var posterImage;
   Widget containerImage = Image.network(
     "statrt.com",
     fit: BoxFit.fitWidth,
@@ -5335,10 +5336,10 @@ class _CreateContentState extends State<CreateContent> {
                             refreshWorkBench();
                           },
                           validator: (value) {
-                            if (imageChoosenDropDown.isEmpty) {
+                            if (posterImage.isEmpty) {
                               return "Dati Mancanti";
                             } else if (value.isNotEmpty) {
-                              imageChoosenDropDown = widgetInfo["ImageLink"];
+                              posterImage = widgetInfo["ImageLink"];
                               isALink = true;
                             }
                             return null;
@@ -5365,11 +5366,10 @@ class _CreateContentState extends State<CreateContent> {
                                 descriptionButtonCamera = "Foto Selezionata";
                                 descriptionButtonGallery =
                                     "Scegli Foto Galleria";
-                                imageChoosenDropDown =
-                                    widgetInfo["ImagePath"].toString();
+                                posterImage = widgetInfo["ImagePath"];
                                 isALink = false;
                                 containerImage = Image.file(
-                                  File(imageChoosenDropDown),
+                                  posterImage,
                                   fit: BoxFit.fitWidth,
                                   alignment: Alignment.topCenter,
                                   height: 200,
@@ -5415,11 +5415,10 @@ class _CreateContentState extends State<CreateContent> {
                                 _linkController.clear();
                                 descriptionButtonGallery = "Foto Selezionata";
                                 descriptionButtonCamera = "Scatta Foto";
-                                imageChoosenDropDown =
-                                    widgetInfo["ImagePath"].toString();
+                                posterImage = widgetInfo["ImagePath"];
                                 isALink = false;
                                 containerImage = Image.file(
-                                  File(imageChoosenDropDown),
+                                  posterImage,
                                   fit: BoxFit.fitWidth,
                                   alignment: Alignment.topCenter,
                                   height: 200,
@@ -5472,6 +5471,7 @@ class _CreateContentState extends State<CreateContent> {
                           onChanged: (String newValue) {
                             setState(() {
                               imageChoosenDropDown = newValue;
+                              posterImage = imageChoosenDropDown;
                               _linkController.clear();
                               isALink = true;
                               containerImage = Image.network(
@@ -5523,12 +5523,11 @@ class _CreateContentState extends State<CreateContent> {
                       if (_formKey.currentState.validate()) {
                         String newLink;
                         if (!isALink) {
-                          newLink = await addMediaToStorage(
-                              File(imageChoosenDropDown));
+                          newLink = await addMediaToStorage(posterImage);
                         }
                         setState(() {
                           if (!isALink) {
-                            imageChoosenDropDown = newLink;
+                            posterImage = newLink;
                           }
                           widgetInfo.clear();
                           _linkController.clear();
@@ -5680,7 +5679,7 @@ class _CreateContentState extends State<CreateContent> {
     await getPosterImage();
     await dialog.show();
     final resultDb = await saveOnDatabase(
-        title, date, typeArticle, imageChoosenDropDown, articleContainer);
+        title, date, typeArticle, posterImage, articleContainer);
     setState(() {
       _audioController.play("sounds/saveNotification.mp3");
       container.clear();
