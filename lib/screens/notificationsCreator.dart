@@ -257,8 +257,6 @@ class _NotificationsCreatorState extends State<NotificationsCreator> {
                               },
                             );
                           }
-                          _titleController.clear();
-                          _textController.clear();
                         } else {
                           if (Platform.isIOS) {
                             showCupertinoDialog(
@@ -347,6 +345,8 @@ class _NotificationsCreatorState extends State<NotificationsCreator> {
                               },
                             );
                           }
+                          _titleController.clear();
+                          _textController.clear();
                         }
                         return;
                       }
