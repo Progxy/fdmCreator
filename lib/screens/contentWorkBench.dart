@@ -106,7 +106,6 @@ class _CreateContentState extends State<CreateContent> {
   String descriptionButtonGallery = "Scegli Foto Galleria";
   String descriptionVideoCamera = "Registra Video";
   String descriptionVideoGallery = "Scegli Video Galleria";
-  bool isCamera = false;
   String title = "";
   String date = "";
   Map imagesStorage = {};
@@ -148,7 +147,7 @@ class _CreateContentState extends State<CreateContent> {
   bool isALink = false;
   List linkStorage = [];
 
-  //TODO : modifica sicurezza per evitare errori, soprattutto nei valori di padding e che il link dei video non sia youtube ! E anche la validità dei link inseriti
+  //TODO : modifica sicurezza per evitare errori, soprattutto che il link dei video non sia youtube ! E anche la validità dei link inseriti !
 
   managerVideoController() {
     setState(() {
@@ -169,14 +168,13 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   addMediaToStorage(File imagePath) async {
-    final path = isCamera
-        ? imagePath.toString().split("/").last.split("-").last
-        : imagePath.toString().split("/").last;
+    Random randomId = new Random();
+    final id = randomId.nextInt(999999999).toString();
     try {
       await firebase_storage.FirebaseStorage.instance
-          .ref(path)
+          .ref(title + "/" + id)
           .putFile(imagePath);
-      final String resultLink = await getImageLink(path);
+      final String resultLink = await getImageLink(id);
       return resultLink;
     } on FirebaseException catch (e) {
       print("Error while uploading image : $e");
@@ -187,7 +185,7 @@ class _CreateContentState extends State<CreateContent> {
   getImageLink(String image) async {
     try {
       String link = await firebase_storage.FirebaseStorage.instance
-          .ref(image)
+          .ref(title + "/" + image)
           .getDownloadURL();
       return link;
     } catch (e) {
@@ -205,11 +203,9 @@ class _CreateContentState extends State<CreateContent> {
         _image = File(pickedFile.path);
         widgetInfo["VideoPath"] = _image;
         isSelected = true;
-        isCamera = true;
       } else {
         widgetInfo["VideoPath"] = null;
         isSelected = false;
-        isCamera = false;
       }
     });
     return isSelected;
@@ -223,11 +219,9 @@ class _CreateContentState extends State<CreateContent> {
         _image = File(pickedFile.path);
         widgetInfo["VideoPath"] = _image;
         isSelected = true;
-        isCamera = false;
       } else {
         widgetInfo["VideoPath"] = null;
         isSelected = false;
-        isCamera = false;
       }
     });
     return isSelected;
@@ -242,11 +236,9 @@ class _CreateContentState extends State<CreateContent> {
         _image = File(pickedFile.path);
         widgetInfo["ImagePath"] = _image;
         isSelected = true;
-        isCamera = true;
       } else {
         widgetInfo["ImagePath"] = null;
         isSelected = false;
-        isCamera = false;
       }
     });
     return isSelected;
@@ -260,11 +252,9 @@ class _CreateContentState extends State<CreateContent> {
         _image = File(pickedFile.path);
         widgetInfo["ImagePath"] = _image;
         isSelected = true;
-        isCamera = false;
       } else {
         widgetInfo["ImagePath"] = null;
         isSelected = false;
-        isCamera = false;
       }
     });
     return isSelected;
@@ -4949,7 +4939,8 @@ class _CreateContentState extends State<CreateContent> {
       "VideoLink": linkStorage.toString(),
     };
     try {
-      var databaseReference = widget.database.reference().child(typeArticle);
+      var databaseReference =
+          widget.database.reference().child(typeArticle + "/" + title);
       databaseReference.set(resultUpload);
       return true;
     } catch (e) {
