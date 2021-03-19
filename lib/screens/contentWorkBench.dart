@@ -148,9 +148,7 @@ class _CreateContentState extends State<CreateContent> {
   bool isALink = false;
   List linkStorage = [];
 
-  //modifica sicurezza per evitare errori,
-  // soprattutto nei valori di padding e che il link dei video non sia youtube !
-  //e anche la validità dei link inseriti
+  //TODO : modifica sicurezza per evitare errori, soprattutto nei valori di padding e che il link dei video non sia youtube ! E anche la validità dei link inseriti
 
   managerVideoController() {
     setState(() {
@@ -170,7 +168,7 @@ class _CreateContentState extends State<CreateContent> {
     refreshWorkBench();
   }
 
-  addMediaToStorage(imagePath) async {
+  addMediaToStorage(File imagePath) async {
     final path = isCamera
         ? imagePath.toString().split("/").last.split("-").last
         : imagePath.toString().split("/").last;
@@ -5241,8 +5239,7 @@ class _CreateContentState extends State<CreateContent> {
                       if (_formKey.currentState.validate()) {
                         String newLink;
                         if (!isALink) {
-                          newLink =
-                              await addMediaToStorage(imageChoosenDropDown);
+                          newLink = await addMediaToStorage(posterImage);
                         }
                         setState(() {
                           if (!isALink) {
