@@ -159,11 +159,14 @@ class _NotificationsCreatorState extends State<NotificationsCreator> {
                         setState(() {
                           numCharactersText = value.length;
                         });
+                        if (value.length > 150) {
+                          return "Testo Troppo Lungo";
+                        }
                       },
                       validator: (value) {
                         if (value.isEmpty) {
                           return "Dati Mancanti";
-                        } else if (value.length > 200) {
+                        } else if (value.length > 150) {
                           return "Testo Troppo Lungo";
                         }
                         return null;
