@@ -1,5 +1,6 @@
 import 'package:fdmCreator/screens/accessIscritti.dart';
 import 'package:fdmCreator/screens/home.dart';
+import 'package:fdmCreator/screens/recuperoPassword.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -255,7 +256,7 @@ class _AccessState extends State<Access> {
                 ),
               ),
               SizedBox(
-                height: 35,
+                height: 30,
               ),
               Center(
                 child: ButtonTheme(
@@ -292,7 +293,44 @@ class _AccessState extends State<Access> {
                 ),
               ),
               SizedBox(
-                height: 15,
+                height: 30,
+              ),
+              Center(
+                child: ButtonTheme(
+                  minWidth: 150.0,
+                  height: 50.0,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(
+                          context, RecuperoPassword.routeName);
+                    },
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Container(
+                        height: 50,
+                        child: Center(
+                          child: Text(
+                            "Recupero Password",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 28.0,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(7.0),
+                      ),
+                      primary: Color.fromARGB(255, 24, 37, 102),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 30,
               ),
               Image(
                 image: AssetImage("assets/images/don_milani.png"),
