@@ -82,182 +82,184 @@ class _CambioPasswordState extends State<CambioPassword> {
         centerTitle: true,
       ),
       drawer: MainDrawer(),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 25,
-          ),
-          Form(
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            key: _formKey,
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 25,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15),
-                  child: TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      hintText: "Inserire l'email",
-                      hintStyle: TextStyle(
-                        fontSize: 23.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                      border: OutlineInputBorder(),
-                      labelText: "Email",
-                      labelStyle: TextStyle(
-                        fontSize: 23.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                      icon: Icon(
-                        Icons.email,
-                        size: 35,
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Dati Mancanti";
-                      }
-                      return null;
-                    },
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 25,
+            ),
+            Form(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              key: _formKey,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 25,
                   ),
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                      const Color.fromARGB(255, 24, 37, 102),
-                    ),
-                  ),
-                  child: Container(
-                    height: 40,
-                    width: 200,
-                    child: FittedBox(
-                      fit: BoxFit.fitWidth,
-                      child: Text(
-                        "CAMBIA PASSWORD",
-                        style: TextStyle(
-                          fontSize: 23,
-                          color: Colors.white,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    child: TextFormField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(
+                        hintText: "Inserire l'email",
+                        hintStyle: TextStyle(
+                          fontSize: 23.0,
                           fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                        border: OutlineInputBorder(),
+                        labelText: "Email",
+                        labelStyle: TextStyle(
+                          fontSize: 23.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                        icon: Icon(
+                          Icons.email,
+                          size: 35,
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return "Dati Mancanti";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  TextButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                        const Color.fromARGB(255, 24, 37, 102),
+                      ),
+                    ),
+                    child: Container(
+                      height: 40,
+                      width: 200,
+                      child: FittedBox(
+                        fit: BoxFit.fitWidth,
+                        child: Text(
+                          "CAMBIA PASSWORD",
+                          style: TextStyle(
+                            fontSize: 23,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  onPressed: () async {
-                    if (_formKey.currentState.validate()) {
-                      final email = _emailController.text.trim();
-                      final result = await AuthenticationService(_auth)
-                          .resetPassword(email);
-                      if (Platform.isIOS) {
-                        showCupertinoDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (context) {
-                            return StatefulBuilder(
-                              builder: (context, setState) {
-                                return WillPopScope(
-                                  onWillPop: () async => false,
-                                  child: CupertinoAlertDialog(
-                                    title: Text(
-                                      "Esito Cambio Password",
-                                      style: TextStyle(
-                                        fontSize: 28,
-                                      ),
-                                    ),
-                                    content: Text(
-                                      result,
-                                      style: TextStyle(
-                                        fontSize: 21,
-                                      ),
-                                    ),
-                                    actions: [
-                                      CupertinoDialogAction(
-                                        child: Text(
-                                          "OK",
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                          ),
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        final email = _emailController.text.trim();
+                        final result = await AuthenticationService(_auth)
+                            .resetPassword(email);
+                        if (Platform.isIOS) {
+                          showCupertinoDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (context) {
+                              return StatefulBuilder(
+                                builder: (context, setState) {
+                                  return WillPopScope(
+                                    onWillPop: () async => false,
+                                    child: CupertinoAlertDialog(
+                                      title: Text(
+                                        "Esito Cambio Password",
+                                        style: TextStyle(
+                                          fontSize: 28,
                                         ),
-                                        onPressed: () {
-                                          Navigator.of(context,
-                                                  rootNavigator: true)
-                                              .pop('dialog');
-                                        },
                                       ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        );
-                      } else {
-                        showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (context) {
-                            return StatefulBuilder(
-                              builder: (context, setState) {
-                                return WillPopScope(
-                                  onWillPop: () async => false,
-                                  child: AlertDialog(
-                                    title: Text(
-                                      "Esito Cambio Password",
-                                      style: TextStyle(
-                                        fontSize: 28,
-                                      ),
-                                    ),
-                                    content: Text(
-                                      result,
-                                      style: TextStyle(
-                                        fontSize: 21,
-                                      ),
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        child: Text(
-                                          "OK",
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                          ),
+                                      content: Text(
+                                        result,
+                                        style: TextStyle(
+                                          fontSize: 21,
                                         ),
-                                        onPressed: () {
-                                          Navigator.of(context,
-                                                  rootNavigator: true)
-                                              .pop('dialog');
-                                        },
                                       ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        );
+                                      actions: [
+                                        CupertinoDialogAction(
+                                          child: Text(
+                                            "OK",
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pop('dialog');
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          );
+                        } else {
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (context) {
+                              return StatefulBuilder(
+                                builder: (context, setState) {
+                                  return WillPopScope(
+                                    onWillPop: () async => false,
+                                    child: AlertDialog(
+                                      title: Text(
+                                        "Esito Cambio Password",
+                                        style: TextStyle(
+                                          fontSize: 28,
+                                        ),
+                                      ),
+                                      content: Text(
+                                        result,
+                                        style: TextStyle(
+                                          fontSize: 21,
+                                        ),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          child: Text(
+                                            "OK",
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pop('dialog');
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          );
+                        }
+                        _emailController.clear();
+                        return;
                       }
-                      _emailController.clear();
-                      return;
-                    }
-                  },
-                ),
-              ],
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(
-            height: 135,
-          ),
-          Image.asset(
-            "assets/images/don_milani.png",
-            fit: BoxFit.fill,
-          ),
-        ],
+            SizedBox(
+              height: 135,
+            ),
+            Image.asset(
+              "assets/images/don_milani.png",
+              fit: BoxFit.fill,
+            ),
+          ],
+        ),
       ),
     );
   }
