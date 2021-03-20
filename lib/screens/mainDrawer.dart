@@ -1,6 +1,5 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:fdmCreator/screens/contentWorkBench.dart';
-import 'package:fdmCreator/screens/recuperoPassword.dart';
 import 'package:flutter/material.dart';
 
 import '../accountInfo.dart';
