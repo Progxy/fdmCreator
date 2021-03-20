@@ -43,7 +43,7 @@ class _RecuperoPasswordState extends State<RecuperoPassword> {
             color: Color.fromARGB(255, 192, 192, 192),
           ),
           title: Text(
-            "REcupero Password",
+            "Recupero Password",
             style: TextStyle(
               color: Color.fromARGB(255, 192, 192, 192),
               fontWeight: FontWeight.w700,
