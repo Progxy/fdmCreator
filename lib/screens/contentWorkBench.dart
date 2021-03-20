@@ -149,10 +149,14 @@ class _CreateContentState extends State<CreateContent> {
   String error = "";
 
   verifyLink(link) async {
-    final response = await http.head(link);
-    if (response.statusCode == 200) {
-      return true;
-    } else {
+    try {
+      final response = await http.head(link);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
       return false;
     }
   }
@@ -1388,7 +1392,7 @@ class _CreateContentState extends State<CreateContent> {
                             },
                           ),
                           SizedBox(
-                            height: 15,
+                            height: 5,
                           ),
                           Text(
                             error,
@@ -1412,7 +1416,7 @@ class _CreateContentState extends State<CreateContent> {
                       ),
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
-                          if (widgetInfo["ImageLink"]) {
+                          if (widgetInfo["ImageLink"] != null) {
                             bool isValidLink =
                                 await verifyLink(widgetInfo["ImageLink"]);
                             if (!isValidLink) {
@@ -1533,6 +1537,8 @@ class _CreateContentState extends State<CreateContent> {
                                 .pop('dialog');
                           });
                         }
+                        refreshWorkBench();
+                        setState(() {});
                       },
                     ),
                     CupertinoDialogAction(
@@ -1831,7 +1837,7 @@ class _CreateContentState extends State<CreateContent> {
                             },
                           ),
                           SizedBox(
-                            height: 15,
+                            height: 5,
                           ),
                           Text(
                             error,
@@ -1855,7 +1861,7 @@ class _CreateContentState extends State<CreateContent> {
                       ),
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
-                          if (widgetInfo["ImageLink"]) {
+                          if (widgetInfo["ImageLink"] != null) {
                             bool isValidLink =
                                 await verifyLink(widgetInfo["ImageLink"]);
                             if (!isValidLink) {
@@ -1976,6 +1982,8 @@ class _CreateContentState extends State<CreateContent> {
                                 .pop('dialog');
                           });
                         }
+                        refreshWorkBench();
+                        setState(() {});
                       },
                     ),
                     TextButton(
@@ -2358,7 +2366,7 @@ class _CreateContentState extends State<CreateContent> {
                             },
                           ),
                           SizedBox(
-                            height: 15,
+                            height: 5,
                           ),
                           Text(
                             error,
@@ -2666,6 +2674,8 @@ class _CreateContentState extends State<CreateContent> {
                                 .pop('dialog');
                           });
                         }
+                        refreshWorkBench();
+                        setState(() {});
                       },
                     ),
                     CupertinoDialogAction(
@@ -2966,7 +2976,7 @@ class _CreateContentState extends State<CreateContent> {
                             },
                           ),
                           SizedBox(
-                            height: 15,
+                            height: 5,
                           ),
                           Text(
                             error,
@@ -2998,6 +3008,7 @@ class _CreateContentState extends State<CreateContent> {
                                 _linkController.clear();
                                 error = "Link Invalido";
                               });
+                              refreshWorkBench();
                               return;
                             } else {
                               setState(() {
@@ -3274,6 +3285,8 @@ class _CreateContentState extends State<CreateContent> {
                                 .pop('dialog');
                           });
                         }
+                        refreshWorkBench();
+                        setState(() {});
                       },
                     ),
                     TextButton(
@@ -3583,7 +3596,7 @@ class _CreateContentState extends State<CreateContent> {
                             },
                           ),
                           SizedBox(
-                            height: 15,
+                            height: 5,
                           ),
                           Text(
                             error,
@@ -3704,6 +3717,8 @@ class _CreateContentState extends State<CreateContent> {
                                 .pop('dialog');
                           });
                         }
+                        refreshWorkBench();
+                        setState(() {});
                       },
                     ),
                     CupertinoDialogAction(
@@ -4005,7 +4020,7 @@ class _CreateContentState extends State<CreateContent> {
                             },
                           ),
                           SizedBox(
-                            height: 15,
+                            height: 5,
                           ),
                           Text(
                             error,
@@ -4126,6 +4141,8 @@ class _CreateContentState extends State<CreateContent> {
                                 .pop('dialog');
                           });
                         }
+                        refreshWorkBench();
+                        setState(() {});
                       },
                     ),
                     TextButton(

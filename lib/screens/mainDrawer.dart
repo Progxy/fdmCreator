@@ -32,8 +32,9 @@ class _MainDrawerState extends State<MainDrawer> {
     setState(() {
       heightArea = height - y;
       if (isManager) {
-        heightArea -= 245;
+        heightArea -= 115;
       } else {
+        //TODO: verify for iscritti
         heightArea -= 115;
       }
     });

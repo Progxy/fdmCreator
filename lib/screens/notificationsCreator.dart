@@ -43,11 +43,12 @@ class _NotificationsCreatorState extends State<NotificationsCreator> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _textController = TextEditingController();
   final _titleController = TextEditingController();
+  int numCharactersText = 0;
 
   pushNotification(String title, String text) {
     try {
       var databaseReference = widget.database.reference().child("Info");
-      databaseReference.set({title: text});
+      databaseReference.update({title: text});
       return true;
     } catch (e) {
       print("An error occurred while posting on database : $e");
@@ -154,12 +155,30 @@ class _NotificationsCreatorState extends State<NotificationsCreator> {
                           color: Colors.black87,
                         ),
                       ),
+                      onChanged: (value) {
+                        setState(() {
+                          numCharactersText = value.length;
+                        });
+                      },
                       validator: (value) {
                         if (value.isEmpty) {
                           return "Dati Mancanti";
+                        } else if (value.length > 200) {
+                          return "Testo Troppo Lungo";
                         }
                         return null;
                       },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    "Numero di caratteri : $numCharactersText.",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey,
                     ),
                   ),
                   SizedBox(
