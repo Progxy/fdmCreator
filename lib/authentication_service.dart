@@ -23,4 +23,13 @@ class AuthenticationService {
       return e.message;
     }
   }
+
+  Future<String> resetPassword(String email) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      return "L'email per cambiare la passsword è stata mandata con successo!";
+    } on FirebaseAuthException catch (e) {
+      return e.message;
+    }
+  }
 }
