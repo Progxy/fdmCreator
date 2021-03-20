@@ -34,7 +34,6 @@ class _MainDrawerState extends State<MainDrawer> {
       if (isManager) {
         heightArea -= 115;
       } else {
-        //TODO: verify for iscritti
         heightArea -= 115;
       }
     });
@@ -125,27 +124,6 @@ class _MainDrawerState extends State<MainDrawer> {
                 }
               },
             ),
-            isManager
-                ? ListTile(
-                    title: Text("Recupero Password",
-                        style: TextStyle(fontSize: 23)),
-                    onTap: () async {
-                      var connectivityResult =
-                          await (Connectivity().checkConnectivity());
-                      if (connectivityResult == ConnectivityResult.none) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => BadConnection()));
-                      } else {
-                        Navigator.pushReplacementNamed(
-                            context, RecuperoPassword.routeName);
-                      }
-                    },
-                  )
-                : SizedBox(
-                    height: 1,
-                  ),
             isManager
                 ? ListTile(
                     title:
