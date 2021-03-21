@@ -34,7 +34,7 @@ class _FeedBackState extends State<FeedBack> {
         ..subject = 'FeedBack - fdmCreator'
         ..text = "FeedBack:\n" +
             feedBack +
-            "\n\nRating: " +
+            "\n\nRating : " +
             rating.toString() +
             "\n\nErmes-Express FDM";
 

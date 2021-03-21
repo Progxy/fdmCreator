@@ -7,7 +7,6 @@ import 'package:fdmCreator/screens/errorpage.dart';
 import 'package:fdmCreator/screens/feedback.dart';
 import 'package:fdmCreator/screens/home.dart';
 import 'package:fdmCreator/screens/notificationsCreator.dart';
-import 'package:fdmCreator/screens/recuperoPassword.dart';
 import 'package:fdmCreator/screens/utilizzo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +47,6 @@ class MyApp extends StatelessWidget {
           ErrorPage.routeName: (context) => ErrorPage(),
           CreateContent.routeName: (context) => CreateContent(),
           CambioPassword.routeName: (context) => CambioPassword(),
-          RecuperoPassword.routeName: (context) => RecuperoPassword(),
           NotificationsCreator.routeName: (context) => NotificationsCreator(),
         },
       ),
