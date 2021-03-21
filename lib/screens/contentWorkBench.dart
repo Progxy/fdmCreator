@@ -5289,6 +5289,28 @@ class _CreateContentState extends State<CreateContent> {
     }
   }
 
+  saveRequest(String title, String date, String typeArticle, String posterImage,
+      Map container) async {
+    final contentContainer = container.values.toList().toString();
+    Map resultUpload = {
+      "Title": title,
+      "Date": date,
+      "PosterImage": posterImage,
+      "Content": contentContainer,
+      "VideoLink": linkStorage.toString(),
+    };
+    try {
+      //TODO: requires the fdmManager database access, so it could post to it, and requires also a method to manage it!
+      var databaseReference =
+          widget.database.reference().child(typeArticle + "/" + title);
+      databaseReference.set(resultUpload);
+      return true;
+    } catch (e) {
+      print("An error occurred while posting on database : $e");
+      return false;
+    }
+  }
+
   getPosterImage() async {
     setState(() {
       widgetInfo.addAll({"ImageLink": null});
@@ -6053,110 +6075,217 @@ class _CreateContentState extends State<CreateContent> {
     await dialog.hide();
     await getPosterImage();
     await dialog.show();
-    final resultDb = await saveOnDatabase(
-        title, date, typeArticle, posterImage, articleContainer);
-    setState(() {
-      _audioController.play("sounds/saveNotification.mp3");
-      container.clear();
-      articleContainer.clear();
-      widgetsInfos.clear();
-      widgetInfo.clear();
-      imagesStorage.clear();
-      videoControllersInUse.clear();
-      _videoController = null;
-      _videoControllerSecondary = null;
-    });
-    await dialog.hide();
-    if (Platform.isIOS) {
-      showCupertinoDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(
-            builder: (context, setState) {
-              return WillPopScope(
-                onWillPop: () async => false,
-                child: CupertinoAlertDialog(
-                  title: Text(
-                    "Esito Salvataggio",
-                    style: TextStyle(
-                      fontSize: 28,
-                    ),
-                  ),
-                  content: Text(
-                    resultDb
-                        ? "Salvataggio completato con successo !"
-                        : "Ops... Si è verificato un'errore durante il salvataggio !",
-                    style: TextStyle(
-                      fontSize: 21,
-                    ),
-                  ),
-                  actions: [
-                    CupertinoDialogAction(
-                      child: Text(
-                        "OK",
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
+    if (widget.isManager) {
+      final resultDb = await saveOnDatabase(
+          title, date, typeArticle, posterImage, articleContainer);
+      setState(() {
+        _audioController.play("sounds/saveNotification.mp3");
+        container.clear();
+        articleContainer.clear();
+        widgetsInfos.clear();
+        widgetInfo.clear();
+        imagesStorage.clear();
+        videoControllersInUse.clear();
+        _videoController = null;
+        _videoControllerSecondary = null;
+      });
+      await dialog.hide();
+      if (Platform.isIOS) {
+        showCupertinoDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return StatefulBuilder(
+              builder: (context, setState) {
+                return WillPopScope(
+                  onWillPop: () async => false,
+                  child: CupertinoAlertDialog(
+                    title: Text(
+                      "Esito Salvataggio",
+                      style: TextStyle(
+                        fontSize: 28,
                       ),
-                      onPressed: () {
-                        Navigator.of(context, rootNavigator: true)
-                            .pop('dialog');
-                      },
                     ),
-                  ],
-                ),
-              );
-            },
-          );
-        },
-      );
+                    content: Text(
+                      resultDb
+                          ? "Salvataggio completato con successo !"
+                          : "Ops... Si è verificato un'errore durante il salvataggio !",
+                      style: TextStyle(
+                        fontSize: 21,
+                      ),
+                    ),
+                    actions: [
+                      CupertinoDialogAction(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true)
+                              .pop('dialog');
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        );
+      } else {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return StatefulBuilder(
+              builder: (context, setState) {
+                return WillPopScope(
+                  onWillPop: () async => false,
+                  child: AlertDialog(
+                    title: Text(
+                      "Esito Salvataggio",
+                      style: TextStyle(
+                        fontSize: 28,
+                      ),
+                    ),
+                    content: Text(
+                      resultDb
+                          ? "Salvataggio completato con successo !"
+                          : "Ops... Si è verificato un'errore durante il salvataggio !",
+                      style: TextStyle(
+                        fontSize: 21,
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true)
+                              .pop('dialog');
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        );
+      }
+      return;
     } else {
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(
-            builder: (context, setState) {
-              return WillPopScope(
-                onWillPop: () async => false,
-                child: AlertDialog(
-                  title: Text(
-                    "Esito Salvataggio",
-                    style: TextStyle(
-                      fontSize: 28,
-                    ),
-                  ),
-                  content: Text(
-                    resultDb
-                        ? "Salvataggio completato con successo !"
-                        : "Ops... Si è verificato un'errore durante il salvataggio !",
-                    style: TextStyle(
-                      fontSize: 21,
-                    ),
-                  ),
-                  actions: [
-                    TextButton(
-                      child: Text(
-                        "OK",
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
+      final resultDb = await saveRequest(
+          title, date, typeArticle, posterImage, articleContainer);
+      setState(() {
+        _audioController.play("sounds/saveNotification.mp3");
+        container.clear();
+        articleContainer.clear();
+        widgetsInfos.clear();
+        widgetInfo.clear();
+        imagesStorage.clear();
+        videoControllersInUse.clear();
+        _videoController = null;
+        _videoControllerSecondary = null;
+      });
+      await dialog.hide();
+      if (Platform.isIOS) {
+        showCupertinoDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return StatefulBuilder(
+              builder: (context, setState) {
+                return WillPopScope(
+                  onWillPop: () async => false,
+                  child: CupertinoAlertDialog(
+                    title: Text(
+                      "Esito Richiesta Pubblicazione",
+                      style: TextStyle(
+                        fontSize: 28,
                       ),
-                      onPressed: () {
-                        Navigator.of(context, rootNavigator: true)
-                            .pop('dialog');
-                      },
                     ),
-                  ],
-                ),
-              );
-            },
-          );
-        },
-      );
+                    content: Text(
+                      resultDb
+                          ? "Richiesta di pubblicazione completata con successo !"
+                          : "Ops... Si è verificato un'errore durante la richiesta di pubblicazione !",
+                      style: TextStyle(
+                        fontSize: 21,
+                      ),
+                    ),
+                    actions: [
+                      CupertinoDialogAction(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true)
+                              .pop('dialog');
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        );
+      } else {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return StatefulBuilder(
+              builder: (context, setState) {
+                return WillPopScope(
+                  onWillPop: () async => false,
+                  child: AlertDialog(
+                    title: Text(
+                      "Esito Richiesta Pubblicazione",
+                      style: TextStyle(
+                        fontSize: 28,
+                      ),
+                    ),
+                    content: Text(
+                      resultDb
+                          ? "Richiesta di pubblicazione completata con successo !"
+                          : "Ops... Si è verificato un'errore durante la richiesta di pubblicazione !",
+                      style: TextStyle(
+                        fontSize: 21,
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true)
+                              .pop('dialog');
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        );
+      }
+      return;
     }
-    return;
   }
 
   setElements() {
