@@ -51,6 +51,7 @@ class Utilizzo extends StatelessWidget {
             SizedBox(
               height: 30,
             ),
+            //TODO: add all the explanations !
           ],
         ),
       ),
