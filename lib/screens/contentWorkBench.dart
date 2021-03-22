@@ -2874,7 +2874,7 @@ class _CreateContentState extends State<CreateContent> {
 
   saveOnDatabase(String title, String date, String typeArticle,
       String posterImage, Map container) async {
-    final contentContainer = container.values.toString();
+    final contentContainer = container.values.toList().toString();
     Map resultUpload = {
       "Title": title,
       "Date": date,
