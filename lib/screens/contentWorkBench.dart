@@ -93,6 +93,13 @@ class _CreateContentState extends State<CreateContent> {
     4: FontWeight.bold,
     5: FontWeight.w800
   };
+  Map listaFonts = {
+    FontWeight.w300: 1,
+    FontWeight.normal: 2,
+    FontWeight.w600: 3,
+    FontWeight.bold: 4,
+    FontWeight.w800: 5
+  };
   List<int> elementi = [1, 2, 3, 4, 5];
   String dropdownValue = 1.toString();
   var fontWeight = FontWeight.w300;
@@ -146,6 +153,7 @@ class _CreateContentState extends State<CreateContent> {
   bool isALink = false;
   List linkStorage = [];
   String error = "";
+  bool isChecked = false;
 
   verifyLink(link) async {
     try {
@@ -600,8 +608,9 @@ class _CreateContentState extends State<CreateContent> {
                         if (_formKey.currentState.validate()) {
                           setState(() {
                             _audioController.play("sounds/addedElement.mp4");
-                            final font = (lista[fontWeight] * 100).toString();
-                            widgetInfo.addAll({"FontWeight": font});
+                            final font = (listaFonts[fontWeight]) * 100;
+                            final fontweight = font.toString();
+                            widgetInfo.addAll({"FontWeight": fontweight});
                             widgetInfo.addAll({"Type": "Text"});
                             Key chiavetta =
                                 Key(random.nextInt(100000000).toString());
@@ -624,7 +633,7 @@ class _CreateContentState extends State<CreateContent> {
                                       style: TextStyle(
                                         fontSize:
                                             double.parse(widgetInfo["Size"]),
-                                        fontWeight: widgetInfo["FontWeight"],
+                                        fontWeight: fontWeight,
                                       ),
                                     ),
                                   ),
@@ -2019,7 +2028,9 @@ class _CreateContentState extends State<CreateContent> {
                           }
                           setState(() {
                             _audioController.play("sounds/addedElement.mp4");
-                            widgetInfo.addAll({"FontWeight": fontWeight});
+                            final font = (listaFonts[fontWeight]) * 100;
+                            final fontweight = font.toString();
+                            widgetInfo.addAll({"FontWeight": fontweight});
                             widgetInfo.addAll({"Type": "Link"});
                             Key chiavetta =
                                 Key(random.nextInt(100000000).toString());
@@ -2048,7 +2059,7 @@ class _CreateContentState extends State<CreateContent> {
                                         style: TextStyle(
                                           fontSize:
                                               double.parse(widgetInfo["Size"]),
-                                          fontWeight: widgetInfo["FontWeight"],
+                                          fontWeight: fontWeight,
                                           color: Colors.blueAccent,
                                         ),
                                       ),
@@ -2863,7 +2874,7 @@ class _CreateContentState extends State<CreateContent> {
 
   saveOnDatabase(String title, String date, String typeArticle,
       String posterImage, Map container) async {
-    final contentContainer = container.values.toList().toString();
+    final contentContainer = container.values.toString();
     Map resultUpload = {
       "Title": title,
       "Date": date,
@@ -3295,6 +3306,7 @@ class _CreateContentState extends State<CreateContent> {
                               } else if (value.isNotEmpty) {
                                 posterImage = widgetInfo["ImageLink"];
                                 isALink = true;
+                                isChecked = false;
                               }
                               return null;
                             },
@@ -3322,6 +3334,7 @@ class _CreateContentState extends State<CreateContent> {
                                       "Scegli Foto Galleria";
                                   posterImage = widgetInfo["ImagePath"];
                                   isALink = false;
+                                  isChecked = false;
                                   containerImage = Image.file(
                                     posterImage,
                                     fit: BoxFit.fitWidth,
@@ -3370,6 +3383,7 @@ class _CreateContentState extends State<CreateContent> {
                                   descriptionButtonCamera = "Scatta Foto";
                                   posterImage = widgetInfo["ImagePath"];
                                   isALink = false;
+                                  isChecked = false;
                                   containerImage = Image.file(
                                     posterImage,
                                     fit: BoxFit.fitWidth,
@@ -3426,6 +3440,7 @@ class _CreateContentState extends State<CreateContent> {
                                 posterImage = imageChoosenDropDown;
                                 _linkController.clear();
                                 isALink = true;
+                                isChecked = true;
                                 descriptionButtonGallery =
                                     "Scegli Foto Galleria";
                                 descriptionButtonCamera = "Scatta Foto";
@@ -3487,7 +3502,7 @@ class _CreateContentState extends State<CreateContent> {
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
                           String newLink;
-                          if (isALink) {
+                          if (isALink && !isChecked) {
                             bool isValidLink = await verifyLink(posterImage);
                             if (!isValidLink) {
                               setState(() {
@@ -3500,7 +3515,7 @@ class _CreateContentState extends State<CreateContent> {
                                 error = "";
                               });
                             }
-                          } else {
+                          } else if (!isALink) {
                             newLink = await addMediaToStorage(posterImage);
                           }
                           setState(() {
@@ -3533,7 +3548,6 @@ class _CreateContentState extends State<CreateContent> {
 
   saveWorkBench() async {
     bool continuare = false;
-    print("widgetInfos : ${widgetsInfos[0]}");
     if (Platform.isIOS) {
       await showCupertinoDialog(
         barrierDismissible: false,

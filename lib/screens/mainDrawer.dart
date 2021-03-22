@@ -30,11 +30,7 @@ class _MainDrawerState extends State<MainDrawer> {
     double y = position.dy;
     setState(() {
       heightArea = height - y;
-      if (isManager) {
-        heightArea -= 115;
-      } else {
-        heightArea -= 115;
-      }
+      heightArea -= 115;
     });
   }
 
