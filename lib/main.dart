@@ -7,5 +7,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FirebaseProjectsManager().connectFirebaseSecondary();
+  await FirebaseProjectsManager().connectFirebaseManager();
   runApp(MyApp());
 }

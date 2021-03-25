@@ -25,6 +25,8 @@ class CreateContent extends StatefulWidget {
   final bool isManager = AccountInfo.isManager;
   final FirebaseDatabase database =
       FirebaseDatabase(app: FirebaseProjectsManager().getSecondary());
+  final FirebaseDatabase managerDb =
+      FirebaseDatabase(app: FirebaseProjectsManager().getManager());
 
   @override
   _CreateContentState createState() => _CreateContentState();
@@ -63,6 +65,7 @@ class _CreateContentState extends State<CreateContent> {
   final _linkController = TextEditingController();
   final _dateController = TextEditingController();
   final _titleController = TextEditingController();
+  final _nicknameController = TextEditingController();
   var colorEvidence = Colors.white;
   var containerColorEvidence = Colors.white;
   double _width = 0;
@@ -154,6 +157,7 @@ class _CreateContentState extends State<CreateContent> {
   List linkStorage = [];
   String error = "";
   bool isChecked = false;
+  String nickname = "";
 
   verifyLink(link) async {
     try {
@@ -4434,6 +4438,7 @@ class _CreateContentState extends State<CreateContent> {
   getInfoArticle() {
     var t = "";
     var d = "";
+    var n = "";
     String textButton = "Data del contenuto";
     if (Platform.isIOS) {
       showCupertinoDialog(
@@ -4480,6 +4485,34 @@ class _CreateContentState extends State<CreateContent> {
                                 return "Dati Mancanti";
                               }
                               t = value;
+                              return null;
+                            },
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            controller: _nicknameController,
+                            decoration: const InputDecoration(
+                              hintText: "Inserire nome e cognome",
+                              hintStyle: TextStyle(
+                                fontSize: 23.0,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                              border: OutlineInputBorder(),
+                              labelText: "Nome Autore",
+                              labelStyle: TextStyle(
+                                fontSize: 23.0,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return "Dati Mancanti";
+                              }
+                              n = value;
                               return null;
                             },
                           ),
@@ -4593,8 +4626,10 @@ class _CreateContentState extends State<CreateContent> {
                           setState(() {
                             _titleController.clear();
                             _dateController.clear();
+                            _nicknameController.clear();
                             title = t;
                             date = d;
+                            nickname = n;
                           });
                           refreshWorkBench();
                           setState(() {
@@ -4656,6 +4691,34 @@ class _CreateContentState extends State<CreateContent> {
                                 return "Dati Mancanti";
                               }
                               t = value;
+                              return null;
+                            },
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            controller: _nicknameController,
+                            decoration: const InputDecoration(
+                              hintText: "Inserire nome e cognome",
+                              hintStyle: TextStyle(
+                                fontSize: 23.0,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                              border: OutlineInputBorder(),
+                              labelText: "Nome Autore",
+                              labelStyle: TextStyle(
+                                fontSize: 23.0,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return "Dati Mancanti";
+                              }
+                              n = value;
                               return null;
                             },
                           ),
@@ -4769,8 +4832,10 @@ class _CreateContentState extends State<CreateContent> {
                           setState(() {
                             _titleController.clear();
                             _dateController.clear();
+                            _nicknameController.clear();
                             title = t;
                             date = d;
+                            nickname = n;
                           });
                           refreshWorkBench();
                           setState(() {
@@ -4808,13 +4873,14 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   saveOnDatabase(String title, String date, String typeArticle,
-      String posterImage, Map container) async {
+      String posterImage, Map container, String author) async {
     final contentContainer = container.values.toList().toString();
     Map resultUpload = {
       "Title": title,
       "Date": date,
       "PosterImage": posterImage,
       "Content": contentContainer,
+      "Author": author,
       "VideoLink": linkStorage.toString(),
     };
     try {
@@ -4829,19 +4895,19 @@ class _CreateContentState extends State<CreateContent> {
   }
 
   saveRequest(String title, String date, String typeArticle, String posterImage,
-      Map container) async {
+      Map container, String author) async {
     final contentContainer = container.values.toList().toString();
     Map resultUpload = {
       "Title": title,
       "Date": date,
       "PosterImage": posterImage,
       "Content": contentContainer,
+      "Author": author,
       "VideoLink": linkStorage.toString(),
     };
     try {
-      //TODO: requires the fdmManager database access, so it could post to it, and requires also a method to manage it!
       var databaseReference =
-          widget.database.reference().child(typeArticle + "/" + title);
+          widget.managerDb.reference().child(typeArticle + "/" + title);
       databaseReference.set(resultUpload);
       return true;
     } catch (e) {
@@ -5619,7 +5685,7 @@ class _CreateContentState extends State<CreateContent> {
     await dialog.show();
     if (widget.isManager) {
       final resultDb = await saveOnDatabase(
-          title, date, typeArticle, posterImage, widgetsInfos);
+          title, date, typeArticle, posterImage, widgetsInfos, nickname);
       setState(() {
         _audioController.play("sounds/saveNotification.mp3");
         container.clear();
@@ -5723,7 +5789,7 @@ class _CreateContentState extends State<CreateContent> {
       return;
     } else {
       final resultDb = await saveRequest(
-          title, date, typeArticle, posterImage, widgetsInfos);
+          title, date, typeArticle, posterImage, widgetsInfos, nickname);
       setState(() {
         _audioController.play("sounds/saveNotification.mp3");
         container.clear();
