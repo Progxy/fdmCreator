@@ -4905,6 +4905,7 @@ class _CreateContentState extends State<CreateContent> {
       "Author": author,
       "VideoLink": linkStorage.toString(),
       "ArticleType": typeArticle,
+      "Email": AccountInfo.email,
     };
     try {
       var databaseReference =
