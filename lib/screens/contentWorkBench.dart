@@ -4904,10 +4904,11 @@ class _CreateContentState extends State<CreateContent> {
       "Content": contentContainer,
       "Author": author,
       "VideoLink": linkStorage.toString(),
+      "ArticleType": typeArticle,
     };
     try {
       var databaseReference =
-          widget.managerDb.reference().child(typeArticle + "/" + title);
+          widget.managerDb.reference().child("Articoli/" + title);
       databaseReference.set(resultUpload);
       return true;
     } catch (e) {
