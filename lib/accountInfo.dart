@@ -8,6 +8,10 @@ class AccountInfo {
   static bool isManager = false;
   static var userId;
 
+  setIsManager(bool isAccountManager) {
+    isManager = isAccountManager;
+  }
+
   setter(String username, String mail, bool isAccountManager) {
     name = username;
     email = mail;

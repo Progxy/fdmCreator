@@ -67,7 +67,7 @@ class _AccessIscrittiState extends State<AccessIscritti> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 25,
+                height: 20,
               ),
               TextFormField(
                 controller: _emailController,
@@ -102,7 +102,7 @@ class _AccessIscrittiState extends State<AccessIscritti> {
                 },
               ),
               SizedBox(
-                height: 25,
+                height: 20,
               ),
               TextFormField(
                 controller: _passwordController,
@@ -130,7 +130,7 @@ class _AccessIscrittiState extends State<AccessIscritti> {
                 },
               ),
               SizedBox(
-                height: 30,
+                height: 20,
               ),
               Center(
                 child: ButtonTheme(
@@ -165,8 +165,10 @@ class _AccessIscrittiState extends State<AccessIscritti> {
                                 context, Home.routeName);
                           });
                         } else {
+                          AccountInfo().setIsManager(false);
                           Navigator.pushReplacementNamed(
-                              context, ErrorPage.routeName);
+                              context, ErrorPage.routeName,
+                              arguments: _emailController.text.trim());
                         }
                       } else {
                         if (isIOS) {
@@ -264,7 +266,7 @@ class _AccessIscrittiState extends State<AccessIscritti> {
                 ),
               ),
               SizedBox(
-                height: 35,
+                height: 20,
               ),
               Center(
                 child: Padding(

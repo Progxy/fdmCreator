@@ -156,8 +156,10 @@ class _AccessState extends State<Access> {
                                     builder: (context) => Home()));
                           });
                         } else {
+                          AccountInfo().setIsManager(true);
                           Navigator.pushReplacementNamed(
-                              context, ErrorPage.routeName);
+                              context, ErrorPage.routeName,
+                              arguments: _emailController.text.trim());
                         }
                       } else {
                         if (isIOS) {
