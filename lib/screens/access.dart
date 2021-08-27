@@ -62,7 +62,7 @@ class _AccessState extends State<Access> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 25,
+                height: 20,
               ),
               TextFormField(
                 controller: _emailController,
@@ -97,7 +97,7 @@ class _AccessState extends State<Access> {
                 },
               ),
               SizedBox(
-                height: 25,
+                height: 20,
               ),
               TextFormField(
                 controller: _passwordController,
@@ -125,7 +125,7 @@ class _AccessState extends State<Access> {
                 },
               ),
               SizedBox(
-                height: 30,
+                height: 20,
               ),
               Center(
                 child: ButtonTheme(
@@ -255,7 +255,7 @@ class _AccessState extends State<Access> {
                 ),
               ),
               SizedBox(
-                height: 30,
+                height: 20,
               ),
               Center(
                 child: ButtonTheme(
@@ -292,7 +292,10 @@ class _AccessState extends State<Access> {
                 ),
               ),
               SizedBox(
-                height: 30,
+                height: 20,
+              ),
+              SizedBox(
+                height: 15,
               ),
               Image(
                 image: AssetImage("assets/images/don_milani.png"),
