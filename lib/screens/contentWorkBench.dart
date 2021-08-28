@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:fdmCreator/firebaseProjectsManager.dart';
+import 'package:fdmCreator/screens/home.dart';
 import 'package:fdmCreator/screens/mainDrawer.dart';
 import 'package:fdmCreator/screens/utilizzo.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -4843,6 +4844,22 @@ class _CreateContentState extends State<CreateContent> {
                                 .pop('dialog');
                           });
                         }
+                      },
+                    ),
+                    TextButton(
+                      child: Text(
+                        "HOME",
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _titleController.clear();
+                          _dateController.clear();
+                          _nicknameController.clear();
+                        });
+                        Navigator.pushReplacementNamed(context, Home.routeName);
                       },
                     ),
                   ],
