@@ -9,8 +9,7 @@ import '../authentication_service.dart';
 
 class ErrorPage extends StatefulWidget {
   static const String routeName = "/errorPage";
-  ErrorPage({this.app});
-  final FirebaseApp app;
+  final FirebaseApp app = Firebase.app();
   final FirebaseApp appIscritti = FirebaseProjectsManager().getSecondary();
 
   @override

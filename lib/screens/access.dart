@@ -134,10 +134,12 @@ class _AccessState extends State<Access> {
                   child: ElevatedButton(
                     onPressed: () async {
                       if (_formKey.currentState.validate()) {
-                        await context.read<AuthenticationService>().signIn(
-                              email: _emailController.text.trim(),
-                              password: _passwordController.text.trim(),
-                            );
+                        final response =
+                            await context.read<AuthenticationService>().signIn(
+                                  email: _emailController.text.trim(),
+                                  password: _passwordController.text.trim(),
+                                );
+                        print(response);
                         final firebaseAuthCheck =
                             FirebaseAuth.instance.currentUser;
                         if (firebaseAuthCheck != null) {
