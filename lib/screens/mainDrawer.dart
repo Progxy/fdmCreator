@@ -16,7 +16,7 @@ class MainDrawer extends StatefulWidget {
 class _MainDrawerState extends State<MainDrawer> {
   final int version = 0;
   final int subVersion = 1;
-  final String beta = "Beta";
+  final String typeVersion = "Alfa";
   final String name = AccountInfo.name;
   final String email = AccountInfo.email;
   final bool isManager = AccountInfo.isManager;
@@ -177,7 +177,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 Container(
                   padding: EdgeInsets.only(left: 17),
                   child: Text(
-                    "Versione $beta $version.$subVersion",
+                    "Versione $typeVersion $version.$subVersion",
                     style: TextStyle(
                       fontSize: 23,
                       fontWeight: FontWeight.w700,
